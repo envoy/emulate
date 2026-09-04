@@ -11,12 +11,18 @@ import { callRoutes } from "./routes/calls.js";
 import { conversationRoutes } from "./routes/conversations.js";
 import { simulatorRoutes } from "./routes/simulator.js";
 import { inspectorRoutes } from "./routes/inspector.js";
+import { sendgridRoutes, type SendGridOptions } from "./routes/sendgrid.js";
+export type { SendGridOptions } from "./routes/sendgrid.js";
 
 export { getTwilioStore, type TwilioStore } from "./store.js";
 export * from "./entities.js";
 
 export interface TwilioSeedConfig {
   port?: number;
+  sendgrid?: {
+    api_keys?: string[];
+    gmail?: { base_url: string; access_token: string; user_id?: string };
+  };
   account?: {
     sid?: string;
     auth_token?: string;
@@ -106,6 +112,15 @@ function seedDefaults(store: Store): void {
 }
 
 export function seedFromConfig(store: Store, _baseUrl: string, config: TwilioSeedConfig): void {
+  if (config.sendgrid?.api_keys) store.setData("twilio.sendgrid.apiKeys", config.sendgrid.api_keys);
+  if (config.sendgrid?.gmail) {
+    const gmail = config.sendgrid.gmail;
+    store.setData("twilio.sendgrid.gmail", {
+      baseUrl: gmail.base_url,
+      accessToken: gmail.access_token,
+      userId: gmail.user_id,
+    });
+  }
   const ts = getTwilioStore(store);
   const accountSid = config.account?.sid ?? DEFAULT_ACCOUNT_SID;
   let account = ts.accounts.findOneBy("sid", accountSid);
@@ -256,23 +271,28 @@ export function seedFromConfig(store: Store, _baseUrl: string, config: TwilioSee
   }
 }
 
-export const twilioPlugin: ServicePlugin = {
-  name: "twilio",
-  register(app: Hono<AppEnv>, store: Store, webhooks: WebhookDispatcher, baseUrl: string, tokenMap?: TokenMap): void {
-    const ctx: RouteContext = { app, store, webhooks, baseUrl, tokenMap };
-    accountRoutes(ctx);
-    phoneNumberRoutes(ctx);
-    messagingServiceRoutes(ctx);
-    messageRoutes(ctx);
-    verifyRoutes(ctx);
-    callRoutes(ctx);
-    conversationRoutes(ctx);
-    simulatorRoutes(ctx);
-    inspectorRoutes(ctx);
-  },
-  seed(store: Store): void {
-    seedDefaults(store);
-  },
-};
+export function createTwilioPlugin(options: { sendgrid?: SendGridOptions } = {}): ServicePlugin {
+  return {
+    name: "twilio",
+    register(app: Hono<AppEnv>, store: Store, webhooks: WebhookDispatcher, baseUrl: string, tokenMap?: TokenMap): void {
+      const ctx: RouteContext = { app, store, webhooks, baseUrl, tokenMap };
+      accountRoutes(ctx);
+      phoneNumberRoutes(ctx);
+      messagingServiceRoutes(ctx);
+      messageRoutes(ctx);
+      verifyRoutes(ctx);
+      callRoutes(ctx);
+      conversationRoutes(ctx);
+      simulatorRoutes(ctx);
+      inspectorRoutes(ctx);
+      sendgridRoutes(ctx, options.sendgrid);
+    },
+    seed(store: Store): void {
+      seedDefaults(store);
+    },
+  };
+}
+
+export const twilioPlugin = createTwilioPlugin();
 
 export default twilioPlugin;
