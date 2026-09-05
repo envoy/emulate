@@ -896,6 +896,13 @@ describe("Google plugin integration", () => {
     expect(refreshBody.access_token).toMatch(/^google_/);
     expect(refreshBody.access_token).not.toBe(tokenBody.access_token);
     expect(refreshBody.scope).toBe(tokenBody.scope);
+    const revoked = await app.request(`/oauth2/revoke?token=${encodeURIComponent(tokenBody.refresh_token)}`, { method: "POST" });
+    expect(revoked.status).toBe(200);
+    const afterRevoke = await formRequest(app, "/oauth2/token", {
+      grant_type: "refresh_token", refresh_token: tokenBody.refresh_token,
+      client_id: "emu_google_client_id", client_secret: "emu_google_client_secret",
+    });
+    expect(afterRevoke.status).toBe(400);
     expect(decodeJwt(refreshBody.id_token)).toMatchObject({
       email: "testuser@example.com",
       aud: "emu_google_client_id",

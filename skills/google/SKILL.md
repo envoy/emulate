@@ -476,6 +476,7 @@ reusing an ID in the same calendar returns 409. Gzip-compressed Google request b
 Java SDK POST requests with
 `X-HTTP-Method-Override: PATCH` use the same authenticated patch handler.
 OAuth refresh responses include an ID token with the user's email and subject.
+Revocation accepts the token in the query string or request body.
 Recurring event writes are currently rejected with 400; recurrence expansion
 and the instances API are not supported.
 
