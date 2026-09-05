@@ -10,6 +10,9 @@ import {
 } from "./helpers.js";
 import { createCalendarEventRecord, createCalendarRecord } from "./calendar-helpers.js";
 import { createDriveItemRecord } from "./drive-helpers.js";
+import type { GoogleDirectoryBuilding, GoogleDirectoryCalendarResource } from "./entities.js";
+import { calendarNotificationRoutes } from "./calendar-notifications.js";
+import { directoryRoutes } from "./routes/directory.js";
 import { calendarRoutes } from "./routes/calendar.js";
 import { draftRoutes } from "./routes/drafts.js";
 import { driveRoutes } from "./routes/drive.js";
@@ -123,6 +126,12 @@ export interface GoogleSeedConfig {
   }>;
   labels?: GoogleSeedLabel[];
   messages?: GoogleSeedMessage[];
+  directory_buildings?: Array<
+    Omit<GoogleDirectoryBuilding, "id" | "created_at" | "updated_at" | "user_email"> & { user_email?: string }
+  >;
+  directory_calendar_resources?: Array<
+    Omit<GoogleDirectoryCalendarResource, "id" | "created_at" | "updated_at" | "user_email"> & { user_email?: string }
+  >;
   calendars?: GoogleSeedCalendar[];
   calendar_events?: GoogleSeedCalendarEvent[];
   drive_items?: GoogleSeedDriveItem[];
@@ -333,6 +342,34 @@ export function seedFromConfig(store: Store, _baseUrl: string, config: GoogleSee
   const fallbackEmail = config.users?.[0]?.email ?? gs.users.all()[0]?.email ?? "testuser@gmail.com";
   ensureSystemLabels(gs, fallbackEmail);
 
+  for (const building of config.directory_buildings ?? []) {
+    const user_email = building.user_email ?? fallbackEmail;
+    if (
+      !gs.directoryBuildings.findBy("user_email", user_email).some((item) => item.buildingId === building.buildingId)
+    ) {
+      gs.directoryBuildings.insert({ ...building, user_email });
+    }
+  }
+  for (const resource of config.directory_calendar_resources ?? []) {
+    const user_email = resource.user_email ?? fallbackEmail;
+    if (
+      !gs.directoryCalendarResources
+        .findBy("user_email", user_email)
+        .some((item) => item.resourceId === resource.resourceId)
+    ) {
+      gs.directoryCalendarResources.insert({ ...resource, user_email });
+    }
+    createCalendarRecord(gs, {
+      google_id: resource.resourceEmail,
+      user_email,
+      summary: resource.resourceName,
+      time_zone: "UTC",
+      primary: false,
+      selected: true,
+      access_role: "owner",
+    });
+  }
+
   if (config.labels) {
     seedLabels(store, config.labels, fallbackEmail);
   }
@@ -494,7 +531,9 @@ export const googlePlugin: ServicePlugin = {
   register(app: Hono<AppEnv>, store: Store, webhooks: WebhookDispatcher, baseUrl: string, tokenMap?: TokenMap): void {
     const ctx: RouteContext = { app, store, webhooks, baseUrl, tokenMap };
     oauthRoutes(ctx);
+    calendarNotificationRoutes(ctx);
     calendarRoutes(ctx);
+    directoryRoutes(ctx);
     driveRoutes(ctx);
     messageRoutes(ctx);
     draftRoutes(ctx);

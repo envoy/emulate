@@ -131,6 +131,7 @@ export interface GoogleCalendarConferenceEntryPoint {
 }
 
 export interface GoogleCalendarEvent extends Entity {
+  organizer_email: string | null;
   google_id: string;
   user_email: string;
   calendar_google_id: string;
@@ -159,4 +160,40 @@ export interface GoogleDriveItem extends Entity {
   size: number | null;
   trashed: boolean;
   data: string | null;
+}
+
+export interface GoogleDirectoryBuilding extends Entity {
+  user_email: string;
+  buildingId: string;
+  buildingName: string;
+  description?: string;
+  floorNames?: string[];
+  coordinates?: { latitude: number; longitude: number };
+  address?: { addressLines: string[]; postalCode?: string; regionCode?: string };
+}
+
+export interface GoogleDirectoryCalendarResource extends Entity {
+  user_email: string;
+  resourceId: string;
+  resourceEmail: string;
+  resourceName: string;
+  buildingId?: string;
+  capacity?: number;
+  floorName?: string;
+  resourceDescription?: string;
+  resourceCategory?: string;
+  featureInstances?: Array<{ feature: { name: string } }>;
+}
+
+export interface GoogleCalendarChannel extends Entity {
+  channel_id: string;
+  user_email: string;
+  calendar_google_id: string;
+  resource_id: string;
+  resource_uri: string;
+  address: string;
+  token?: string;
+  expiration: number;
+  message_number: number;
+  last_delivery_status?: number | null;
 }

@@ -889,12 +889,24 @@ describe("Google plugin integration", () => {
 
     expect(refreshRes.status).toBe(200);
     const refreshBody = (await refreshRes.json()) as {
+      id_token: string;
       access_token: string;
       scope: string;
     };
     expect(refreshBody.access_token).toMatch(/^google_/);
     expect(refreshBody.access_token).not.toBe(tokenBody.access_token);
     expect(refreshBody.scope).toBe(tokenBody.scope);
+    const revoked = await app.request(`/oauth2/revoke?token=${encodeURIComponent(tokenBody.refresh_token)}`, { method: "POST" });
+    expect(revoked.status).toBe(200);
+    const afterRevoke = await formRequest(app, "/oauth2/token", {
+      grant_type: "refresh_token", refresh_token: tokenBody.refresh_token,
+      client_id: "emu_google_client_id", client_secret: "emu_google_client_secret",
+    });
+    expect(afterRevoke.status).toBe(400);
+    expect(decodeJwt(refreshBody.id_token)).toMatchObject({
+      email: "testuser@example.com",
+      aud: "emu_google_client_id",
+    });
   });
 
   it("derives, overrides, and omits the hd claim based on user config", async () => {
@@ -931,6 +943,65 @@ describe("Google plugin integration", () => {
     });
     expect(userinfoRes.status).toBe(200);
     expect(((await userinfoRes.json()) as { hd?: string }).hd).toBe("override.io");
+  });
+
+  it("reads individual calendar events with authentication and calendar scoping", async () => {
+    const path = "/calendar/v3/calendars/primary/events/evt_kickoff";
+    const response = await app.request(`${base}${path}`, { headers: authHeaders() });
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      kind: "calendar#event",
+      id: "evt_kickoff",
+      summary: "Project Kickoff",
+      start: { dateTime: "2025-01-10T09:00:00.000Z" },
+      attendees: [{ email: "testuser@example.com" }, { email: "teammate@example.com" }],
+    });
+    for (const missingPath of [
+      "/calendar/v3/calendars/cal_team/events/evt_kickoff",
+      "/calendar/v3/calendars/primary/events/missing",
+    ]) {
+      const missing = await app.request(`${base}${missingPath}`, { headers: authHeaders() });
+      expect(missing.status).toBe(404);
+      expect(await missing.json()).toMatchObject({ error: { code: 404 } });
+    }
+    const unauthorized = await app.request(`${base}${path}`);
+    expect(unauthorized.status).toBe(401);
+  });
+
+  it("patches event end times and attendees without clearing omitted fields", async () => {
+    const path = "/calendar/v3/calendars/primary/events/evt_kickoff";
+    const ended = await jsonRequest(app, path, {
+      method: "PATCH",
+      body: { end: { dateTime: "2025-01-10T09:15:00.000Z" } },
+    });
+    expect(ended.status).toBe(200);
+    expect(await ended.json()).toMatchObject({
+      summary: "Project Kickoff",
+      description: "Align on the Q1 plan.",
+      start: { dateTime: "2025-01-10T09:00:00.000Z" },
+      end: { dateTime: "2025-01-10T09:15:00.000Z" },
+      attendees: [{ email: "testuser@example.com" }, { email: "teammate@example.com" }],
+    });
+    const changed = await jsonRequest(app, path, {
+      method: "PATCH",
+      body: { attendees: [{ email: "teammate@example.com", responseStatus: "accepted" }] },
+    });
+    expect(changed.status).toBe(200);
+    const read = await app.request(`${base}${path}`, { headers: authHeaders() });
+    expect(await read.json()).toMatchObject({
+      summary: "Project Kickoff",
+      end: { dateTime: "2025-01-10T09:15:00.000Z" },
+      attendees: [{ email: "teammate@example.com", responseStatus: "accepted" }],
+    });
+    const missing = await jsonRequest(app, path.replace("primary", "cal_team"), {
+      method: "PATCH",
+      body: { summary: "Wrong calendar" },
+    });
+    expect(missing.status).toBe(404);
+    const invalid = await jsonRequest(app, path, { method: "PATCH", body: { end: null } });
+    expect(invalid.status).toBe(400);
+    const unchanged = await app.request(`${base}${path}`, { headers: authHeaders() });
+    expect(await unchanged.json()).toMatchObject({ end: { dateTime: "2025-01-10T09:15:00.000Z" } });
   });
 
   it("lists calendar resources, creates events, queries freebusy, and deletes events", async () => {

@@ -469,6 +469,53 @@ curl http://localhost:4002/gmail/v1/users/me/settings/sendAs \
 
 ## Google Calendar API
 
+
+
+Calendar event creation preserves caller-supplied IDs and organizer email;
+reusing an ID in the same calendar returns 409. Gzip-compressed Google request bodies are decoded with a 2 MiB output limit.
+Java SDK POST requests with
+`X-HTTP-Method-Override: PATCH` use the same authenticated patch handler.
+OAuth refresh responses include an ID token with the user's email and subject.
+Revocation accepts the token in the query string or request body.
+Recurring event writes are currently rejected with 400; recurrence expansion
+and the instances API are not supported.
+
+### Calendar synchronization and notifications
+
+Event lists return `updated` and a final-page `nextSyncToken`. Pass that token
+as `syncToken` to receive subsequent changes, including cancelled records for
+deleted events. Page tokens preserve a snapshot while events change. Tokens are
+scoped to the user and calendar; reset or eviction from the 1,000-snapshot cache
+returns 410 and requires a full sync. Sync tokens cannot be combined with time
+bounds, search, ordering, or `showDeleted=false`.
+
+`POST /calendar/v3/calendars/:calendarId/events/watch` accepts `id`, `type`
+(`web_hook` or `webhook`), `address`, optional `token`, and optional millisecond
+`expiration`. It returns the channel ID, resource ID/URI, and expiration.
+The emulator sends Google-header POST callbacks for initial `sync` and event
+create/patch/delete changes (`exists`). HTTP callbacks are supported for private
+local test services; HTTPS is also supported. Callbacks have a five-second
+request timeout and do not retry. Delivery failure does not undo event writes;
+channel state records the latest HTTP status or null for a transport failure.
+`POST /calendar/v3/channels/stop` requires matching `id` and `resourceId` and
+stops future notifications. Expired channels do not deliver notifications.
+
+### Directory room discovery
+
+Authenticated `GET /admin/directory/v1/customer/my_customer/resources/buildings`
+and `GET /admin/directory/v1/customer/my_customer/resources/calendars` return
+seeded buildings and room resources for the signed-in user. Individual buildings
+are readable at `GET /admin/directory/v1/customer/my_customer/resources/buildings/:buildingId`. Both accept
+`maxResults` and `pageToken`. Other customer IDs return 404.
+
+Seed `directory_buildings` with `buildingId`, `buildingName`, and optional
+`floorNames`, `coordinates`, and `address`. Seed `directory_calendar_resources`
+with `resourceId`, `resourceEmail`, `resourceName`, and optional `buildingId`,
+`floorName`, `capacity`, and `featureInstances`. Both accept `user_email` and
+otherwise use the first seeded user. Repeating seeds preserves existing records.
+Each room resource ensures a Calendar whose ID is its `resourceEmail`, so callers
+can discover a room and then create and read its events through the Calendar API.
+
 ### Calendar List
 
 ```bash
@@ -489,6 +536,16 @@ curl -X POST http://localhost:4002/calendar/v3/calendars/primary/events \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"summary": "Team Meeting", "start": {"dateTime": "2025-01-10T14:00:00Z"}, "end": {"dateTime": "2025-01-10T15:00:00Z"}, "attendees": [{"email": "dev@example.com"}]}'
+
+# Read event
+curl http://localhost:4002/calendar/v3/calendars/primary/events/evt_kickoff \
+  -H "Authorization: Bearer $TOKEN"
+
+# Update an event (omitted fields stay unchanged)
+curl -X PATCH http://localhost:4002/calendar/v3/calendars/primary/events/evt_kickoff \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"end":{"dateTime":"2025-01-10T09:15:00Z"}}'
 
 # Delete event
 curl -X DELETE http://localhost:4002/calendar/v3/calendars/primary/events/evt_kickoff \
