@@ -35,7 +35,8 @@ SendGrid email coverage:
 Google Calendar coverage:
   Discover seeded Directory buildings and room resources with pagination.
   Synchronize event changes and deletions; watch and stop Google-header callbacks.
-  Supports gzip and tunneled PATCH from the Java SDK; recurring writes are rejected.
+  Supports gzip, tunneled PATCH, and query-token revocation from the Java SDK.
+  Recurring writes are rejected.
   List, create, read, patch, and delete events with authenticated calendar-scoped requests.
 
 Webhook signatures:
