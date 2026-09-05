@@ -923,6 +923,32 @@ Current Linear limits: full schema coverage, exact production rate limiting, not
 
 ## Twilio API
 
+### SendGrid Mail Send and Gmail inspection
+
+The Twilio emulator accepts `POST /v3/mail/send` with Bearer authentication
+(`SG.emulate-test-key` by default). Accepted messages return an empty `202`
+response with `x-message-id`; sandbox requests validate without capture.
+SendGrid API keys are separate from Twilio's Basic-auth credentials.
+Templates and scheduled sends are not emulated and return `501` rather than
+claiming delivery. Set the official Node client's base URL after `setApiKey()`,
+which resets that URL. The capture inbox retains BCC headers for test inspection;
+custom headers are available through Gmail's `raw` message format.
+
+Configure `twilio.sendgrid.api_keys` to replace the default keys. Optionally set
+`twilio.sendgrid.gmail` with `base_url`, `access_token`, and `user_id` (default
+`me`) to import accepted messages into a running Google emulator. Use an
+emulator-issued token belonging to the test inbox. The configured mailbox is
+the capture inbox; the message's original recipient headers are preserved.
+Gmail list/search, full-message, and attachment APIs can then inspect the mail.
+No Mailpit or SMTP server is required.
+
+Library users can call `createTwilioPlugin({ sendgrid: { apiKeys, gmail } })`,
+where `gmail` uses `baseUrl`, `accessToken`, and optional `userId` fields. An
+optional `sendgrid.fetch` transport supports composing emulators in-process.
+Without Gmail configuration, requests are captured in `twilio.sendgrid.emails`.
+Gmail import failures return `502`; multi-personalization delivery is not an
+atomic transaction and retries may duplicate previously imported messages.
+
 Stateful Twilio REST emulation with seeded accounts, Auth Tokens, API keys, incoming phone numbers, Programmable Messaging, Messaging Services, Verify, basic Voice calls, Conversations REST resources, signed webhooks, local simulator routes, and an inspector. No real SMS, MMS, WhatsApp, email, voice, carrier, compliance, billing, or SendGrid traffic is performed.
 
 Default local credentials:
@@ -976,7 +1002,7 @@ To test inbound SMS webhooks, configure a seeded phone number `sms_url`, then ca
 - `POST /_twilio/simulate/verification-status` - force a verification state by `VerificationSid` or `To`
 - `GET /` - tabbed inspector for messages, Verify, calls, Conversations, phone numbers, services, auth, and webhook deliveries
 
-Current Twilio limits: no carrier delivery, A2P 10DLC, toll-free verification, real phone number purchasing, exact rate limits, Studio, Flex, TaskRouter, Video, Sync, Segment, SendGrid, Conversations SDK websocket behavior, or complete TwiML interpreter.
+Current Twilio limits: no carrier delivery, A2P 10DLC, toll-free verification, real phone number purchasing, exact rate limits, Studio, Flex, TaskRouter, Video, Sync, Segment, SendGrid templates or scheduling, Conversations SDK websocket behavior, or complete TwiML interpreter.
 
 ## Apple Sign In
 

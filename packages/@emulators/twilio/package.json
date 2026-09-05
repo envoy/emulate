@@ -35,9 +35,14 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@emulators/core": "workspace:*"
+    "@emulators/core": "workspace:*",
+    "nodemailer": "^9.1.1"
   },
   "devDependencies": {
+    "@emulators/google": "workspace:*",
+    "@sendgrid/client": "^8.1.6",
+    "@sendgrid/mail": "^8.1.6",
+    "@types/nodemailer": "^8.0.1",
     "tsup": "^8",
     "twilio": "^6.0.2",
     "typescript": "^5.7",

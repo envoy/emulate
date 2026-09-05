@@ -28,6 +28,10 @@ GitHub API coverage:
 Linear API coverage:
   Issue queries and mutations include numeric priority and derived priorityLabel fields.
 
+SendGrid email coverage:
+  Twilio includes POST /v3/mail/send with Bearer authentication.
+  Configure twilio.sendgrid.gmail to inspect deliveries through the Google emulator's Gmail API.
+
 Webhook signatures:
   Stripe webhook secrets produce a Stripe-Signature header for raw-body verification.
 `,

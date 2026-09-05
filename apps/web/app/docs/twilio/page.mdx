@@ -1,5 +1,27 @@
 # Twilio API
 
+## SendGrid email and Gmail inspection
+
+`POST /v3/mail/send` accepts SendGrid JSON with Bearer authentication. The
+default local key is `SG.emulate-test-key`; set `twilio.sendgrid.api_keys` in
+seed configuration to replace it. Valid mail returns an empty `202` response
+and `x-message-id`. Sandbox mode validates without capturing mail.
+Templates and scheduled sends return `501`. Set the official Node SDK's local
+base URL after `setApiKey()`, which resets the endpoint.
+
+To inspect mail through the Google emulator, configure
+`twilio.sendgrid.gmail.base_url`, `access_token`, and optional `user_id`
+(default `me`). The token must belong to the emulator's test inbox. Messages
+are imported into that inbox with their recipient headers, HTML, plain text,
+and attachments. Read them through Gmail's message search, detail, and
+attachment APIs. No SMTP or Mailpit service is needed.
+
+For in-process composition, `createTwilioPlugin({ sendgrid: { apiKeys, gmail,
+fetch } })` accepts `gmail: { baseUrl, accessToken, userId }` and an optional
+fetch transport. Without Gmail configuration, mail is captured in the Twilio
+store. Failed imports return `502`; retries of multi-personalization sends
+may duplicate earlier successful imports.
+
 Stateful Twilio REST emulation with seeded accounts, Auth Tokens, API keys, incoming phone numbers, Programmable Messaging, Messaging Services, Verify, basic Voice calls, Conversations REST resources, signed webhooks, local simulator routes, and an inspector.
 
 ## Start
