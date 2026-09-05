@@ -32,6 +32,12 @@ SendGrid email coverage:
   Twilio includes POST /v3/mail/send with Bearer authentication.
   Configure twilio.sendgrid.gmail to inspect deliveries through the Google emulator's Gmail API.
 
+Google Calendar coverage:
+  Discover seeded Directory buildings and room resources with pagination.
+  Synchronize event changes and deletions; watch and stop Google-header callbacks.
+  Supports gzip and tunneled PATCH from the Java SDK; recurring writes are rejected.
+  List, create, read, patch, and delete events with authenticated calendar-scoped requests.
+
 Webhook signatures:
   Stripe webhook secrets produce a Stripe-Signature header for raw-body verification.
 `,
