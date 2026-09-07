@@ -1077,7 +1077,81 @@ Microsoft Entra ID (Azure AD) v2.0 OAuth 2.0 and OpenID Connect emulation with a
 
 ## AWS
 
-S3, SQS, IAM, and STS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. All responses use AWS-compatible XML.
+S3, SQS, SNS mobile push, IAM, and STS emulation with AWS SDK-compatible S3 paths and query-style SQS/SNS/IAM/STS endpoints. All responses use AWS-compatible XML.
+
+### SNS mobile push
+
+Start with `npx emulate start --service aws --port 4000`.
+Use the AWS SNS SDK with the AWS emulator origin as `endpoint`, or use
+`GET`/`POST /sns/` with AWS Query parameters (`Version=2010-03-31`). Root SNS
+requests are routed by their action or SNS signing scope; S3 keeps its root paths.
+The signing scope selects the region, defaulting to `us-east-1` for unsigned
+requests. The account ID is `123456789012`. Use dummy credentials: signatures,
+IAM authorization, and provider credentials are not verified.
+
+Supported actions: `CreatePlatformApplication`, `GetPlatformApplicationAttributes`,
+`SetPlatformApplicationAttributes`, `DeletePlatformApplication`,
+`ListPlatformApplications`, `CreatePlatformEndpoint`, `GetEndpointAttributes`,
+`SetEndpointAttributes`, `DeleteEndpoint`, `ListEndpointsByPlatformApplication`,
+and `Publish` to a platform endpoint. Lists return up to 100 entries and a
+`NextToken` when more remain. Applications and endpoints are isolated by application
+and region. Identical registrations reuse the endpoint ARN; conflicting registration
+attributes return `InvalidParameter`. Endpoint attributes include `Token`, `Enabled`,
+and `CustomUserData`. Deleting an application also removes its endpoints.
+
+```ts
+import { SNSClient, CreatePlatformApplicationCommand, CreatePlatformEndpointCommand,
+  PublishCommand } from '@aws-sdk/client-sns'
+
+const sns = new SNSClient({
+  endpoint: 'http://localhost:4000', // AWS emulator port
+  region: 'us-east-1',
+  credentials: { accessKeyId: 'test', secretAccessKey: 'test' },
+})
+const application = await sns.send(new CreatePlatformApplicationCommand({
+  Name: 'sample-mobile', Platform: 'APNS_SANDBOX',
+  Attributes: { PlatformPrincipal: 'dummy', PlatformCredential: 'dummy' },
+}))
+const endpoint = await sns.send(new CreatePlatformEndpointCommand({
+  PlatformApplicationArn: application.PlatformApplicationArn, Token: 'test-device-token',
+}))
+const result = await sns.send(new PublishCommand({
+  TargetArn: endpoint.EndpointArn,
+  MessageStructure: 'json',
+  Message: JSON.stringify({
+    default: 'Hello',
+    APNS_SANDBOX: JSON.stringify({ aps: { alert: 'Hello' } }),
+  }),
+}))
+const captured = await fetch(`http://localhost:4000/_emulate/sns/messages/${result.MessageId}`)
+  .then(response => response.json())
+console.log(captured.status, captured.payload) // captured, selected payload string
+```
+
+Platforms are `APNS`, `APNS_SANDBOX`, and `GCM`. Structured messages require a
+string `default`; supplied mobile protocol values must be JSON object strings.
+The endpoint's platform selects its payload, falling back to `default`.
+Plain string messages are also captured. Invalid messages, missing resources, and
+disabled endpoints return AWS XML errors without capturing a message.
+
+Inspect `GET /_emulate/sns/messages` (optionally `?target_arn=<encoded-arn>`) for
+captures in insertion order, or `GET /_emulate/sns/messages/:messageId` for a
+specific publish result. Each record includes the original message, selected
+payload, target ARN, platform, token at publish time, and `status: "captured"`.
+The AWS inspector has an SNS tab. Programmatic state is available through
+`getAwsStore(store).snsPlatformApplications`, `.snsEndpoints`, and `.snsMessages`.
+Captured history survives resource deletion and is cleared with the store reset;
+store snapshots include SNS state. There are no default SNS resources or SNS seed
+config fields: create applications and endpoints through the API.
+
+Coverage limits: no real device delivery, provider feedback, retries, credential
+validation, throttling, topics/subscriptions, SMS, `Subject`, or `MessageAttributes`.
+Unsupported publish fields listed here return `InvalidParameter`. Provider payload
+schemas beyond the JSON object shape and provider-specific size limits are not
+validated. Direct APNs HTTP/2 and direct FCM HTTP v1/legacy endpoints are **not
+implemented**. The Apple emulator remains sign-in only; accepting `GCM` or APNs
+payloads through SNS does not emulate their direct APIs. Only dummy credentials
+and test device tokens should be used; attributes are stored locally as supplied.
 
 ### S3
 
@@ -1336,7 +1410,7 @@ packages/
     twilio/         # Twilio Messaging, Verify, Voice, webhooks
     apple/          # Apple Sign In / OIDC
     microsoft/      # Microsoft Entra ID OAuth 2.0 / OIDC + Graph /me
-    aws/            # AWS S3, SQS, IAM, STS
+    aws/            # AWS S3, SQS, SNS, IAM, STS
 apps/
   web/              # Documentation site (Next.js)
 ```

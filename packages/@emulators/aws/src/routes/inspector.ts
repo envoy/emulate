@@ -8,6 +8,7 @@ const SERVICE_LABEL = "AWS";
 const TABS: InspectorTab[] = [
   { id: "s3", label: "S3", href: "/_inspector?tab=s3" },
   { id: "sqs", label: "SQS", href: "/_inspector?tab=sqs" },
+  { id: "sns", label: "SNS", href: "/_inspector?tab=sns" },
   { id: "iam", label: "IAM", href: "/_inspector?tab=iam" },
 ];
 
@@ -92,6 +93,18 @@ export function inspectorRoutes(ctx: RouteContext): void {
             <tbody>${rows || `<tr><td colspan="4"><div class="inspector-empty">No queues</div></td></tr>`}</tbody>
           </table>
         </div>`;
+    } else if (tab === "sns") {
+      const applications = s3Store.snsPlatformApplications.all();
+      const messages = s3Store.snsMessages.all();
+      contentHtml = `<div class="inspector-section"><h2>SNS Mobile Push</h2>
+        <p>Messages are captured locally. No notifications are delivered to devices.</p>
+        <table class="inspector-table"><thead><tr><th>Application</th><th>Platform</th><th>Endpoints</th></tr></thead><tbody>
+        ${applications.map((a) => `<tr><td>${escapeXml(a.name)}</td><td>${escapeXml(a.platform)}</td><td>${s3Store.snsEndpoints.findBy("platform_application_arn", a.arn).length}</td></tr>`).join("")}
+        </tbody></table>
+        <h3>Captured messages (${messages.length})</h3>
+        <table class="inspector-table"><thead><tr><th>Message ID</th><th>Target ARN</th><th>Payload</th></tr></thead><tbody>
+        ${messages.map((m) => `<tr><td>${escapeXml(m.message_id)}</td><td>${escapeXml(m.target_arn)}</td><td><pre>${escapeXml(m.payload)}</pre></td></tr>`).join("")}
+        </tbody></table></div>`;
     } else if (tab === "iam") {
       const userRows = users
         .map(
