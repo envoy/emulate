@@ -326,8 +326,9 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
   },
 
   microsoft: {
-    label: "Microsoft Entra ID OAuth 2.0 / OpenID Connect emulator",
-    endpoints: "OAuth authorize, token exchange, userinfo, OIDC discovery, Graph /me, logout, token revocation",
+    label: "Microsoft Entra ID and Teams emulator",
+    endpoints:
+      "OAuth authorize, token exchange, userinfo, OIDC discovery, Graph /me and Teams discovery, Bot Connector messaging, logout, token revocation",
     async load() {
       const mod = await import("@emulators/microsoft");
       return { plugin: mod.microsoftPlugin, seedFromConfig: mod.seedFromConfig };
