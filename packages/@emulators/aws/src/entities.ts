@@ -61,3 +61,30 @@ export interface IamRole extends Entity {
   assume_role_policy_document: string;
   description: string;
 }
+
+export type SnsPlatform = "APNS" | "APNS_SANDBOX" | "GCM";
+
+export interface SnsPlatformApplication extends Entity {
+  arn: string;
+  name: string;
+  platform: SnsPlatform;
+  attributes: Record<string, string>;
+}
+
+export interface SnsEndpoint extends Entity {
+  arn: string;
+  platform_application_arn: string;
+  attributes: Record<string, string>;
+}
+
+export interface SnsMessage extends Entity {
+  message_id: string;
+  target_arn: string;
+  platform_application_arn: string;
+  platform: SnsPlatform;
+  token: string;
+  message: string;
+  message_structure: string;
+  payload: string;
+  status: "captured";
+}

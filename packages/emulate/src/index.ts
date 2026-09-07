@@ -32,6 +32,11 @@ SendGrid email coverage:
   Twilio includes POST /v3/mail/send with Bearer authentication.
   Configure twilio.sendgrid.gmail to inspect deliveries through the Google emulator's Gmail API.
 
+AWS SNS mobile push coverage:
+  Manage APNS, APNS_SANDBOX, and GCM platform applications and endpoints.
+  Publish captures locally; inspect GET /_emulate/sns/messages and /_inspector?tab=sns.
+  Direct APNs and FCM APIs are not implemented.
+
 Google Calendar coverage:
   Discover seeded Directory buildings and room resources with pagination.
   Synchronize event changes and deletions; watch and stop Google-header callbacks.

@@ -2,6 +2,7 @@ import type { Hono } from "@emulators/core";
 import type { ServicePlugin, Store, WebhookDispatcher, TokenMap, AppEnv, RouteContext } from "@emulators/core";
 import { getAwsStore } from "./store.js";
 import { getAccountId, getDefaultRegion, generateAwsId } from "./helpers.js";
+import { snsRoutes } from "./routes/sns.js";
 import { s3Routes } from "./routes/s3.js";
 import { sqsRoutes } from "./routes/sqs.js";
 import { iamRoutes } from "./routes/iam.js";
@@ -181,6 +182,7 @@ export const awsPlugin: ServicePlugin = {
     // Register inspector and service-specific routes first (static paths),
     // then S3 last since its routes use wildcard path params (/:bucket, /:bucket/:key)
     inspectorRoutes(ctx);
+    snsRoutes(ctx);
     sqsRoutes(ctx);
     iamRoutes(ctx);
     s3Routes(ctx);
