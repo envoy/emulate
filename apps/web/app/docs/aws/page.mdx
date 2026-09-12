@@ -1,6 +1,6 @@
 # AWS
 
-S3, SQS, IAM, and STS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. All state is in-memory, and responses use AWS-compatible XML.
+S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. All state is in-memory, and the query services respond with AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does.
 
 ## S3
 
@@ -42,10 +42,28 @@ All IAM operations use `POST /iam/` with an `Action` form parameter.
 
 ## STS
 
-All STS operations use `POST /sts/` with an `Action` form parameter.
+All STS operations use `POST /sts` with an `Action` form parameter. Both `/sts` and `/sts/` are served, because the AWS SDKs resolve a configured endpoint of `.../sts` and post to it with no trailing slash.
 
 - `GetCallerIdentity` - get caller identity
 - `AssumeRole` - assume a role (returns temporary credentials)
+- `AssumeRoleWithWebIdentity` - assume a role with a web identity token (returns temporary credentials, an assumed-role user, and a subject)
+
+`AssumeRoleWithWebIdentity` accepts any non-empty `WebIdentityToken` and issues credentials for whatever `RoleArn` is asked for, whether or not that role was seeded. The token is never verified. When it happens to look like a JWT its `sub` claim becomes the returned subject, and otherwise the subject is a stable digest of the token. This emulates the response shape, not the trust model.
+
+## KMS
+
+KMS is the one service here that does not use query/XML. Every call is a `POST /kms` carrying an `X-Amz-Target` header of `TrentService.<Action>` and a JSON body, and the response is JSON. Both `/kms` and `/kms/` are served.
+
+Two actions are supported, which is what a client needs when it generates its own data key locally and asks KMS only to wrap it.
+
+- `Encrypt` - takes `KeyId` and base64 `Plaintext`, returns `CiphertextBlob` and `KeyId`
+- `Decrypt` - takes base64 `CiphertextBlob`, returns `Plaintext` and `KeyId`
+
+`KeyId` may be an alias (`alias/data-encryption`), a key id, or a full ARN. Whatever is asked for is echoed back and travels inside the blob, so `Decrypt` reports the key that wrapped it.
+
+Ciphertext blobs are self-contained. Each is AES-256-GCM sealed under a fixed key derived from a constant in the source, and carries its own key id, nonce, and authentication tag. Nothing is recorded in the store, so a blob still decrypts after the emulator restarts, after its store is reset, and in a different emulator process. That matters when a caller keeps the blob in its own database, where it long outlives any emulator.
+
+This is a wrapping oracle for tests, not a key manager. The wrapping key is fixed and public, so a blob is readable by anyone with the source. There are no key policies, grants, rotation, key creation, or access control of any kind. Never point real data at it.
 
 ## Inspector
 

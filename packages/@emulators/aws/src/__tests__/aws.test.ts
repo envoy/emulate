@@ -797,6 +797,287 @@ describe("AWS plugin - STS", () => {
   });
 });
 
+describe("AWS plugin - STS AssumeRoleWithWebIdentity", () => {
+  let app: Hono<AppEnv>;
+
+  beforeEach(() => {
+    app = createTestApp().app;
+  });
+
+  function assumeWithWebIdentity(target: Hono<AppEnv>, body: string, path = "/sts/") {
+    return target.request(`${base}${path}`, {
+      method: "POST",
+      headers: { ...authHeaders(), "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+  }
+
+  it("returns credentials for a role that was never seeded", async () => {
+    const roleArn = "arn:aws:iam::123456789012:role/envoy-web";
+    const res = await assumeWithWebIdentity(
+      app,
+      `Action=AssumeRoleWithWebIdentity&RoleArn=${encodeURIComponent(roleArn)}` +
+        "&RoleSessionName=test-session&WebIdentityToken=an-opaque-token",
+    );
+    expect(res.status).toBe(200);
+    const text = await res.text();
+    expect(text).toContain("AssumeRoleWithWebIdentityResponse");
+    expect(text).toContain("<AccessKeyId>ASIA");
+    expect(text).toContain("SecretAccessKey");
+    expect(text).toContain("SessionToken");
+    expect(text).toContain("<Expiration>");
+    expect(text).toContain(`${roleArn}/test-session`);
+    expect(text).toContain("SubjectFromWebIdentityToken");
+  });
+
+  it("derives the subject from the sub claim when the token looks like a JWT", async () => {
+    const claims = Buffer.from(JSON.stringify({ sub: "system:serviceaccount:envoy:web" })).toString("base64url");
+    const token = `header.${claims}.signature`;
+    const res = await assumeWithWebIdentity(
+      app,
+      "Action=AssumeRoleWithWebIdentity&RoleArn=arn%3Aaws%3Aiam%3A%3A123456789012%3Arole%2Fenvoy-web" +
+        `&RoleSessionName=jwt-session&WebIdentityToken=${encodeURIComponent(token)}`,
+    );
+    expect(res.status).toBe(200);
+    const text = await res.text();
+    expect(text).toContain(
+      "<SubjectFromWebIdentityToken>system:serviceaccount:envoy:web</SubjectFromWebIdentityToken>",
+    );
+  });
+
+  it("derives a stable subject from a token that is not a JWT", async () => {
+    const body =
+      "Action=AssumeRoleWithWebIdentity&RoleArn=arn%3Aaws%3Aiam%3A%3A123456789012%3Arole%2Fenvoy-web" +
+      "&RoleSessionName=opaque&WebIdentityToken=an-opaque-token";
+    const first = await assumeWithWebIdentity(app, body);
+    const second = await assumeWithWebIdentity(createTestApp().app, body);
+
+    const subject = (text: string) => text.match(/<SubjectFromWebIdentityToken>(.*?)</)?.[1] ?? "";
+    const firstSubject = subject(await first.text());
+    expect(firstSubject).toMatch(/^emulate:[0-9a-f]{32}$/);
+    expect(subject(await second.text())).toBe(firstSubject);
+  });
+
+  it("uses the seeded role id when the role does exist", async () => {
+    await app.request(`${base}/iam/`, {
+      method: "POST",
+      headers: { ...authHeaders(), "Content-Type": "application/x-www-form-urlencoded" },
+      body: "Action=CreateRole&RoleName=web-identity-role",
+    });
+    const getRoleRes = await app.request(`${base}/iam/`, {
+      method: "POST",
+      headers: { ...authHeaders(), "Content-Type": "application/x-www-form-urlencoded" },
+      body: "Action=GetRole&RoleName=web-identity-role",
+    });
+    const roleText = await getRoleRes.text();
+    const roleArn = roleText.match(/<Arn>(.*?)<\/Arn>/)?.[1] ?? "";
+    const roleId = roleText.match(/<RoleId>(.*?)<\/RoleId>/)?.[1] ?? "";
+
+    const res = await assumeWithWebIdentity(
+      app,
+      `Action=AssumeRoleWithWebIdentity&RoleArn=${encodeURIComponent(roleArn)}` +
+        "&RoleSessionName=seeded&WebIdentityToken=token",
+    );
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain(`${roleId}:seeded`);
+  });
+
+  it("rejects an empty web identity token", async () => {
+    const res = await assumeWithWebIdentity(
+      app,
+      "Action=AssumeRoleWithWebIdentity&RoleArn=arn%3Aaws%3Aiam%3A%3A123456789012%3Arole%2Fenvoy-web" +
+        "&RoleSessionName=test-session&WebIdentityToken=",
+    );
+    expect(res.status).toBe(400);
+    const text = await res.text();
+    expect(text).toContain("ValidationError");
+    expect(text).toContain("WebIdentityToken");
+  });
+
+  it("rejects a missing role arn", async () => {
+    const res = await assumeWithWebIdentity(
+      app,
+      "Action=AssumeRoleWithWebIdentity&RoleSessionName=test-session&WebIdentityToken=token",
+    );
+    expect(res.status).toBe(400);
+    expect(await res.text()).toContain("RoleArn");
+  });
+
+  it("serves the path without a trailing slash, as the AWS SDKs send it", async () => {
+    const res = await assumeWithWebIdentity(
+      app,
+      "Action=AssumeRoleWithWebIdentity&RoleArn=arn%3Aaws%3Aiam%3A%3A123456789012%3Arole%2Fenvoy-web" +
+        "&RoleSessionName=no-slash&WebIdentityToken=token",
+      "/sts",
+    );
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain("AssumeRoleWithWebIdentityResponse");
+  });
+});
+
+describe("AWS plugin - KMS", () => {
+  let app: Hono<AppEnv>;
+
+  beforeEach(() => {
+    app = createTestApp().app;
+  });
+
+  function kms(target: Hono<AppEnv>, action: string, payload: unknown, path = "/kms") {
+    return target.request(`${base}${path}`, {
+      method: "POST",
+      headers: {
+        ...authHeaders(),
+        "Content-Type": "application/x-amz-json-1.1",
+        "X-Amz-Target": `TrentService.${action}`,
+      },
+      body: JSON.stringify(payload),
+    });
+  }
+
+  const dataKey = Buffer.from("a-32-byte-data-key-for-testing!!").toString("base64");
+
+  it("round-trips Encrypt and Decrypt", async () => {
+    const encRes = await kms(app, "Encrypt", { KeyId: "alias/data-encryption", Plaintext: dataKey });
+    expect(encRes.status).toBe(200);
+    expect(encRes.headers.get("Content-Type")).toContain("application/x-amz-json-1.1");
+    const enc = (await encRes.json()) as { CiphertextBlob: string; KeyId: string };
+    expect(enc.KeyId).toBe("alias/data-encryption");
+    expect(enc.CiphertextBlob).not.toBe(dataKey);
+
+    const decRes = await kms(app, "Decrypt", { CiphertextBlob: enc.CiphertextBlob });
+    expect(decRes.status).toBe(200);
+    const dec = (await decRes.json()) as { Plaintext: string; KeyId: string };
+    expect(dec.Plaintext).toBe(dataKey);
+    expect(dec.KeyId).toBe("alias/data-encryption");
+  });
+
+  it("decrypts a blob against a freshly constructed store", async () => {
+    const encRes = await kms(app, "Encrypt", { KeyId: "alias/data-encryption", Plaintext: dataKey });
+    const enc = (await encRes.json()) as { CiphertextBlob: string };
+
+    // A blob is written to the caller's own database and outlives the emulator,
+    // so a brand new app with an empty store must still decrypt it.
+    const fresh = createTestApp().app;
+    const decRes = await kms(fresh, "Decrypt", { CiphertextBlob: enc.CiphertextBlob });
+    expect(decRes.status).toBe(200);
+    const dec = (await decRes.json()) as { Plaintext: string; KeyId: string };
+    expect(dec.Plaintext).toBe(dataKey);
+    expect(dec.KeyId).toBe("alias/data-encryption");
+  });
+
+  it("produces a different blob each time and decrypts both", async () => {
+    const first = (await (await kms(app, "Encrypt", { KeyId: "k", Plaintext: dataKey })).json()) as {
+      CiphertextBlob: string;
+    };
+    const second = (await (await kms(app, "Encrypt", { KeyId: "k", Plaintext: dataKey })).json()) as {
+      CiphertextBlob: string;
+    };
+    expect(first.CiphertextBlob).not.toBe(second.CiphertextBlob);
+
+    for (const blob of [first.CiphertextBlob, second.CiphertextBlob]) {
+      const dec = (await (await kms(app, "Decrypt", { CiphertextBlob: blob })).json()) as { Plaintext: string };
+      expect(dec.Plaintext).toBe(dataKey);
+    }
+  });
+
+  it("echoes back an arn or a raw key id", async () => {
+    const arn = "arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab";
+    for (const keyId of [arn, "1234abcd-12ab-34cd-56ef-1234567890ab", "alias/data-encryption"]) {
+      const enc = (await (await kms(app, "Encrypt", { KeyId: keyId, Plaintext: dataKey })).json()) as {
+        CiphertextBlob: string;
+        KeyId: string;
+      };
+      expect(enc.KeyId).toBe(keyId);
+      const dec = (await (await kms(app, "Decrypt", { CiphertextBlob: enc.CiphertextBlob })).json()) as {
+        KeyId: string;
+      };
+      expect(dec.KeyId).toBe(keyId);
+    }
+  });
+
+  it("serves the path with a trailing slash too", async () => {
+    const res = await kms(app, "Encrypt", { KeyId: "alias/data-encryption", Plaintext: dataKey }, "/kms/");
+    expect(res.status).toBe(200);
+  });
+
+  it("returns a well-formed AWS JSON error for an unknown target", async () => {
+    const res = await kms(app, "GenerateDataKey", { KeyId: "alias/data-encryption" });
+    expect(res.status).toBe(400);
+    expect(res.headers.get("Content-Type")).toContain("application/x-amz-json-1.1");
+    expect(res.headers.get("x-amzn-ErrorType")).toBe("UnknownOperationException");
+    const body = (await res.json()) as { __type: string; message: string };
+    expect(body.__type).toBe("UnknownOperationException");
+    expect(body.message).toContain("TrentService.GenerateDataKey");
+  });
+
+  it("returns a well-formed error when the target header is missing", async () => {
+    const res = await app.request(`${base}/kms`, {
+      method: "POST",
+      headers: { ...authHeaders(), "Content-Type": "application/x-amz-json-1.1" },
+      body: JSON.stringify({ KeyId: "alias/data-encryption" }),
+    });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { __type: string };
+    expect(body.__type).toBe("UnknownOperationException");
+  });
+
+  it("rejects a body that is not JSON", async () => {
+    const res = await app.request(`${base}/kms`, {
+      method: "POST",
+      headers: {
+        ...authHeaders(),
+        "Content-Type": "application/x-amz-json-1.1",
+        "X-Amz-Target": "TrentService.Encrypt",
+      },
+      body: "not json at all",
+    });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { __type: string };
+    expect(body.__type).toBe("SerializationException");
+  });
+
+  it("rejects Encrypt without a KeyId or Plaintext", async () => {
+    const noKey = await kms(app, "Encrypt", { Plaintext: dataKey });
+    expect(noKey.status).toBe(400);
+    expect(((await noKey.json()) as { __type: string }).__type).toBe("ValidationException");
+
+    const noPlaintext = await kms(app, "Encrypt", { KeyId: "alias/data-encryption" });
+    expect(noPlaintext.status).toBe(400);
+    expect(((await noPlaintext.json()) as { __type: string }).__type).toBe("ValidationException");
+  });
+
+  it("rejects Plaintext that is not base64", async () => {
+    const res = await kms(app, "Encrypt", { KeyId: "alias/data-encryption", Plaintext: "not base64 !!!" });
+    expect(res.status).toBe(400);
+    expect(((await res.json()) as { __type: string }).__type).toBe("ValidationException");
+  });
+
+  it("rejects a ciphertext blob it did not produce", async () => {
+    const res = await kms(app, "Decrypt", { CiphertextBlob: Buffer.from("some other blob").toString("base64") });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { __type: string };
+    expect(body.__type).toBe("InvalidCiphertextException");
+  });
+
+  it("rejects a tampered ciphertext blob", async () => {
+    const enc = (await (await kms(app, "Encrypt", { KeyId: "k", Plaintext: dataKey })).json()) as {
+      CiphertextBlob: string;
+    };
+    const raw = Buffer.from(enc.CiphertextBlob, "base64");
+    raw[raw.length - 1] ^= 0xff;
+
+    const res = await kms(app, "Decrypt", { CiphertextBlob: raw.toString("base64") });
+    expect(res.status).toBe(400);
+    expect(((await res.json()) as { __type: string }).__type).toBe("InvalidCiphertextException");
+  });
+
+  it("rejects Decrypt without a ciphertext blob", async () => {
+    const res = await kms(app, "Decrypt", {});
+    expect(res.status).toBe(400);
+    expect(((await res.json()) as { __type: string }).__type).toBe("ValidationException");
+  });
+});
+
 describe("AWS plugin - seedFromConfig", () => {
   it("seeds custom buckets, queues, users, and roles", () => {
     const store = new Store();
