@@ -42,6 +42,6 @@
     "@aws-sdk/s3-presigned-post": "^3.1031.0",
     "tsup": "^8",
     "typescript": "^5.7",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.11"
   }
 }
