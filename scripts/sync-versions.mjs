@@ -2,7 +2,7 @@
 
 /**
  * Reads the version from packages/emulate/package.json (the canonical
- * source) and writes it to every @emulators/* package.json.
+ * source) and writes it to every @envoy/emulators-* package.json.
  *
  * Usage:
  *   node scripts/sync-versions.mjs          # sync
@@ -48,5 +48,5 @@ if (check && mismatches.length > 0) {
   for (const m of mismatches) console.error(`  ${m}`);
   process.exit(1);
 } else if (check) {
-  console.log(`All @emulators/* packages are at ${version}`);
+  console.log(`All @envoy/emulators-* packages are at ${version}`);
 }

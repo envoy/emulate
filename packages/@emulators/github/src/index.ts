@@ -1,5 +1,5 @@
 import { createHmac, generateKeyPair } from "crypto";
-import type { Hono } from "@emulators/core";
+import type { Hono } from "@envoy/emulators-core";
 import type {
   ServicePlugin,
   Store,
@@ -8,7 +8,7 @@ import type {
   AppEnv,
   RouteContext,
   AppKeyResolver,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import { getGitHubStore } from "./store.js";
 import type { GitHubStore } from "./store.js";
 import type { GitHubAppInstallation } from "./entities.js";

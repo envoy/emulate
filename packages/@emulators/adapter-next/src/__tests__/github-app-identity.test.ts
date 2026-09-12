@@ -1,4 +1,4 @@
-import * as github from "@emulators/github";
+import * as github from "@envoy/emulators-github";
 import { githubAppIdentityContract, type TestPersistence } from "../../../../../tests/contracts/github-app-identity.js";
 import { createEmulateHandler, type EmulateHandlerConfig } from "../index.js";
 function config(persistence?: TestPersistence, privateKey?: string): EmulateHandlerConfig {

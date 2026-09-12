@@ -1,8 +1,8 @@
 import { createHmac, generateKeyPairSync, sign } from "crypto";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { Hono } from "@emulators/core";
-import { Store, WebhookDispatcher } from "@emulators/core";
-import { authMiddleware, createApiErrorHandler, createErrorHandler, type TokenMap } from "@emulators/core";
+import { Hono } from "@envoy/emulators-core";
+import { Store, WebhookDispatcher } from "@envoy/emulators-core";
+import { authMiddleware, createApiErrorHandler, createErrorHandler, type TokenMap } from "@envoy/emulators-core";
 import { githubPlugin, seedFromConfig, getGitHubStore, materializeGitHubSeedConfig, prepareSeed } from "../index.js";
 
 const base = "http://localhost:4000";

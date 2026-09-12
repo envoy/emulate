@@ -1,4 +1,4 @@
-import type { RouteContext } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
 
 export function metaRoutes({ app, baseUrl }: RouteContext): void {
   app.get("/meta", (c) => {

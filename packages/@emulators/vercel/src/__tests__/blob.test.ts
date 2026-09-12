@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { randomBytes } from "node:crypto";
 import type { AddressInfo } from "node:net";
-import { Hono, serve } from "@emulators/core";
-import { Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@emulators/core";
+import { Hono, serve } from "@envoy/emulators-core";
+import { Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@envoy/emulators-core";
 import { put, head, list, del, copy, BlobNotFoundError, BlobAccessError } from "@vercel/blob";
 import { vercelPlugin } from "../index.js";
 

@@ -1,4 +1,4 @@
-# @emulators/linear
+# @envoy/emulators-linear
 
 Stateful Linear GraphQL API emulator for local development and CI.
 
@@ -7,13 +7,13 @@ Part of [emulate](https://github.com/vercel-labs/emulate), local drop-in replace
 ## Install
 
 ```sh
-npm install @emulators/linear
+npm install @envoy/emulators-linear
 ```
 
 Most users should run it through the main CLI:
 
 ```sh
-npx emulate --service linear
+npx @envoy/emulate --service linear
 ```
 
 ## Supported Surface

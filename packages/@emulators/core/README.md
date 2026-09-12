@@ -1,4 +1,4 @@
-# @emulators/core
+# @envoy/emulators-core
 
 HTTP server, in-memory store, plugin interface, and middleware for emulate service plugins.
 
@@ -7,12 +7,12 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/core
+npm install @envoy/emulators-core
 ```
 
 ## Overview
 
-The core provides the shared infrastructure that every `@emulators/*` service plugin builds on:
+The core provides the shared infrastructure that every `@envoy/emulators-*` service plugin builds on:
 
 - **Store** — a generic in-memory store with typed `Collection<T>` instances supporting CRUD, indexing, filtering, and pagination
 - **Server** — HTTP server with automatic port management
@@ -27,7 +27,7 @@ The core provides the shared infrastructure that every `@emulators/*` service pl
 For local development, use the built-in file adapter:
 
 ```typescript
-import { filePersistence } from '@emulators/core'
+import { filePersistence } from '@envoy/emulators-core'
 
 persistence: filePersistence('.emulate/state.json')
 ```

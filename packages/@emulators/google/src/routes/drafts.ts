@@ -1,5 +1,5 @@
-import type { RouteContext } from "@emulators/core";
-import type { Context } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
+import type { Context } from "@envoy/emulators-core";
 import {
   createDraftMessage,
   deleteDraftMessage,

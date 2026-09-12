@@ -1,15 +1,15 @@
-# @emulators/twilio
+# @envoy/emulators-twilio
 
 Twilio API emulator for local development and CI. Part of [emulate](https://github.com/vercel-labs/emulate).
 
 ```bash
-npm install @emulators/twilio
+npm install @envoy/emulators-twilio
 ```
 
 Run it through the CLI:
 
 ```bash
-npx emulate --service twilio
+npx @envoy/emulate --service twilio
 ```
 
 The first supported surface includes seeded Account SID/Auth Token credentials, API key credentials, incoming phone numbers, Programmable Messaging, Messaging Services, Verify, basic Voice calls, Conversations REST resources, signed webhooks, simulator routes, and an inspector.

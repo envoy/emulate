@@ -1,5 +1,5 @@
 {
-  "name": "@emulators/linear",
+  "name": "@envoy/emulators-linear",
   "version": "0.11.0",
   "license": "Apache-2.0",
   "type": "module",
@@ -14,14 +14,14 @@
   "homepage": "https://emulate.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vercel-labs/emulate.git",
+    "url": "https://github.com/envoy/emulate.git",
     "directory": "packages/@emulators/linear"
   },
   "bugs": {
-    "url": "https://github.com/vercel-labs/emulate/issues"
+    "url": "https://github.com/envoy/emulate/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com"
   },
   "files": [
     "dist"
@@ -35,7 +35,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@emulators/core": "workspace:*",
+    "@envoy/emulators-core": "workspace:*",
     "graphql": "^17.0.0"
   },
   "devDependencies": {

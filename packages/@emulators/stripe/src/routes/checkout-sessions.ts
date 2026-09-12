@@ -1,6 +1,6 @@
-import type { RouteContext } from "@emulators/core";
-import { renderCardPage, renderCheckoutPage, escapeHtml, escapeAttr } from "@emulators/core";
-import type { CheckoutLineItem } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
+import { renderCardPage, renderCheckoutPage, escapeHtml, escapeAttr } from "@envoy/emulators-core";
+import type { CheckoutLineItem } from "@envoy/emulators-core";
 import { getStripeStore } from "../store.js";
 import { stripeId, toUnixTimestamp, parseStripeBody, stripeError, stripeList } from "../helpers.js";
 import type { StripeCheckoutSession } from "../entities.js";

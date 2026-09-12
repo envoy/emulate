@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
-import type { Context } from "@emulators/core";
-import type { ContentfulStatusCode } from "@emulators/core";
-import type { Entity, Collection } from "@emulators/core";
+import type { Context } from "@envoy/emulators-core";
+import type { ContentfulStatusCode } from "@envoy/emulators-core";
+import type { Entity, Collection } from "@envoy/emulators-core";
 
 const NUMERIC_KEYS = new Set([
   "amount",

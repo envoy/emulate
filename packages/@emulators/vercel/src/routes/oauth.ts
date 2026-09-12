@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "crypto";
-import type { RouteContext, Store } from "@emulators/core";
+import type { RouteContext, Store } from "@envoy/emulators-core";
 import {
   escapeHtml,
   escapeAttr,
@@ -10,7 +10,7 @@ import {
   constantTimeSecretEqual,
   bodyStr,
   debug,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import { getVercelStore } from "../store.js";
 import { formatUser } from "../helpers.js";
 import type { VercelUser } from "../entities.js";

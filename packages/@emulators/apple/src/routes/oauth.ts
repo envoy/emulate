@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { SignJWT, exportJWK, generateKeyPair } from "jose";
-import type { RouteContext } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
 import {
   escapeHtml,
   escapeAttr,
@@ -11,10 +11,10 @@ import {
   matchesRedirectUri,
   bodyStr,
   debug,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import { getAppleStore } from "../store.js";
 import type { AppleUser } from "../entities.js";
-import type { Store } from "@emulators/core";
+import type { Store } from "@envoy/emulators-core";
 
 // RSA key pair generated at module load for signing id_tokens
 const keyPairPromise = generateKeyPair("RS256");

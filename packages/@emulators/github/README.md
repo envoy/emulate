@@ -1,4 +1,4 @@
-# @emulators/github
+# @envoy/emulators-github
 
 Fully stateful GitHub API emulation. Creates, updates, and deletes persist in memory and affect related entities.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/github
+npm install @envoy/emulators-github
 ```
 
 ## Endpoints
@@ -186,7 +186,7 @@ github:
 The `private_key` field is required when calling `seedFromConfig` directly. To generate omitted keys before seeding, use `materializeGitHubSeedConfig` and retain the returned key material:
 
 ```typescript
-import { materializeGitHubSeedConfig, seedFromConfig } from '@emulators/github'
+import { materializeGitHubSeedConfig, seedFromConfig } from '@envoy/emulators-github'
 
 const materialized = await materializeGitHubSeedConfig({
   apps: [{ app_id: 12345, slug: 'my-github-app', name: 'My GitHub App' }],
@@ -201,7 +201,7 @@ The `emulate` package performs this materialization automatically in `createEmul
 The Next.js and Nuxt adapters also materialize omitted keys. Their returned server handlers expose `generatedSecrets()`, and persistence restores the same identity across cold starts. Keep persisted snapshots private because they contain the signing key. A custom persistence backend must implement atomic `initialize()` semantics when generated identities are used.
 
 ```bash
-npx emulate start --service github --seed emulate.config.yaml \
+npx @envoy/emulate start --service github --seed emulate.config.yaml \
   --generated-secrets-file .emulate-secrets.json
 ```
 

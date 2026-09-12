@@ -1,4 +1,4 @@
-import type { Entity } from "@emulators/core";
+import type { Entity } from "@envoy/emulators-core";
 
 export interface S3Bucket extends Entity {
   bucket_name: string;

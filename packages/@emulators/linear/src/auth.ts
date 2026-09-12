@@ -1,4 +1,4 @@
-import type { Context, Store } from "@emulators/core";
+import type { Context, Store } from "@envoy/emulators-core";
 import { getLinearStore } from "./store.js";
 import { resolveUser } from "./index.js";
 

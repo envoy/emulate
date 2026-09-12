@@ -1,5 +1,5 @@
-import type { RouteContext } from "@emulators/core";
-import { ApiError, parseJsonBody, parsePagination, setLinkHeader, unauthorized } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
+import { ApiError, parseJsonBody, parsePagination, setLinkHeader, unauthorized } from "@envoy/emulators-core";
 import { assertAuthenticatedUser, canAccessRepo, notFoundResponse } from "../route-helpers.js";
 import { getGitHubStore } from "../store.js";
 import type { GitHubStore } from "../store.js";

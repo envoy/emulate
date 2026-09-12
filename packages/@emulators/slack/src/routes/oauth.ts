@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto";
-import type { RouteContext } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
 import {
   escapeHtml,
   renderCardPage,
@@ -9,7 +9,7 @@ import {
   constantTimeSecretEqual,
   bodyStr,
   debug,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import { getSlackStore } from "../store.js";
 import { generateSlackId } from "../helpers.js";
 import type { SlackBot, SlackInstallation, SlackOAuthApp, SlackUser } from "../entities.js";
@@ -27,7 +27,7 @@ type PendingCode = {
 const PENDING_CODE_TTL_MS = 10 * 60 * 1000;
 const SERVICE_LABEL = "Slack";
 
-function getPendingCodes(store: import("@emulators/core").Store): Map<string, PendingCode> {
+function getPendingCodes(store: import("@envoy/emulators-core").Store): Map<string, PendingCode> {
   let map = store.getData<Map<string, PendingCode>>("slack.oauth.pendingCodes");
   if (!map) {
     map = new Map();

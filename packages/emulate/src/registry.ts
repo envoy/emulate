@@ -1,4 +1,4 @@
-import type { ServicePlugin, Store, AppKeyResolver, AuthFallback, WebhookDispatcher } from "@emulators/core";
+import type { ServicePlugin, Store, AppKeyResolver, AuthFallback, WebhookDispatcher } from "@envoy/emulators-core";
 
 export interface PreparedServiceSeed {
   config: Record<string, unknown>;
@@ -49,7 +49,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     label: "Vercel REST API emulator",
     endpoints: "projects, deployments, domains, env vars, users, teams, file uploads, protection bypass, blob storage",
     async load() {
-      const mod = await import("@emulators/vercel");
+      const mod = await import("@envoy/emulators-vercel");
       return { plugin: mod.vercelPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback(cfg) {
@@ -78,7 +78,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "users, repos, issues, PRs, comments, reviews, labels, milestones, branches, git data, orgs, teams, releases, webhooks, search, actions, checks, rate limit",
     async load() {
-      const mod = await import("@emulators/github");
+      const mod = await import("@envoy/emulators-github");
       return {
         plugin: mod.githubPlugin,
         seedFromConfig: mod.seedFromConfig,
@@ -137,7 +137,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "OAuth authorize, token exchange, userinfo, OIDC discovery, token revocation, Gmail messages/drafts/threads/labels/history/settings, Calendar lists/events/freebusy, Drive files/uploads",
     async load() {
-      const mod = await import("@emulators/google");
+      const mod = await import("@envoy/emulators-google");
       return { plugin: mod.googlePlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback(cfg) {
@@ -221,7 +221,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "auth, chat, conversations, users, profiles, presence, files, pins, bookmarks, views, reactions, team, OAuth, incoming webhooks, inspector",
     async load() {
-      const mod = await import("@emulators/slack");
+      const mod = await import("@envoy/emulators-slack");
       return { plugin: mod.slackPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback() {
@@ -303,7 +303,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     label: "Apple Sign In / OAuth emulator",
     endpoints: "OAuth authorize, token exchange, JWKS",
     async load() {
-      const mod = await import("@emulators/apple");
+      const mod = await import("@envoy/emulators-apple");
       return { plugin: mod.applePlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback(cfg) {
@@ -329,7 +329,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     label: "Microsoft Entra ID OAuth 2.0 / OpenID Connect emulator",
     endpoints: "OAuth authorize, token exchange, userinfo, OIDC discovery, Graph /me, logout, token revocation",
     async load() {
-      const mod = await import("@emulators/microsoft");
+      const mod = await import("@envoy/emulators-microsoft");
       return { plugin: mod.microsoftPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback(cfg) {
@@ -356,7 +356,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "OIDC discovery, JWKS, OAuth authorize/token/userinfo/introspect/revoke/logout, users, groups, apps, authorization servers",
     async load() {
-      const mod = await import("@emulators/okta");
+      const mod = await import("@envoy/emulators-okta");
       return { plugin: mod.oktaPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback(cfg) {
@@ -389,7 +389,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "S3 (buckets, objects), SQS (queues, messages), IAM (users, roles, access keys), STS (assume role, caller identity)",
     async load() {
-      const mod = await import("@emulators/aws");
+      const mod = await import("@envoy/emulators-aws");
       return { plugin: mod.awsPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback() {
@@ -411,7 +411,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     label: "Resend email API emulator",
     endpoints: "emails, domains, contacts, API keys, inbox UI",
     async load() {
-      const mod = await import("@emulators/resend");
+      const mod = await import("@envoy/emulators-resend");
       return { plugin: mod.resendPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback() {
@@ -429,7 +429,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "customers, payment methods, customer sessions, payment intents, charges, products, prices, checkout sessions, webhooks",
     async load() {
-      const mod = await import("@emulators/stripe");
+      const mod = await import("@envoy/emulators-stripe");
       return { plugin: mod.stripePlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback() {
@@ -448,7 +448,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "Atlas Admin API v2 (projects, clusters, database users, databases, collections), Atlas Data API v1 (findOne, find, insertOne, insertMany, updateOne, updateMany, deleteOne, deleteMany, aggregate)",
     async load() {
-      const mod = await import("@emulators/mongoatlas");
+      const mod = await import("@envoy/emulators-mongoatlas");
       return { plugin: mod.mongoatlasPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback() {
@@ -468,7 +468,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "OIDC discovery, JWKS, OAuth authorize/token/userinfo, users, email addresses, organizations, memberships, invitations, sessions",
     async load() {
-      const mod = await import("@emulators/clerk");
+      const mod = await import("@envoy/emulators-clerk");
       return { plugin: mod.clerkPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback(cfg) {
@@ -510,7 +510,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "GraphQL, OAuth, issues, teams, users, workflow states, comments, labels, projects, cycles, webhooks, agents, inspector",
     async load() {
-      const mod = await import("@emulators/linear");
+      const mod = await import("@envoy/emulators-linear");
       return { plugin: mod.linearPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback(cfg) {
@@ -577,7 +577,7 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
     endpoints:
       "accounts, API keys, phone numbers, Programmable Messaging, Messaging Services, Verify, Voice, webhooks, simulator, inspector",
     async load() {
-      const mod = await import("@emulators/twilio");
+      const mod = await import("@envoy/emulators-twilio");
       return { plugin: mod.twilioPlugin, seedFromConfig: mod.seedFromConfig };
     },
     defaultFallback(cfg) {

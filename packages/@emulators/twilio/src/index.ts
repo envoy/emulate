@@ -1,5 +1,5 @@
-import type { Hono } from "@emulators/core";
-import type { AppEnv, RouteContext, ServicePlugin, Store, TokenMap, WebhookDispatcher } from "@emulators/core";
+import type { Hono } from "@envoy/emulators-core";
+import type { AppEnv, RouteContext, ServicePlugin, Store, TokenMap, WebhookDispatcher } from "@envoy/emulators-core";
 import { fixedSid, twilioSid } from "./ids.js";
 import { getTwilioStore } from "./store.js";
 import { accountRoutes } from "./routes/accounts.js";

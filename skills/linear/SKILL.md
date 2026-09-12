@@ -1,7 +1,7 @@
 ---
 name: linear
 description: Emulated Linear GraphQL API for local development and testing. Use when the user needs to test Linear integrations locally, emulate Linear issues, comments, teams, workflow states, OAuth apps, webhooks, agent sessions, or work with the Linear API without hitting the real Linear service. Triggers include "Linear API", "emulate Linear", "mock Linear", "test Linear OAuth", "Linear webhook", "Linear agent", "local Linear", or any task requiring a local Linear API.
-allowed-tools: Bash(npx emulate:*)
+allowed-tools: Bash(npx @envoy/emulate:*)
 ---
 
 # Linear API Emulator
@@ -12,7 +12,7 @@ Stateful Linear GraphQL API emulation with organizations, users, teams, workflow
 
 ```bash
 # Linear only
-npx emulate --service linear
+npx @envoy/emulate --service linear
 ```
 
 Default URL: `http://localhost:4012` when all services are started, or `http://localhost:4000` when Linear is the only service.

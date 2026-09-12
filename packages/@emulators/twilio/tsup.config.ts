@@ -14,6 +14,6 @@ export default defineConfig({
   format: ["esm"],
   dts: true,
   sourcemap: true,
-  noExternal: [/^@emulators\/core/],
+  noExternal: [/^@envoy\/emulators-core/],
   onSuccess: copyFonts,
 });

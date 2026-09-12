@@ -5,7 +5,7 @@ Local drop-in replacement services for CI and no-network sandboxes. Fully statef
 ## Quick Start
 
 ```bash
-npx emulate
+npx @envoy/emulate
 ```
 
 All services start with sensible defaults. No config file needed:
@@ -31,28 +31,28 @@ Stripe webhooks configured with a secret include a `Stripe-Signature` header sig
 
 ```bash
 # Start all services (zero-config)
-npx emulate
+npx @envoy/emulate
 
 # Start specific services
-npx emulate --service vercel,github
+npx @envoy/emulate --service vercel,github
 
 # Custom port
-npx emulate --port 3000
+npx @envoy/emulate --port 3000
 
 # Use a seed config file
-npx emulate --seed config.yaml
+npx @envoy/emulate --seed config.yaml
 
 # Generate omitted service secrets into a private file
-npx emulate start --seed config.yaml --generated-secrets-file .emulate-secrets.json
+npx @envoy/emulate start --seed config.yaml --generated-secrets-file .emulate-secrets.json
 
 # Generate a starter config
-npx emulate init
+npx @envoy/emulate init
 
 # Generate config for a specific service
-npx emulate init --service vercel
+npx @envoy/emulate init --service vercel
 
 # List available services
-npx emulate list
+npx @envoy/emulate list
 ```
 
 ### Options
@@ -77,7 +77,7 @@ The port can also be set via `EMULATE_PORT` or `PORT` environment variables.
 portless proxy start
 
 # Start emulate with portless integration
-npx emulate start --portless
+npx @envoy/emulate start --portless
 ```
 
 Each service registers as a portless alias and gets a named HTTPS URL:
@@ -95,7 +95,7 @@ The `--portless` flag overwrites any existing portless aliases matching `*.emula
 For a custom base URL without portless (any reverse proxy), use `--base-url` or the `EMULATE_BASE_URL` env var:
 
 ```bash
-npx emulate start --base-url "https://{service}.myproxy.test"
+npx @envoy/emulate start --base-url "https://{service}.myproxy.test"
 ```
 
 The `PORTLESS_URL` env var is automatically set by the `portless` CLI wrapper when running a command through it (e.g. `portless github.emulate emulate start`), typically to a value like `https://{service}.emulate.localhost`. It supports `{service}` interpolation, just like `--base-url` and `EMULATE_BASE_URL`. When no explicit `baseUrl` is provided, it is used as a fallback.
@@ -110,13 +110,13 @@ github:
 ## Programmatic API
 
 ```bash
-npm install emulate
+npm install @envoy/emulate
 ```
 
 Each call to `createEmulator` starts a single service:
 
 ```typescript
-import { createEmulator } from 'emulate'
+import { createEmulator } from '@envoy/emulate'
 
 const github = await createEmulator({ service: 'github', port: 4001 })
 const vercel = await createEmulator({ service: 'vercel', port: 4002 })
@@ -156,7 +156,7 @@ Generated keys remain stable across `reset()` calls and appear only in `generate
 The CLI can also generate omitted GitHub App keys when a delivery file is requested:
 
 ```bash
-npx emulate start --service github --seed config.yaml \
+npx @envoy/emulate start --service github --seed config.yaml \
   --generated-secrets-file .emulate-secrets.json
 ```
 
@@ -166,7 +166,7 @@ The destination must not exist. emulate removes inherited ACLs, verifies effecti
 
 ```typescript
 // vitest.setup.ts
-import { createEmulator, type Emulator } from 'emulate'
+import { createEmulator, type Emulator } from '@envoy/emulate'
 
 let github: Emulator
 let vercel: Emulator
@@ -204,7 +204,7 @@ afterAll(() => Promise.all([github.close(), vercel.close()]))
 
 ## Configuration
 
-Configuration is optional. The CLI auto-detects config files in this order: `emulate.config.yaml` / `.yml`, `emulate.config.json`, `service-emulator.config.yaml` / `.yml`, `service-emulator.config.json`. Or pass `--seed <file>` explicitly. Run `npx emulate init` to generate a starter file.
+Configuration is optional. The CLI auto-detects config files in this order: `emulate.config.yaml` / `.yml`, `emulate.config.json`, `service-emulator.config.yaml` / `.yml`, `service-emulator.config.json`. Or pass `--seed <file>` explicitly. Run `npx @envoy/emulate init` to generate a starter file.
 
 ```yaml
 tokens:
@@ -1129,10 +1129,10 @@ Embed emulators directly in your Next.js app so they run on the same origin. Thi
 ### Install
 
 ```bash
-npm install @emulators/adapter-next @emulators/github @emulators/google
+npm install @envoy/emulators-adapter-next @envoy/emulators-github @envoy/emulators-google
 ```
 
-Only install the emulators you need. Each `@emulators/*` package is published independently.
+Only install the emulators you need. Each `@envoy/emulators-*` package is published independently.
 
 ### Route handler
 
@@ -1140,9 +1140,9 @@ Create a catch-all route that serves emulator traffic:
 
 ```typescript
 // app/emulate/[...path]/route.ts
-import { createEmulateHandler } from '@emulators/adapter-next'
-import * as github from '@emulators/github'
-import * as google from '@emulators/google'
+import { createEmulateHandler } from '@envoy/emulators-adapter-next'
+import * as github from '@envoy/emulators-github'
+import * as google from '@envoy/emulators-google'
 
 export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
   services: {
@@ -1193,7 +1193,7 @@ Emulator UI pages use bundled fonts. Wrap your Next.js config to include them in
 
 ```typescript
 // next.config.mjs
-import { withEmulate } from '@emulators/adapter-next'
+import { withEmulate } from '@envoy/emulators-adapter-next'
 
 export default withEmulate({
   // your normal Next.js config
@@ -1211,8 +1211,8 @@ export default withEmulate(nextConfig, { routePrefix: '/api/emulate' })
 By default, emulator state is in-memory and resets on every cold start. To persist state across restarts, pass a `persistence` adapter:
 
 ```typescript
-import { createEmulateHandler } from '@emulators/adapter-next'
-import * as github from '@emulators/github'
+import { createEmulateHandler } from '@envoy/emulators-adapter-next'
+import * as github from '@envoy/emulators-github'
 
 const kvAdapter = {
   async load() { return await kv.get('emulate-state') },
@@ -1225,16 +1225,16 @@ export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
 })
 ```
 
-For local development, `@emulators/core` ships `filePersistence`:
+For local development, `@envoy/emulators-core` ships `filePersistence`:
 
 ```typescript
-import { filePersistence } from '@emulators/core'
+import { filePersistence } from '@envoy/emulators-core'
 
 // ...
 persistence: filePersistence('.emulate/state.json'),
 ```
 
-The persistence adapter loads on cold start and saves after mutations. Generated identities also require atomic create-or-read `initialize`; see `@emulators/core`.
+The persistence adapter loads on cold start and saves after mutations. Generated identities also require atomic create-or-read `initialize`; see `@envoy/emulators-core`.
 
 ## Nuxt Integration
 
@@ -1243,10 +1243,10 @@ Embed emulators directly in your Nuxt app so they run on the same origin. This g
 ### Install
 
 ```bash
-npm install @emulators/adapter-nuxt @emulators/github @emulators/google
+npm install @envoy/emulators-adapter-nuxt @envoy/emulators-github @envoy/emulators-google
 ```
 
-Only install the emulators you need. Each `@emulators/*` package is published independently.
+Only install the emulators you need. Each `@envoy/emulators-*` package is published independently.
 
 ### Server route
 
@@ -1254,9 +1254,9 @@ Create a named catch-all route that serves emulator traffic:
 
 ```typescript
 // server/routes/emulate/[...path].ts
-import { createEmulateHandler } from '@emulators/adapter-nuxt'
-import * as github from '@emulators/github'
-import * as google from '@emulators/google'
+import { createEmulateHandler } from '@envoy/emulators-adapter-nuxt'
+import * as github from '@envoy/emulators-github'
+import * as google from '@envoy/emulators-google'
 
 export default defineEventHandler(createEmulateHandler({
   services: {
@@ -1285,7 +1285,7 @@ Emulator UI pages use bundled fonts. Wrap your Nuxt config so Nitro traces the c
 
 ```typescript
 // nuxt.config.ts
-import { withEmulate } from '@emulators/adapter-nuxt'
+import { withEmulate } from '@envoy/emulators-adapter-nuxt'
 
 export default defineNuxtConfig(withEmulate({
   // your normal Nuxt config
@@ -1315,8 +1315,8 @@ No `oauth_apps` need to be seeded. When none are configured, the emulator skips 
 By default, emulator state is in-memory and resets on every cold start. To persist state across restarts, pass a `persistence` adapter:
 
 ```typescript
-import { createEmulateHandler } from '@emulators/adapter-nuxt'
-import * as github from '@emulators/github'
+import { createEmulateHandler } from '@envoy/emulators-adapter-nuxt'
+import * as github from '@envoy/emulators-github'
 
 const storageAdapter = {
   async load() { return await useStorage('emulate').getItem<string>('state') },
@@ -1329,14 +1329,14 @@ export default defineEventHandler(createEmulateHandler({
 }))
 ```
 
-The persistence adapter loads on cold start and saves after mutations. Generated identities also require atomic create-or-read `initialize`; see `@emulators/core`.
+The persistence adapter loads on cold start and saves after mutations. Generated identities also require atomic create-or-read `initialize`; see `@envoy/emulators-core`.
 
 ## Architecture
 
 ```
 packages/
   emulate/          # CLI entry point (commander)
-  @emulators/
+  @envoy/emulators-
     core/           # HTTP server, in-memory store, plugin interface, middleware
     adapter-next/   # Next.js App Router integration
     adapter-nuxt/   # Nuxt server route integration

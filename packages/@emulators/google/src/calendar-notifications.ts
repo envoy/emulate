@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { RouteContext } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
 import { getCalendarById } from "./calendar-helpers.js";
 import { googleApiError } from "./helpers.js";
 import { parseGoogleBody, requireGoogleAuth } from "./route-helpers.js";

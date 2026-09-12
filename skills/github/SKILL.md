@@ -1,7 +1,7 @@
 ---
 name: github
 description: Emulated GitHub REST API for local development and testing. Use when the user needs to interact with GitHub API endpoints locally, test GitHub integrations, emulate repos/issues/PRs, set up GitHub OAuth flows, configure GitHub Apps, test webhooks, or work with actions/checks without hitting the real GitHub API. Triggers include "GitHub API", "emulate GitHub", "mock GitHub", "test GitHub OAuth", "GitHub App JWT", "local GitHub", or any task requiring a local GitHub API.
-allowed-tools: Bash(npx emulate:*), Bash(emulate:*), Bash(curl:*)
+allowed-tools: Bash(npx @envoy/emulate:*), Bash(emulate:*), Bash(curl:*)
 ---
 
 # GitHub API Emulator
@@ -12,7 +12,7 @@ Fully stateful GitHub REST API emulation. Creates, updates, and deletes persist 
 
 ```bash
 # GitHub only
-npx emulate --service github
+npx @envoy/emulate --service github
 
 # Default port
 # http://localhost:4001
@@ -21,7 +21,7 @@ npx emulate --service github
 Or programmatically:
 
 ```typescript
-import { createEmulator } from 'emulate'
+import { createEmulator } from '@envoy/emulate'
 
 const github = await createEmulator({ service: 'github', port: 4001 })
 // github.url === 'http://localhost:4001'
@@ -58,7 +58,7 @@ The Next.js and Nuxt adapters also generate omitted keys. Retain the returned ha
 For the CLI, omit `private_key` only when requesting a private delivery file:
 
 ```bash
-npx emulate start --service github --seed emulate.config.yaml \
+npx @envoy/emulate start --service github --seed emulate.config.yaml \
   --generated-secrets-file .emulate-secrets.json
 ```
 

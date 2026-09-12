@@ -1,4 +1,4 @@
-# @emulators/stripe
+# @envoy/emulators-stripe
 
 Stripe API emulation with customers, payment methods, customer sessions, payment intents, charges, products, prices, and checkout sessions. Includes a hosted checkout page and webhook delivery.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/stripe
+npm install @envoy/emulators-stripe
 ```
 
 ## Endpoints

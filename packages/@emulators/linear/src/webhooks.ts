@@ -1,5 +1,5 @@
 import { createHmac } from "node:crypto";
-import type { Store } from "@emulators/core";
+import type { Store } from "@envoy/emulators-core";
 import { getLinearStore } from "./store.js";
 import { linearId } from "./ids.js";
 import type { LinearUser } from "./entities.js";

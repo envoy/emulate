@@ -1,4 +1,4 @@
-# @emulators/mongoatlas
+# @envoy/emulators-mongoatlas
 
 MongoDB Atlas emulation with Atlas Admin API v2 and Atlas Data API v1 for local development and testing. In-memory document storage with CRUD, filtering, and aggregation.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/mongoatlas
+npm install @envoy/emulators-mongoatlas
 ```
 
 ## Endpoints

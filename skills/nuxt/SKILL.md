@@ -1,20 +1,20 @@
 ---
 name: nuxt
-description: Nuxt adapter for embedding emulators directly in a Nuxt app via @emulators/adapter-nuxt. Use when the user needs to embed emulators in Nuxt, set up same-origin OAuth for preview deployments, create an emulate catch-all server route, configure persistence for embedded Nuxt emulators, or wrap nuxt.config with withEmulate. Triggers include "Nuxt emulator", "adapter-nuxt", "embedded emulator", "same-origin OAuth", "createEmulateHandler", "withEmulate", or any task requiring emulators inside a Nuxt app.
-allowed-tools: Bash(npx emulate:*)
+description: Nuxt adapter for embedding emulators directly in a Nuxt app via @envoy/emulators-adapter-nuxt. Use when the user needs to embed emulators in Nuxt, set up same-origin OAuth for preview deployments, create an emulate catch-all server route, configure persistence for embedded Nuxt emulators, or wrap nuxt.config with withEmulate. Triggers include "Nuxt emulator", "adapter-nuxt", "embedded emulator", "same-origin OAuth", "createEmulateHandler", "withEmulate", or any task requiring emulators inside a Nuxt app.
+allowed-tools: Bash(npx @envoy/emulate:*)
 ---
 
 # Nuxt Integration
 
-The `@emulators/adapter-nuxt` package embeds emulators directly into a Nuxt app, running them on the same origin. This is useful for preview deployments where OAuth callback URLs change with every deployment.
+The `@envoy/emulators-adapter-nuxt` package embeds emulators directly into a Nuxt app, running them on the same origin. This is useful for preview deployments where OAuth callback URLs change with every deployment.
 
 ## Install
 
 ```bash
-npm install @emulators/adapter-nuxt @emulators/github @emulators/google
+npm install @envoy/emulators-adapter-nuxt @envoy/emulators-github @envoy/emulators-google
 ```
 
-Only install the emulators you need. Each `@emulators/*` package is published independently, keeping server bundles small.
+Only install the emulators you need. Each `@envoy/emulators-*` package is published independently, keeping server bundles small.
 
 ## Server Route
 
@@ -22,9 +22,9 @@ Create a named catch-all route that serves emulator traffic:
 
 ```typescript
 // server/routes/emulate/[...path].ts
-import { createEmulateHandler } from '@emulators/adapter-nuxt'
-import * as github from '@emulators/github'
-import * as google from '@emulators/google'
+import { createEmulateHandler } from '@envoy/emulators-adapter-nuxt'
+import * as github from '@envoy/emulators-github'
+import * as google from '@envoy/emulators-google'
 
 export default defineEventHandler(createEmulateHandler({
   services: {
@@ -58,7 +58,7 @@ Emulator UI pages use bundled fonts. Wrap your Nuxt config so Nitro traces the c
 
 ```typescript
 // nuxt.config.ts
-import { withEmulate } from '@emulators/adapter-nuxt'
+import { withEmulate } from '@envoy/emulators-adapter-nuxt'
 
 export default defineNuxtConfig(withEmulate({
   // your normal Nuxt config
@@ -90,8 +90,8 @@ By default, emulator state is in-memory and resets on every cold start. To persi
 ### Nitro Storage
 
 ```typescript
-import { createEmulateHandler } from '@emulators/adapter-nuxt'
-import * as github from '@emulators/github'
+import { createEmulateHandler } from '@envoy/emulators-adapter-nuxt'
+import * as github from '@envoy/emulators-github'
 
 const storageAdapter = {
   async load() { return await useStorage('emulate').getItem<string>('state') },
@@ -106,10 +106,10 @@ export default defineEventHandler(createEmulateHandler({
 
 ### File Persistence
 
-For local development, `@emulators/core` ships a file-based adapter:
+For local development, `@envoy/emulators-core` ships a file-based adapter:
 
 ```typescript
-import { filePersistence } from '@emulators/core'
+import { filePersistence } from '@envoy/emulators-core'
 
 persistence: filePersistence('.emulate/state.json'),
 ```
@@ -148,7 +148,7 @@ Each `EmulatorEntry`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `emulator` | `EmulatorModule` | The emulator package, such as `import * as github from '@emulators/github'` |
+| `emulator` | `EmulatorModule` | The emulator package, such as `import * as github from '@envoy/emulators-github'` |
 | `seed?` | `Record<string, unknown>` | Seed data matching the service's config schema |
 
 Options:
@@ -160,7 +160,7 @@ Options:
 
 ### `withEmulate(nuxtConfig)`
 
-Wraps a Nuxt config to include `@emulators/core` assets in Nitro's production trace. Call it inside `defineNuxtConfig` in `nuxt.config.ts`.
+Wraps a Nuxt config to include `@envoy/emulators-core` assets in Nitro's production trace. Call it inside `defineNuxtConfig` in `nuxt.config.ts`.
 
 ### `PersistenceAdapter`
 
@@ -172,4 +172,4 @@ interface PersistenceAdapter {
 }
 ```
 
-`initialize` must atomically create the initial value or return the value another instance created first. Implement it with compare-and-set semantics such as Redis `SET NX`. The built-in `filePersistence(path)` from `@emulators/core` provides this behavior for local development.
+`initialize` must atomically create the initial value or return the value another instance created first. Implement it with compare-and-set semantics such as Redis `SET NX`. The built-in `filePersistence(path)` from `@envoy/emulators-core` provides this behavior for local development.

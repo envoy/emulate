@@ -1,5 +1,5 @@
-import { createEmulateHandler } from "@emulators/adapter-next";
-import * as twilio from "@emulators/twilio";
+import { createEmulateHandler } from "@envoy/emulators-adapter-next";
+import * as twilio from "@envoy/emulators-twilio";
 
 export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
   services: {

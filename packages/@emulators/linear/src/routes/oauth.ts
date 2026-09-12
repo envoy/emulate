@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { RouteContext, Store } from "@emulators/core";
+import type { RouteContext, Store } from "@envoy/emulators-core";
 import {
   bodyStr,
   constantTimeSecretEqual,
@@ -8,7 +8,7 @@ import {
   renderCardPage,
   renderErrorPage,
   renderUserButton,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import { getLinearStore } from "../store.js";
 import { token } from "../ids.js";
 import { normalizeScopes } from "../index.js";

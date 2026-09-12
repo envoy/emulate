@@ -17,7 +17,7 @@ const { data: providers } = await useFetch("/api/providers");
     </a>
 
     <p class="hint">
-      Emulators are embedded in this Nuxt app via <code>@emulators/adapter-nuxt</code>. No separate emulator
+      Emulators are embedded in this Nuxt app via <code>@envoy/emulators-adapter-nuxt</code>. No separate emulator
       process needed.
     </p>
   </div>

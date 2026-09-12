@@ -1,4 +1,4 @@
-# @emulators/aws
+# @envoy/emulators-aws
 
 S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. The query services return AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/aws
+npm install @envoy/emulators-aws
 ```
 
 ## Endpoints

@@ -1,5 +1,5 @@
-import type { InspectorTab, RouteContext } from "@emulators/core";
-import { escapeAttr, escapeHtml, renderInspectorPage } from "@emulators/core";
+import type { InspectorTab, RouteContext } from "@envoy/emulators-core";
+import { escapeAttr, escapeHtml, renderInspectorPage } from "@envoy/emulators-core";
 import { getLinearStore } from "../store.js";
 import type { LinearUser } from "../entities.js";
 

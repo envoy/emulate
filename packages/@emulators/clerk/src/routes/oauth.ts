@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { SignJWT, exportJWK, generateKeyPair } from "jose";
-import type { Context } from "@emulators/core";
-import type { AppEnv, RouteContext, Store } from "@emulators/core";
+import type { Context } from "@envoy/emulators-core";
+import type { AppEnv, RouteContext, Store } from "@envoy/emulators-core";
 import {
   bodyStr,
   constantTimeSecretEqual,
@@ -11,7 +11,7 @@ import {
   renderCardPage,
   renderErrorPage,
   renderUserButton,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import type { ClerkUser } from "../entities.js";
 import { userDisplayName } from "../helpers.js";
 import { clerkError } from "../route-helpers.js";

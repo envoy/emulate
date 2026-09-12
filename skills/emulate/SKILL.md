@@ -1,7 +1,7 @@
 ---
 name: emulate
-description: Local drop-in API emulator for Vercel, GitHub, Google, Slack, Apple, Microsoft, AWS, Linear, and other developer APIs. Use when the user needs to start emulated services, configure seed data, write tests against local APIs, set up CI without network access, or work with the emulate CLI or programmatic API. Triggers include "start the emulator", "emulate services", "mock API locally", "create emulator config", "test against local API", "npx emulate", or any task requiring local service emulation.
-allowed-tools: Bash(npx emulate:*)
+description: Local drop-in API emulator for Vercel, GitHub, Google, Slack, Apple, Microsoft, AWS, Linear, and other developer APIs. Use when the user needs to start emulated services, configure seed data, write tests against local APIs, set up CI without network access, or work with the emulate CLI or programmatic API. Triggers include "start the emulator", "emulate services", "mock API locally", "create emulator config", "test against local API", "npx @envoy/emulate", or any task requiring local service emulation.
+allowed-tools: Bash(npx @envoy/emulate:*)
 ---
 
 # Service Emulation with emulate
@@ -11,7 +11,7 @@ Local drop-in replacement services for CI and no-network sandboxes. Fully statef
 ## Quick Start
 
 ```bash
-npx emulate
+npx @envoy/emulate
 ```
 
 All services start with sensible defaults:
@@ -37,28 +37,28 @@ All services start with sensible defaults:
 
 ```bash
 # Start all services (zero-config)
-npx emulate
+npx @envoy/emulate
 
 # Start specific services
-npx emulate --service vercel,github
+npx @envoy/emulate --service vercel,github
 
 # Custom base port (auto-increments per service)
-npx emulate --port 3000
+npx @envoy/emulate --port 3000
 
 # Use a seed config file
-npx emulate --seed config.yaml
+npx @envoy/emulate --seed config.yaml
 
 # Generate omitted service secrets into a private file
-npx emulate start --seed config.yaml --generated-secrets-file .emulate-secrets.json
+npx @envoy/emulate start --seed config.yaml --generated-secrets-file .emulate-secrets.json
 
 # Generate a starter config
-npx emulate init
+npx @envoy/emulate init
 
 # Generate config for a specific service
-npx emulate init --service vercel
+npx @envoy/emulate init --service vercel
 
 # List available services
-npx emulate list
+npx @envoy/emulate list
 ```
 
 ### Options
@@ -81,13 +81,13 @@ The advertised base URL (used in OAuth redirects, webhook URLs, etc.) can be ove
 ## Programmatic API
 
 ```bash
-npm install emulate
+npm install @envoy/emulate
 ```
 
 Each call to `createEmulator` starts a single service:
 
 ```typescript
-import { createEmulator } from 'emulate'
+import { createEmulator } from '@envoy/emulate'
 
 const github = await createEmulator({ service: 'github', port: 4001 })
 const vercel = await createEmulator({ service: 'vercel', port: 4002 })
@@ -121,7 +121,7 @@ For GitHub App tests, inspect secret-free minted installation-token metadata at 
 ## Vitest / Jest Setup
 
 ```typescript
-import { createEmulator, type Emulator } from 'emulate'
+import { createEmulator, type Emulator } from '@envoy/emulate'
 
 let github: Emulator
 let vercel: Emulator
@@ -148,7 +148,7 @@ Configuration is optional. The CLI auto-detects config files in this order:
 3. `service-emulator.config.yaml` / `.yml`
 4. `service-emulator.config.json`
 
-Or pass `--seed <file>` explicitly. Run `npx emulate init` to generate a starter file.
+Or pass `--seed <file>` explicitly. Run `npx @envoy/emulate init` to generate a starter file.
 
 ### Config Structure
 
@@ -306,7 +306,7 @@ Each service also has a fallback user. If no token is provided, requests authent
 [portless](https://github.com/vercel-labs/portless) gives emulators trusted HTTPS URLs with auto-generated certs. Use the `--portless` flag to auto-register each service as a portless alias:
 
 ```bash
-npx emulate start --portless
+npx @envoy/emulate start --portless
 # github  https://github.emulate.localhost
 # google  https://google.emulate.localhost
 # ...
@@ -325,9 +325,9 @@ portless github.emulate emulate start --service github
 For a custom base URL without portless (any reverse proxy):
 
 ```bash
-npx emulate start --base-url "https://{service}.myproxy.test"
+npx @envoy/emulate start --base-url "https://{service}.myproxy.test"
 # or
-EMULATE_BASE_URL="https://{service}.myproxy.test" npx emulate start
+EMULATE_BASE_URL="https://{service}.myproxy.test" npx @envoy/emulate start
 ```
 
 The `PORTLESS_URL` env var is automatically set by the `portless` CLI wrapper when running a command through it (e.g. `portless github.emulate emulate start`), typically to a value like `https://{service}.emulate.localhost`. It supports `{service}` interpolation, just like `--base-url` and `EMULATE_BASE_URL`. When no explicit `baseUrl` is provided, it is used as a fallback.
@@ -360,9 +360,9 @@ Then use these in your app to construct API and OAuth URLs. See each service's s
 
 ## Framework Integration (Embedded Mode)
 
-The `@emulators/adapter-next` package embeds emulators directly into a Next.js app on the same origin. See the **next** skill (`skills/next/SKILL.md`) for full setup, Auth.js configuration, persistence, and font tracing details.
+The `@envoy/emulators-adapter-next` package embeds emulators directly into a Next.js app on the same origin. See the **next** skill (`skills/next/SKILL.md`) for full setup, Auth.js configuration, persistence, and font tracing details.
 
-The `@emulators/adapter-nuxt` package embeds emulators directly into a Nuxt app on the same origin. See the **nuxt** skill (`skills/nuxt/SKILL.md`) for the server route, Nuxt config, OAuth configuration, and persistence setup.
+The `@envoy/emulators-adapter-nuxt` package embeds emulators directly into a Nuxt app on the same origin. See the **nuxt** skill (`skills/nuxt/SKILL.md`) for the server route, Nuxt config, OAuth configuration, and persistence setup.
 
 ## Persistence
 
@@ -371,7 +371,7 @@ By default, all emulator state is in-memory. For persistence across process rest
 ### Built-in file persistence
 
 ```typescript
-import { filePersistence } from '@emulators/core'
+import { filePersistence } from '@envoy/emulators-core'
 
 // CLI or local dev: persists to a JSON file
 const adapter = filePersistence('.emulate/state.json')
@@ -380,7 +380,7 @@ const adapter = filePersistence('.emulate/state.json')
 ### Custom adapters
 
 ```typescript
-import type { PersistenceAdapter } from '@emulators/core'
+import type { PersistenceAdapter } from '@envoy/emulators-core'
 
 const kvAdapter: PersistenceAdapter = {
   async load() { return await kv.get('emulate-state') },
@@ -395,7 +395,7 @@ State is loaded on cold start and saved after every mutating request (POST, PUT,
 ```
 packages/
   emulate/           # CLI entry point + programmatic API
-  @emulators/
+  @envoy/emulators-
     core/            # HTTP server, Store, plugin interface, middleware
     adapter-next/    # Next.js App Router integration
     adapter-nuxt/    # Nuxt server route integration

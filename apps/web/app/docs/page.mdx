@@ -5,7 +5,7 @@ Local drop-in replacement for Vercel, GitHub, Google, Slack, Apple, Microsoft, O
 ## Quick Start
 
 ```bash
-npx emulate
+npx @envoy/emulate
 ```
 
 All services start with sensible defaults. No config file needed:
@@ -28,28 +28,28 @@ All services start with sensible defaults. No config file needed:
 
 ```bash
 # Start all services (zero-config)
-npx emulate
+npx @envoy/emulate
 
 # Start specific services
-npx emulate --service vercel,github
+npx @envoy/emulate --service vercel,github
 
 # Custom port
-npx emulate --port 3000
+npx @envoy/emulate --port 3000
 
 # Use a seed config file
-npx emulate --seed config.yaml
+npx @envoy/emulate --seed config.yaml
 
 # Generate omitted service secrets into a private file
-npx emulate start --seed config.yaml --generated-secrets-file .emulate-secrets.json
+npx @envoy/emulate start --seed config.yaml --generated-secrets-file .emulate-secrets.json
 
 # Generate a starter config
-npx emulate init
+npx @envoy/emulate init
 
 # Generate config for a specific service
-npx emulate init --service github
+npx @envoy/emulate init --service github
 
 # List available services
-npx emulate list
+npx @envoy/emulate list
 ```
 
 ## Options

@@ -1,5 +1,5 @@
-import type { RouteContext, InspectorTab } from "@emulators/core";
-import { renderInspectorPage } from "@emulators/core";
+import type { RouteContext, InspectorTab } from "@envoy/emulators-core";
+import { renderInspectorPage } from "@envoy/emulators-core";
 import { getAwsStore } from "../store.js";
 import { escapeXml } from "../helpers.js";
 

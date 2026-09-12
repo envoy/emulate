@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
-import type { Context } from "@emulators/core";
-import type { ContentfulStatusCode } from "@emulators/core";
+import type { Context } from "@envoy/emulators-core";
+import type { ContentfulStatusCode } from "@envoy/emulators-core";
 
 export function generateUuid(): string {
   return randomUUID();

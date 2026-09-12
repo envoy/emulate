@@ -1,6 +1,6 @@
 import { randomBytes, createHash } from "crypto";
-import type { Context } from "@emulators/core";
-import type { ContentfulStatusCode } from "@emulators/core";
+import type { Context } from "@envoy/emulators-core";
+import type { ContentfulStatusCode } from "@envoy/emulators-core";
 
 const ACCOUNT_ID = "123456789012";
 const DEFAULT_REGION = "us-east-1";

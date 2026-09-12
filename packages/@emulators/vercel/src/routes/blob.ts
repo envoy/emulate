@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "crypto";
-import type { Context, RouteContext } from "@emulators/core";
-import type { ContentfulStatusCode } from "@emulators/core";
+import type { Context, RouteContext } from "@envoy/emulators-core";
+import type { ContentfulStatusCode } from "@envoy/emulators-core";
 import { getVercelStore } from "../store.js";
 import type { VercelStore } from "../store.js";
 import type { VercelBlob } from "../entities.js";

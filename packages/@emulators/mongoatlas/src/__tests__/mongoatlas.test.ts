@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { Hono } from "@emulators/core";
+import { Hono } from "@envoy/emulators-core";
 import {
   Store,
   WebhookDispatcher,
@@ -7,7 +7,7 @@ import {
   createApiErrorHandler,
   createErrorHandler,
   type TokenMap,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import { mongoatlasPlugin, seedFromConfig, getMongoAtlasStore } from "../index.js";
 
 const base = "http://localhost:4000";

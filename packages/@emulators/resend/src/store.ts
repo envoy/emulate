@@ -1,4 +1,4 @@
-import { Store, type Collection } from "@emulators/core";
+import { Store, type Collection } from "@envoy/emulators-core";
 import type { ResendEmail, ResendDomain, ResendApiKey, ResendAudience, ResendContact } from "./entities.js";
 
 export interface ResendStore {

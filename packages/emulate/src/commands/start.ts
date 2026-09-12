@@ -1,4 +1,4 @@
-import { createServer, serve, type AppKeyResolver, type Store } from "@emulators/core";
+import { createServer, serve, type AppKeyResolver, type Store } from "@envoy/emulators-core";
 import { SERVICE_REGISTRY, SERVICE_NAMES, type ServiceName } from "../registry.js";
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
@@ -409,7 +409,7 @@ function printBanner(
   if (configSource) {
     lines.push(`  ${pc.dim("Config:")} ${configSource}`);
   } else {
-    lines.push(`  ${pc.dim("Config:")} defaults ${pc.dim("(run")} npx emulate init ${pc.dim("to customize)")}`);
+    lines.push(`  ${pc.dim("Config:")} defaults ${pc.dim("(run")} npx @envoy/emulate init ${pc.dim("to customize)")}`);
   }
   lines.push("");
 

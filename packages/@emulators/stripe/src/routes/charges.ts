@@ -1,4 +1,4 @@
-import type { RouteContext } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
 import { getStripeStore } from "../store.js";
 import { toUnixTimestamp, stripeError, stripeList, applyExpand, parseExpand } from "../helpers.js";
 import { formatCustomer, formatPaymentIntent } from "../formatters.js";

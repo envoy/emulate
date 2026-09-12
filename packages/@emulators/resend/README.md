@@ -1,4 +1,4 @@
-# @emulators/resend
+# @envoy/emulators-resend
 
 Resend email API emulation with email sending, domain management, API keys, audiences, contacts, and a local inbox for captured messages.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/resend
+npm install @envoy/emulators-resend
 ```
 
 ## Endpoints

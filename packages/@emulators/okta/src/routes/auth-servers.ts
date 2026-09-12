@@ -1,4 +1,4 @@
-import { parsePagination, setLinkHeader, type RouteContext } from "@emulators/core";
+import { parsePagination, setLinkHeader, type RouteContext } from "@envoy/emulators-core";
 import { DEFAULT_AUDIENCE, generateOktaId, normalizeAuthServerStatus } from "../helpers.js";
 import {
   authorizationServerResponse,

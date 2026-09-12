@@ -1,5 +1,5 @@
-import type { Context } from "@emulators/core";
-import type { AppEnv, RouteContext } from "@emulators/core";
+import type { Context } from "@envoy/emulators-core";
+import type { AppEnv, RouteContext } from "@envoy/emulators-core";
 import { getAwsStore } from "../store.js";
 import { awsXmlResponse, awsErrorXml, md5, escapeXml } from "../helpers.js";
 

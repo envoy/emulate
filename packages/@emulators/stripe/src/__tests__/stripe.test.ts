@@ -1,6 +1,6 @@
 import { createHmac } from "crypto";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { Hono } from "@emulators/core";
+import { Hono } from "@envoy/emulators-core";
 import {
   Store,
   WebhookDispatcher,
@@ -8,7 +8,7 @@ import {
   createApiErrorHandler,
   createErrorHandler,
   type TokenMap,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import { stripePlugin, seedFromConfig } from "../index.js";
 
 const base = "http://localhost:14000";

@@ -1,5 +1,5 @@
-import { createEmulateHandler } from "@emulators/adapter-next";
-import * as stripe from "@emulators/stripe";
+import { createEmulateHandler } from "@envoy/emulators-adapter-next";
+import * as stripe from "@envoy/emulators-stripe";
 
 export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
   services: {

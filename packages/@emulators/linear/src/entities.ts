@@ -1,4 +1,4 @@
-import type { Entity } from "@emulators/core";
+import type { Entity } from "@envoy/emulators-core";
 
 export type LinearWorkflowStateType = "backlog" | "unstarted" | "started" | "completed" | "canceled";
 export type LinearTokenType = "personal" | "oauth_access" | "oauth_refresh" | "client_credentials";

@@ -1,5 +1,5 @@
-import type { Hono } from "@emulators/core";
-import type { ServicePlugin, Store, WebhookDispatcher, TokenMap, AppEnv, RouteContext } from "@emulators/core";
+import type { Hono } from "@envoy/emulators-core";
+import type { ServicePlugin, Store, WebhookDispatcher, TokenMap, AppEnv, RouteContext } from "@envoy/emulators-core";
 import { getMongoAtlasStore } from "./store.js";
 import { generateClusterId, generateGroupId, generateUserId } from "./helpers.js";
 import { dataApiRoutes } from "./routes/data-api.js";
