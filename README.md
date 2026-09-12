@@ -1077,7 +1077,7 @@ Microsoft Entra ID (Azure AD) v2.0 OAuth 2.0 and OpenID Connect emulation with a
 
 ## AWS
 
-S3, SQS, IAM, and STS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. All responses use AWS-compatible XML.
+S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. The query services return AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does.
 
 ### S3
 
@@ -1107,8 +1107,20 @@ All operations via `POST /iam/` with `Action` parameter:
 - `CreateRole`, `GetRole`, `ListRoles`, `DeleteRole`
 
 ### STS
-All operations via `POST /sts/` with `Action` parameter:
-- `GetCallerIdentity`, `AssumeRole`
+All operations via `POST /sts` with `Action` parameter:
+- `GetCallerIdentity`, `AssumeRole`, `AssumeRoleWithWebIdentity`
+
+`AssumeRoleWithWebIdentity` accepts any non-empty `WebIdentityToken` and issues credentials for whatever `RoleArn` is asked for, seeded or not. The token is never verified. Both `/sts` and `/sts/` are served, since the AWS SDKs post to a configured endpoint with no trailing slash.
+
+### KMS
+KMS uses AWS JSON 1.1 rather than query/XML: a `POST /kms` with an `X-Amz-Target` header of `TrentService.<Action>` and a JSON body. Both `/kms` and `/kms/` are served.
+
+- `Encrypt` - takes `KeyId` and base64 `Plaintext`, returns `CiphertextBlob` and `KeyId`
+- `Decrypt` - takes base64 `CiphertextBlob`, returns `Plaintext` and `KeyId`
+
+`KeyId` may be an alias, a key id, or an ARN, and is echoed back. Blobs are AES-256-GCM sealed under a fixed key derived from a constant, carry their own key id and nonce, and are never recorded in the store, so a blob survives a restart, a store reset, and a different emulator process.
+
+This is a wrapping oracle for tests, not a key manager. The wrapping key is fixed and public. No key policies, grants, rotation, key creation, or access control.
 
 ## Next.js Integration
 
@@ -1336,7 +1348,7 @@ packages/
     twilio/         # Twilio Messaging, Verify, Voice, webhooks
     apple/          # Apple Sign In / OIDC
     microsoft/      # Microsoft Entra ID OAuth 2.0 / OIDC + Graph /me
-    aws/            # AWS S3, SQS, IAM, STS
+    aws/            # AWS S3, SQS, IAM, STS, KMS
 apps/
   web/              # Documentation site (Next.js)
 ```

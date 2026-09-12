@@ -1,12 +1,12 @@
 ---
 name: aws
-description: Emulated AWS cloud services (S3, SQS, IAM, STS) for local development and testing. Use when the user needs to interact with AWS API endpoints locally, test S3 bucket and object operations, emulate SQS queues and messages, manage IAM users/roles/access keys, test STS assume role, or work without hitting real AWS APIs. Triggers include "AWS emulator", "emulate AWS", "mock S3", "local SQS", "test IAM", "emulate S3", "AWS locally", "STS assume role", or any task requiring local AWS service emulation.
+description: Emulated AWS cloud services (S3, SQS, IAM, STS, KMS) for local development and testing. Use when the user needs to interact with AWS API endpoints locally, test S3 bucket and object operations, emulate SQS queues and messages, manage IAM users/roles/access keys, test STS assume role, wrap and unwrap data keys with KMS, or work without hitting real AWS APIs. Triggers include "AWS emulator", "emulate AWS", "mock S3", "local SQS", "test IAM", "emulate S3", "AWS locally", "STS assume role", "emulate KMS", "KMS encrypt", or any task requiring local AWS service emulation.
 allowed-tools: Bash(npx emulate:*), Bash(emulate:*), Bash(curl:*)
 ---
 
 # AWS Emulator
 
-S3, SQS, IAM, and STS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. All state is in-memory, and responses use AWS-compatible XML.
+S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. All state is in-memory, and the query services respond with AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does.
 
 ## Start
 
@@ -311,7 +311,38 @@ curl -X POST http://localhost:4006/sts/ \
 curl -X POST http://localhost:4006/sts/ \
   -H "Authorization: Bearer $TOKEN" \
   -d "Action=AssumeRole&RoleArn=arn:aws:iam::123456789012:role/my-role&RoleSessionName=my-session"
+
+# Assume role with a web identity token. The token is never verified, and the
+# role does not need to exist. Both /sts and /sts/ are served, because the AWS
+# SDKs post to a configured endpoint with no trailing slash.
+curl -X POST http://localhost:4006/sts \
+  -H "Authorization: Bearer $TOKEN" \
+  -d "Action=AssumeRoleWithWebIdentity&RoleArn=arn:aws:iam::123456789012:role/my-role&RoleSessionName=my-session&WebIdentityToken=any-non-empty-value"
 ```
+
+### KMS
+
+KMS is AWS JSON 1.1, not query/XML. Every call is a `POST /kms` with an `X-Amz-Target` header of `TrentService.<Action>` and a JSON body. Only `Encrypt` and `Decrypt` are supported, which is what a client needs when it generates its own data key and asks KMS only to wrap it. `KeyId` may be an alias, a key id, or an ARN, and is echoed back.
+
+```bash
+# Wrap a data key. Plaintext is base64.
+curl -X POST http://localhost:4006/kms \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "X-Amz-Target: TrentService.Encrypt" \
+  -H "Content-Type: application/x-amz-json-1.1" \
+  -d '{"KeyId":"alias/data-encryption","Plaintext":"YS0zMi1ieXRlLWRhdGEta2V5LWZvci10ZXN0aW5nISE="}'
+
+# Unwrap it again
+curl -X POST http://localhost:4006/kms \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "X-Amz-Target: TrentService.Decrypt" \
+  -H "Content-Type: application/x-amz-json-1.1" \
+  -d '{"CiphertextBlob":"<CiphertextBlob from the Encrypt response>"}'
+```
+
+Blobs are self-contained. Each is AES-256-GCM sealed under a fixed key derived from a constant in the source and carries its own key id and nonce, so a blob still decrypts after a restart, after the store is reset, and in a different emulator process. Nothing is kept in the store.
+
+This is a wrapping oracle for tests, not a key manager. The wrapping key is fixed and public. There are no key policies, grants, rotation, key creation, or access control. Never point real data at it.
 
 ### Inspector
 
