@@ -1,5 +1,5 @@
 {
-  "name": "@emulators/twilio",
+  "name": "@envoy/emulators-twilio",
   "version": "0.11.0",
   "license": "Apache-2.0",
   "type": "module",
@@ -14,14 +14,14 @@
   "homepage": "https://emulate.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vercel-labs/emulate.git",
+    "url": "https://github.com/envoy/emulate.git",
     "directory": "packages/@emulators/twilio"
   },
   "bugs": {
-    "url": "https://github.com/vercel-labs/emulate/issues"
+    "url": "https://github.com/envoy/emulate/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com"
   },
   "files": [
     "dist"
@@ -35,11 +35,11 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@emulators/core": "workspace:*",
+    "@envoy/emulators-core": "workspace:*",
     "nodemailer": "^9.1.1"
   },
   "devDependencies": {
-    "@emulators/google": "workspace:*",
+    "@envoy/emulators-google": "workspace:*",
     "@sendgrid/client": "^8.1.6",
     "@sendgrid/mail": "^8.1.6",
     "@types/nodemailer": "^8.0.1",

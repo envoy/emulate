@@ -7,8 +7,8 @@ import {
   createApiErrorHandler,
   createErrorHandler,
   serve,
-} from "@emulators/core";
-import type { AppEnv, TokenMap } from "@emulators/core";
+} from "@envoy/emulators-core";
+import type { AppEnv, TokenMap } from "@envoy/emulators-core";
 import type { Server } from "node:http";
 import { vi } from "vitest";
 import { getSlackStore, slackPlugin } from "../index.js";

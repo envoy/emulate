@@ -18,7 +18,7 @@ program
     "after",
     `
 Framework adapters:
-  Embed emulators in app routes with @emulators/adapter-next or @emulators/adapter-nuxt.
+  Embed emulators in app routes with @envoy/emulators-adapter-next or @envoy/emulators-adapter-nuxt.
   Docs: https://emulate.dev/docs/nextjs and https://emulate.dev/docs/nuxt
 
 GitHub API coverage:

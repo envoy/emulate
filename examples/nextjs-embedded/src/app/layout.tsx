@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Next.js Embedded Example – emulate",
-  description: "OAuth with emulators embedded in the Next.js app via @emulators/adapter-next",
+  description: "OAuth with emulators embedded in the Next.js app via @envoy/emulators-adapter-next",
 };
 
 export default function RootLayout({

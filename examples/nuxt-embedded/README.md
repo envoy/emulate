@@ -1,6 +1,6 @@
 # Nuxt Embedded Example
 
-A Nuxt app with emulators embedded directly via `@emulators/adapter-nuxt`. No separate emulator process needed.
+A Nuxt app with emulators embedded directly via `@envoy/emulators-adapter-nuxt`. No separate emulator process needed.
 
 This demonstrates the solution for **preview deployments** where OAuth callback URLs change with every deployment. Because the emulators run on the same origin as the app, callbacks always work regardless of the deployment URL.
 
@@ -28,7 +28,7 @@ Open [http://localhost:3000](http://localhost:3000) and click any provider to si
 
 ## Nuxt Config
 
-`nuxt.config.ts` wraps the config with `withEmulate(...)` so Nitro traces the `@emulators/core` assets (the emulator UI fonts) into production builds.
+`nuxt.config.ts` wraps the config with `withEmulate(...)` so Nitro traces the `@envoy/emulators-core` assets (the emulator UI fonts) into production builds.
 
 ## Security Note
 
@@ -38,12 +38,12 @@ The session cookie in this example is a plain base64url-encoded JSON blob with n
 
 | | `examples/oauth` | `examples/nuxt-embedded` |
 |---|---|---|
-| Emulator process | Separate `npx emulate` process | Embedded in the Nuxt app |
+| Emulator process | Separate `npx @envoy/emulate` process | Embedded in the Nuxt app |
 | Config | `emulate.config.yaml` + `.env.local` | Seed data in `[...path].ts` |
 | OAuth URLs | `http://localhost:4001/login/oauth/...` | `/emulate/github/login/oauth/...` (same origin) |
 | Client credentials | Must match config | `"any"` (validation skipped) |
 | Preview deploys | Requires fixed callback URL | Works on any URL |
-| Extra dependency | None | `@emulators/adapter-nuxt` |
+| Extra dependency | None | `@envoy/emulators-adapter-nuxt` |
 
 ## Project Structure
 

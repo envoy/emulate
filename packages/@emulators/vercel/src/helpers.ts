@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "crypto";
-import type { Context } from "@emulators/core";
+import type { Context } from "@envoy/emulators-core";
 import type {
   VercelUser,
   VercelTeam,

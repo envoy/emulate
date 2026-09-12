@@ -1,4 +1,4 @@
-import type { Entity } from "@emulators/core";
+import type { Entity } from "@envoy/emulators-core";
 
 export interface MicrosoftUser extends Entity {
   /** Object ID (oid) — unique per-tenant user identifier */

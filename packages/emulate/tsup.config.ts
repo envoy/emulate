@@ -32,7 +32,7 @@ export default defineConfig([
     clean: true,
     splitting: true,
     sourcemap: true,
-    noExternal: [/^@emulators\//],
+    noExternal: [/^@envoy\/emulators-/],
     async onSuccess() {
       await copyFonts();
       await addShebang();
@@ -46,7 +46,7 @@ export default defineConfig([
     clean: false,
     splitting: true,
     sourcemap: true,
-    noExternal: [/^@emulators\//],
+    noExternal: [/^@envoy\/emulators-/],
     onSuccess: copyFonts,
   },
 ]);

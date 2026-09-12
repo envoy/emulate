@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import MailComposer from "nodemailer/lib/mail-composer/index.js";
-import type { Entity, RouteContext } from "@emulators/core";
+import type { Entity, RouteContext } from "@envoy/emulators-core";
 import { constantTimeEqual } from "../helpers.js";
 
 export interface SendGridEmail extends Entity {

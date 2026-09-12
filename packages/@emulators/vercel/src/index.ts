@@ -1,5 +1,5 @@
-import type { Hono } from "@emulators/core";
-import type { AppEnv, RouteContext, ServicePlugin, Store, WebhookDispatcher, TokenMap } from "@emulators/core";
+import type { Hono } from "@envoy/emulators-core";
+import type { AppEnv, RouteContext, ServicePlugin, Store, WebhookDispatcher, TokenMap } from "@envoy/emulators-core";
 import type { VercelEnvVar } from "./entities.js";
 import { getVercelStore } from "./store.js";
 import { generateUid, nowMs, stableUid } from "./helpers.js";

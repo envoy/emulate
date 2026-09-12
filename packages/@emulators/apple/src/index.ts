@@ -1,5 +1,5 @@
-import type { Hono } from "@emulators/core";
-import type { ServicePlugin, Store, WebhookDispatcher, TokenMap, AppEnv, RouteContext } from "@emulators/core";
+import type { Hono } from "@envoy/emulators-core";
+import type { ServicePlugin, Store, WebhookDispatcher, TokenMap, AppEnv, RouteContext } from "@envoy/emulators-core";
 import { getAppleStore } from "./store.js";
 import { generateAppleUid, generatePrivateRelayEmail } from "./helpers.js";
 import { oauthRoutes } from "./routes/oauth.js";

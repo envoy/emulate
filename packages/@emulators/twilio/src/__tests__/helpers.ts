@@ -1,4 +1,4 @@
-import { Hono, Store, WebhookDispatcher, type AppEnv } from "@emulators/core";
+import { Hono, Store, WebhookDispatcher, type AppEnv } from "@envoy/emulators-core";
 import { twilioPlugin, DEFAULT_ACCOUNT_SID, DEFAULT_AUTH_TOKEN } from "../index.js";
 
 export const twilioTestBaseUrl = "http://localhost:4301";

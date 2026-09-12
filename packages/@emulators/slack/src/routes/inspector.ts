@@ -1,5 +1,5 @@
-import type { InspectorTab, RouteContext, WebhookDelivery, WebhookSubscription } from "@emulators/core";
-import { escapeAttr, escapeHtml, renderInspectorPage } from "@emulators/core";
+import type { InspectorTab, RouteContext, WebhookDelivery, WebhookSubscription } from "@envoy/emulators-core";
+import { escapeAttr, escapeHtml, renderInspectorPage } from "@envoy/emulators-core";
 import { getSlackStore } from "../store.js";
 import type {
   SlackBookmark,

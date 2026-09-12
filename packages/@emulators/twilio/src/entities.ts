@@ -1,4 +1,4 @@
-import type { Entity } from "@emulators/core";
+import type { Entity } from "@envoy/emulators-core";
 
 export type TwilioAccountStatus = "active" | "suspended" | "closed";
 export type TwilioMessageDirection = "inbound" | "outbound-api" | "outbound-call" | "outbound-reply";

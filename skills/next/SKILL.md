@@ -1,20 +1,20 @@
 ---
 name: next
-description: Next.js adapter for embedding emulators directly in a Next.js app via @emulators/adapter-next. Use when the user needs to embed emulators in Next.js, set up same-origin OAuth for Vercel preview deployments, create an emulate catch-all route handler, configure Auth.js/NextAuth with embedded emulators, add persistence to embedded emulators, or wrap next.config with withEmulate. Triggers include "Next.js emulator", "adapter-next", "embedded emulator", "same-origin OAuth", "Vercel preview", "createEmulateHandler", "withEmulate", or any task requiring emulators inside a Next.js app.
-allowed-tools: Bash(npx emulate:*), Bash(emulate:*)
+description: Next.js adapter for embedding emulators directly in a Next.js app via @envoy/emulators-adapter-next. Use when the user needs to embed emulators in Next.js, set up same-origin OAuth for Vercel preview deployments, create an emulate catch-all route handler, configure Auth.js/NextAuth with embedded emulators, add persistence to embedded emulators, or wrap next.config with withEmulate. Triggers include "Next.js emulator", "adapter-next", "embedded emulator", "same-origin OAuth", "Vercel preview", "createEmulateHandler", "withEmulate", or any task requiring emulators inside a Next.js app.
+allowed-tools: Bash(npx @envoy/emulate:*), Bash(emulate:*)
 ---
 
 # Next.js Integration
 
-The `@emulators/adapter-next` package embeds emulators directly into a Next.js App Router app, running them on the same origin. This is particularly useful for Vercel preview deployments where OAuth callback URLs change with every deployment.
+The `@envoy/emulators-adapter-next` package embeds emulators directly into a Next.js App Router app, running them on the same origin. This is particularly useful for Vercel preview deployments where OAuth callback URLs change with every deployment.
 
 ## Install
 
 ```bash
-npm install @emulators/adapter-next @emulators/github @emulators/google
+npm install @envoy/emulators-adapter-next @envoy/emulators-github @envoy/emulators-google
 ```
 
-Only install the emulators you need. Each `@emulators/*` package is published independently, keeping serverless bundles small.
+Only install the emulators you need. Each `@envoy/emulators-*` package is published independently, keeping serverless bundles small.
 
 ## Route Handler
 
@@ -22,9 +22,9 @@ Create a catch-all route that serves emulator traffic:
 
 ```typescript
 // app/emulate/[...path]/route.ts
-import { createEmulateHandler } from '@emulators/adapter-next'
-import * as github from '@emulators/github'
-import * as google from '@emulators/google'
+import { createEmulateHandler } from '@envoy/emulators-adapter-next'
+import * as github from '@envoy/emulators-github'
+import * as google from '@envoy/emulators-google'
 
 export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
   services: {
@@ -80,7 +80,7 @@ Emulator UI pages use bundled fonts. Wrap your Next.js config to include them in
 
 ```typescript
 // next.config.mjs
-import { withEmulate } from '@emulators/adapter-next'
+import { withEmulate } from '@envoy/emulators-adapter-next'
 
 export default withEmulate({
   // your normal Next.js config
@@ -100,8 +100,8 @@ By default, emulator state is in-memory and resets on every cold start. To persi
 ### Custom Adapter (Vercel KV, Redis, etc.)
 
 ```typescript
-import { createEmulateHandler } from '@emulators/adapter-next'
-import * as github from '@emulators/github'
+import { createEmulateHandler } from '@envoy/emulators-adapter-next'
+import * as github from '@envoy/emulators-github'
 
 const kvAdapter = {
   async load() { return await kv.get('emulate-state') },
@@ -116,10 +116,10 @@ export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
 
 ### File Persistence (Local Dev)
 
-For local development, `@emulators/core` ships a file-based adapter:
+For local development, `@envoy/emulators-core` ships a file-based adapter:
 
 ```typescript
-import { filePersistence } from '@emulators/core'
+import { filePersistence } from '@envoy/emulators-core'
 
 // persists to a JSON file
 persistence: filePersistence('.emulate/state.json'),
@@ -159,7 +159,7 @@ Each `EmulatorEntry`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `emulator` | `EmulatorModule` | The emulator package (e.g. `import * as github from '@emulators/github'`) |
+| `emulator` | `EmulatorModule` | The emulator package (e.g. `import * as github from '@envoy/emulators-github'`) |
 | `seed?` | `Record<string, unknown>` | Seed data matching the service's config schema |
 
 ### `withEmulate(nextConfig, options?)`
@@ -180,4 +180,4 @@ interface PersistenceAdapter {
 }
 ```
 
-`initialize` must atomically create the initial value or return the value another instance created first. Implement it with compare-and-set semantics such as Redis `SET NX`. The built-in `filePersistence(path)` from `@emulators/core` provides this behavior for local development.
+`initialize` must atomically create the initial value or return the value another instance created first. Implement it with compare-and-set semantics such as Redis `SET NX`. The built-in `filePersistence(path)` from `@envoy/emulators-core` provides this behavior for local development.

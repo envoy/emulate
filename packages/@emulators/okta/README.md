@@ -1,4 +1,4 @@
-# @emulators/okta
+# @envoy/emulators-okta
 
 Okta identity provider emulation with OAuth 2.0 / OIDC, user management, groups, apps, and authorization servers.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/okta
+npm install @envoy/emulators-okta
 ```
 
 ## Endpoints

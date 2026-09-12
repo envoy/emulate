@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Store } from "@emulators/core";
+import type { Store } from "@envoy/emulators-core";
 import type { GoogleCalendarEvent } from "./entities.js";
 import { listCalendarEvents, type ListCalendarEventsOptions } from "./calendar-helpers.js";
 import type { GoogleStore } from "./store.js";

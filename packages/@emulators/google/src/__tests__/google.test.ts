@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { Hono } from "@emulators/core";
+import { Hono } from "@envoy/emulators-core";
 import { decodeJwt } from "jose";
 import {
   Store,
@@ -8,7 +8,7 @@ import {
   createApiErrorHandler,
   createErrorHandler,
   type TokenMap,
-} from "@emulators/core";
+} from "@envoy/emulators-core";
 import { googlePlugin, seedFromConfig } from "../index.js";
 import { buildRawMessage } from "../helpers.js";
 
@@ -896,11 +896,15 @@ describe("Google plugin integration", () => {
     expect(refreshBody.access_token).toMatch(/^google_/);
     expect(refreshBody.access_token).not.toBe(tokenBody.access_token);
     expect(refreshBody.scope).toBe(tokenBody.scope);
-    const revoked = await app.request(`/oauth2/revoke?token=${encodeURIComponent(tokenBody.refresh_token)}`, { method: "POST" });
+    const revoked = await app.request(`/oauth2/revoke?token=${encodeURIComponent(tokenBody.refresh_token)}`, {
+      method: "POST",
+    });
     expect(revoked.status).toBe(200);
     const afterRevoke = await formRequest(app, "/oauth2/token", {
-      grant_type: "refresh_token", refresh_token: tokenBody.refresh_token,
-      client_id: "emu_google_client_id", client_secret: "emu_google_client_secret",
+      grant_type: "refresh_token",
+      refresh_token: tokenBody.refresh_token,
+      client_id: "emu_google_client_id",
+      client_secret: "emu_google_client_secret",
     });
     expect(afterRevoke.status).toBe(400);
     expect(decodeJwt(refreshBody.id_token)).toMatchObject({

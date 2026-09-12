@@ -1,5 +1,12 @@
-import type { RouteContext, AuthUser } from "@emulators/core";
-import { ApiError, forbidden, parseJsonBody, parsePagination, setLinkHeader, unauthorized } from "@emulators/core";
+import type { RouteContext, AuthUser } from "@envoy/emulators-core";
+import {
+  ApiError,
+  forbidden,
+  parseJsonBody,
+  parsePagination,
+  setLinkHeader,
+  unauthorized,
+} from "@envoy/emulators-core";
 import { getGitHubStore } from "../store.js";
 import type { GitHubStore } from "../store.js";
 import type {

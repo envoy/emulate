@@ -1,5 +1,5 @@
-import type { RouteContext } from "@emulators/core";
-import { renderCardPage, escapeHtml, escapeAttr } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
+import { renderCardPage, escapeHtml, escapeAttr } from "@envoy/emulators-core";
 import { getResendStore } from "../store.js";
 
 const SERVICE_LABEL = "Resend";

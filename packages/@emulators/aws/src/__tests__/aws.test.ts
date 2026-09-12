@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { Hono } from "@emulators/core";
-import { Store, WebhookDispatcher, type AppEnv } from "@emulators/core";
+import { Hono } from "@envoy/emulators-core";
+import { Store, WebhookDispatcher, type AppEnv } from "@envoy/emulators-core";
 import { awsPlugin, seedFromConfig, getAwsStore } from "../index.js";
 import { createTestApp, testAuthHeaders as authHeaders, testBaseUrl as base } from "./helpers.js";
 

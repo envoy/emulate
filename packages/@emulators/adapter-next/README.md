@@ -1,4 +1,4 @@
-# @emulators/adapter-next
+# @envoy/emulators-adapter-next
 
 Next.js App Router integration for emulate. Embed emulators directly in your Next.js app so they run on the same origin, solving the Vercel preview deployment problem where OAuth callback URLs change with every deployment.
 
@@ -7,13 +7,13 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/adapter-next
+npm install @envoy/emulators-adapter-next
 ```
 
 Only install the emulators you need alongside the adapter:
 
 ```bash
-npm install @emulators/adapter-next @emulators/github @emulators/google
+npm install @envoy/emulators-adapter-next @envoy/emulators-github @envoy/emulators-google
 ```
 
 ## Route handler
@@ -22,9 +22,9 @@ Create a catch-all route that serves emulator traffic:
 
 ```typescript
 // app/emulate/[...path]/route.ts
-import { createEmulateHandler } from '@emulators/adapter-next'
-import * as github from '@emulators/github'
-import * as google from '@emulators/google'
+import { createEmulateHandler } from '@envoy/emulators-adapter-next'
+import * as github from '@envoy/emulators-github'
+import * as google from '@envoy/emulators-google'
 
 export const emulator = createEmulateHandler({
   services: {
@@ -79,7 +79,7 @@ Emulator UI pages use bundled fonts. Wrap your Next.js config to include them in
 
 ```typescript
 // next.config.mjs
-import { withEmulate } from '@emulators/adapter-next'
+import { withEmulate } from '@envoy/emulators-adapter-next'
 
 export default withEmulate({
   // your normal Next.js config
@@ -97,8 +97,8 @@ export default withEmulate(nextConfig, { routePrefix: '/api/emulate' })
 By default, emulator state is in-memory and resets on every cold start. To persist state across restarts, pass a `persistence` adapter:
 
 ```typescript
-import { createEmulateHandler } from '@emulators/adapter-next'
-import * as github from '@emulators/github'
+import { createEmulateHandler } from '@envoy/emulators-adapter-next'
+import * as github from '@envoy/emulators-github'
 
 const kvAdapter = {
   async load() { return await kv.get('emulate-state') },
@@ -111,10 +111,10 @@ export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
 })
 ```
 
-For local development, `@emulators/core` ships `filePersistence`:
+For local development, `@envoy/emulators-core` ships `filePersistence`:
 
 ```typescript
-import { filePersistence } from '@emulators/core'
+import { filePersistence } from '@envoy/emulators-core'
 
 // ...
 persistence: filePersistence('.emulate/state.json'),

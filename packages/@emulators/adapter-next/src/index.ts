@@ -5,8 +5,8 @@ import {
   type AdapterHandlerConfig,
   type GeneratedSecret,
   type PreparedServiceSeed,
-} from "@emulators/core";
-export type { PersistenceAdapter } from "@emulators/core";
+} from "@envoy/emulators-core";
+export type { PersistenceAdapter } from "@envoy/emulators-core";
 export type EmulatorModule = AdapterEmulatorModule;
 export type EmulatorEntry = AdapterEmulatorEntry;
 export type EmulateHandlerConfig = AdapterHandlerConfig;
@@ -38,7 +38,7 @@ export function createEmulateHandler(config: EmulateHandlerConfig) {
 export function withEmulate<T>(nextConfig: T, options?: { routePrefix?: string }): T {
   const config = nextConfig as Record<string, unknown>;
   const routePattern = `${options?.routePrefix ?? "/emulate"}/**`;
-  const fontGlob = "./node_modules/@emulators/core/dist/fonts/**";
+  const fontGlob = "./node_modules/@envoy/emulators-core/dist/fonts/**";
   const includes = { ...((config.outputFileTracingIncludes as Record<string, string[]> | undefined) ?? {}) };
   const existing = includes[routePattern] ?? [];
   if (!existing.includes(fontGlob)) includes[routePattern] = [...existing, fontGlob];

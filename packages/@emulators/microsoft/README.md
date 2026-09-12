@@ -1,4 +1,4 @@
-# @emulators/microsoft
+# @envoy/emulators-microsoft
 
 Microsoft Entra ID (Azure AD) v2.0 OAuth 2.0 and OpenID Connect emulation with authorization code flow, PKCE, client credentials, RS256 ID tokens, and OIDC discovery.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/microsoft
+npm install @envoy/emulators-microsoft
 ```
 
 ## Endpoints

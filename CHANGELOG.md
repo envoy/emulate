@@ -1,6 +1,5 @@
 # Changelog
 
-<!-- release:start -->
 ## 0.11.0
 
 ### New Features
@@ -14,7 +13,6 @@
 - @ctate
 - @Railly
 
-<!-- release:end -->
 
 ## 0.10.0
 

@@ -1,5 +1,5 @@
 {
-  "name": "@emulators/adapter-next",
+  "name": "@envoy/emulators-adapter-next",
   "version": "0.11.0",
   "license": "Apache-2.0",
   "type": "module",
@@ -15,14 +15,14 @@
   "homepage": "https://emulate.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vercel-labs/emulate.git",
+    "url": "https://github.com/envoy/emulate.git",
     "directory": "packages/@emulators/adapter-next"
   },
   "bugs": {
-    "url": "https://github.com/vercel-labs/emulate/issues"
+    "url": "https://github.com/envoy/emulate/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com"
   },
   "files": [
     "dist"
@@ -36,10 +36,10 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@emulators/core": "workspace:*"
+    "@envoy/emulators-core": "workspace:*"
   },
   "devDependencies": {
-    "@emulators/github": "workspace:*",
+    "@envoy/emulators-github": "workspace:*",
     "tsup": "^8",
     "typescript": "^5.7",
     "vitest": "^4.1.0"

@@ -1,4 +1,4 @@
-import type { RouteContext } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
 import { stripeError } from "../helpers.js";
 import { getStripeStore } from "../store.js";
 

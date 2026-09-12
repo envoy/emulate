@@ -1,5 +1,5 @@
-import type { RouteContext } from "@emulators/core";
-import type { Context } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
+import type { Context } from "@envoy/emulators-core";
 import { awsJsonResponse, awsErrorJson, decodeBase64 } from "../helpers.js";
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "crypto";
 

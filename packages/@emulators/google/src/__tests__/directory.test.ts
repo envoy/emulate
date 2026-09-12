@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Hono, Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@emulators/core";
+import { Hono, Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@envoy/emulators-core";
 import type { GoogleDirectoryBuilding, GoogleDirectoryCalendarResource } from "../entities.js";
 import { googlePlugin, seedFromConfig } from "../index.js";
 

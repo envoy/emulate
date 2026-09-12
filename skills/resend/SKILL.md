@@ -1,7 +1,7 @@
 ---
 name: resend
 description: Emulated Resend email API for local development and testing. Use when the user needs to send emails locally, test transactional email flows, implement magic link or verification code auth, inspect sent emails, manage domains/contacts/API keys, or work with the Resend API without sending real emails. Triggers include "Resend API", "emulate Resend", "send email locally", "test email", "magic link", "verification email", "email inbox", "RESEND_BASE_URL", or any task requiring a local email API.
-allowed-tools: Bash(npx emulate:*), Bash(emulate:*), Bash(curl:*)
+allowed-tools: Bash(npx @envoy/emulate:*), Bash(emulate:*), Bash(curl:*)
 ---
 
 # Resend Email API Emulator
@@ -14,7 +14,7 @@ No real emails are sent. Every call to `POST /emails` stores the message locally
 
 ```bash
 # Resend only
-npx emulate --service resend
+npx @envoy/emulate --service resend
 
 # Default port (when run alone)
 # http://localhost:4000
@@ -23,7 +23,7 @@ npx emulate --service resend
 Or programmatically:
 
 ```typescript
-import { createEmulator } from 'emulate'
+import { createEmulator } from '@envoy/emulate'
 
 const resend = await createEmulator({ service: 'resend', port: 4000 })
 // resend.url === 'http://localhost:4000'
@@ -66,11 +66,11 @@ await resend.emails.send({
 
 ### Embedded in Next.js (adapter-next)
 
-When using `@emulators/adapter-next`, the emulator runs inside your Next.js app at `/emulate/resend`. Set `RESEND_BASE_URL` via `next.config.ts`:
+When using `@envoy/emulators-adapter-next`, the emulator runs inside your Next.js app at `/emulate/resend`. Set `RESEND_BASE_URL` via `next.config.ts`:
 
 ```typescript
 // next.config.ts
-import { withEmulate } from '@emulators/adapter-next'
+import { withEmulate } from '@envoy/emulators-adapter-next'
 
 export default withEmulate({
   env: {
@@ -81,8 +81,8 @@ export default withEmulate({
 
 ```typescript
 // app/emulate/[...path]/route.ts
-import { createEmulateHandler } from '@emulators/adapter-next'
-import * as resend from '@emulators/resend'
+import { createEmulateHandler } from '@envoy/emulators-adapter-next'
+import * as resend from '@envoy/emulators-resend'
 
 export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
   services: {
@@ -314,7 +314,7 @@ curl -s $BASE/emails/$EMAIL_ID -H "Authorization: Bearer $TOKEN" | jq -r '.html'
 ### Send and Verify in a Test
 
 ```typescript
-import { createEmulator } from 'emulate'
+import { createEmulator } from '@envoy/emulate'
 import { Resend } from 'resend'
 
 const emu = await createEmulator({ service: 'resend', port: 4000 })

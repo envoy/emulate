@@ -1,4 +1,4 @@
-# @emulators/vercel
+# @envoy/emulators-vercel
 
 Fully stateful Vercel API emulation with Vercel-style JSON responses and cursor-based pagination.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/vercel
+npm install @envoy/emulators-vercel
 ```
 
 ## Endpoints

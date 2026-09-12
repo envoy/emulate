@@ -1,4 +1,4 @@
-import type { RouteContext } from "@emulators/core";
+import type { RouteContext } from "@envoy/emulators-core";
 import type { SlackChannel } from "../entities.js";
 import { getSlackStore } from "../store.js";
 import { formatSlackMessage, slackOk, slackError, parseSlackBody, requireSlackScopes } from "../helpers.js";

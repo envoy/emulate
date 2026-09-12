@@ -1,0 +1,47 @@
+name: Prepare emulate release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      release-created: ${{ steps.release.outputs.release_created }}
+      tag-name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      # v5.0.0. Release Please opens one reviewable release PR, updates the
+      # manifest, the root version, every package version and the CHANGELOG,
+      # then creates the vX.Y.Z tag and GitHub release only after that PR is
+      # merged.
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  # Releases made with GITHUB_TOKEN do not emit a second workflow event. Keep
+  # publication in this trusted run and pass only the immutable tag to the
+  # reusable publisher after Release Please has created it.
+  publish:
+    needs: release-please
+    if: needs.release-please.outputs.release-created == 'true'
+    uses: ./.github/workflows/publish-packages.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    with:
+      tag-name: ${{ needs.release-please.outputs.tag-name }}

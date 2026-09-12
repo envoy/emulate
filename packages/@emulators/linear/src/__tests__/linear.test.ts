@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { LinearClient } from "@linear/sdk";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { Hono, Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@emulators/core";
+import { Hono, Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@envoy/emulators-core";
 import { getLinearStore, linearPlugin, seedFromConfig, type LinearIssue } from "../index.js";
 
 const base = "http://localhost:4300";

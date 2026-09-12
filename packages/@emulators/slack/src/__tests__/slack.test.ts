@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { Hono, Store, WebhookDispatcher } from "@emulators/core";
+import { Hono, Store, WebhookDispatcher } from "@envoy/emulators-core";
 import { slackPlugin, seedFromConfig, getSlackStore } from "../index.js";
 import {
   authHeaders,

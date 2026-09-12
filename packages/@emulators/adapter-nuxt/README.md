@@ -1,17 +1,17 @@
-# @emulators/adapter-nuxt
+# @envoy/emulators-adapter-nuxt
 
 Nuxt server route integration for emulate. Embed emulators directly into your Nuxt app so they run on the same origin, which keeps OAuth callbacks stable for preview deployments.
 
 ## Install
 
 ```bash
-npm install @emulators/adapter-nuxt
+npm install @envoy/emulators-adapter-nuxt
 ```
 
 Only install the emulators you need alongside the adapter:
 
 ```bash
-npm install @emulators/adapter-nuxt @emulators/github @emulators/google
+npm install @envoy/emulators-adapter-nuxt @envoy/emulators-github @envoy/emulators-google
 ```
 
 ## Server Route
@@ -20,9 +20,9 @@ Create a named catch-all route that serves emulator traffic:
 
 ```typescript
 // server/routes/emulate/[...path].ts
-import { createEmulateHandler } from '@emulators/adapter-nuxt'
-import * as github from '@emulators/github'
-import * as google from '@emulators/google'
+import { createEmulateHandler } from '@envoy/emulators-adapter-nuxt'
+import * as github from '@envoy/emulators-github'
+import * as google from '@envoy/emulators-google'
 
 export const emulator = createEmulateHandler({
   services: {
@@ -60,7 +60,7 @@ Emulator UI pages use bundled fonts. Wrap your Nuxt config so Nitro traces the c
 
 ```typescript
 // nuxt.config.ts
-import { withEmulate } from '@emulators/adapter-nuxt'
+import { withEmulate } from '@envoy/emulators-adapter-nuxt'
 
 export default defineNuxtConfig(withEmulate({
   // your normal Nuxt config
@@ -90,8 +90,8 @@ No `oauth_apps` need to be seeded. When none are configured, the emulator skips 
 By default, emulator state is in-memory and resets on every cold start. To persist state across restarts, pass a `persistence` adapter.
 
 ```typescript
-import { createEmulateHandler } from '@emulators/adapter-nuxt'
-import * as github from '@emulators/github'
+import { createEmulateHandler } from '@envoy/emulators-adapter-nuxt'
+import * as github from '@envoy/emulators-github'
 
 const storageAdapter = {
   async load() { return await useStorage('emulate').getItem<string>('state') },
@@ -104,10 +104,10 @@ export default defineEventHandler(createEmulateHandler({
 }))
 ```
 
-For local development, `@emulators/core` ships a file-based adapter:
+For local development, `@envoy/emulators-core` ships a file-based adapter:
 
 ```typescript
-import { filePersistence } from '@emulators/core'
+import { filePersistence } from '@envoy/emulators-core'
 
 persistence: filePersistence('.emulate/state.json'),
 ```

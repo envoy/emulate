@@ -1,7 +1,7 @@
 ---
 name: stripe
 description: Emulated Stripe API for local development and testing. Use when the user needs to process payments locally, test checkout flows, create customers, manage products and prices, handle payment intents, work with webhooks, or use the Stripe SDK without hitting real Stripe servers. Triggers include "Stripe API", "emulate Stripe", "test payments locally", "checkout flow", "payment intent", "Stripe webhook", "Stripe SDK", "STRIPE_API_KEY", or any task requiring a local Stripe API.
-allowed-tools: Bash(npx emulate:*), Bash(emulate:*), Bash(curl:*)
+allowed-tools: Bash(npx @envoy/emulate:*), Bash(emulate:*), Bash(curl:*)
 ---
 
 # Stripe API Emulator
@@ -14,7 +14,7 @@ No real payments are processed. Every Stripe SDK call hits the emulator and prod
 
 ```bash
 # Stripe only
-npx emulate --service stripe
+npx @envoy/emulate --service stripe
 
 # Default port (when run alone)
 # http://localhost:4000
@@ -23,7 +23,7 @@ npx emulate --service stripe
 Or programmatically:
 
 ```typescript
-import { createEmulator } from 'emulate'
+import { createEmulator } from '@envoy/emulate'
 
 const stripe = await createEmulator({ service: 'stripe', port: 4000 })
 // stripe.url === 'http://localhost:4000'
@@ -48,11 +48,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 ### Embedded in Next.js (adapter-next)
 
-When using `@emulators/adapter-next`, the emulator runs inside your Next.js app at `/emulate/stripe`. The SDK needs to point at `localhost` with a proxy route to forward `/v1/*` calls to `/emulate/stripe/v1/*`:
+When using `@envoy/emulators-adapter-next`, the emulator runs inside your Next.js app at `/emulate/stripe`. The SDK needs to point at `localhost` with a proxy route to forward `/v1/*` calls to `/emulate/stripe/v1/*`:
 
 ```typescript
 // next.config.ts
-import { withEmulate } from '@emulators/adapter-next'
+import { withEmulate } from '@envoy/emulators-adapter-next'
 
 export default withEmulate({
   env: {
@@ -77,8 +77,8 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 ```typescript
 // app/emulate/[...path]/route.ts
-import { createEmulateHandler } from '@emulators/adapter-next'
-import * as stripe from '@emulators/stripe'
+import { createEmulateHandler } from '@envoy/emulators-adapter-next'
+import * as stripe from '@envoy/emulators-stripe'
 
 export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
   services: {

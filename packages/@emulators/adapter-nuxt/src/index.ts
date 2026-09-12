@@ -9,8 +9,8 @@ import {
   type AdapterHandlerConfig,
   type GeneratedSecret,
   type PreparedServiceSeed,
-} from "@emulators/core";
-export type { PersistenceAdapter } from "@emulators/core";
+} from "@envoy/emulators-core";
+export type { PersistenceAdapter } from "@envoy/emulators-core";
 export type EmulatorModule = AdapterEmulatorModule;
 export type EmulatorEntry = AdapterEmulatorEntry;
 export type EmulateHandlerConfig = AdapterHandlerConfig;
@@ -109,7 +109,7 @@ function copyCoreFonts(nitro: NitroInstanceLike): void {
   const serverDir = nitro.options?.output?.serverDir;
   if (!serverDir) return;
   try {
-    const corePackage = createRequire(import.meta.url).resolve("@emulators/core/package.json");
+    const corePackage = createRequire(import.meta.url).resolve("@envoy/emulators-core/package.json");
     cpSync(join(dirname(corePackage), "dist", "fonts"), join(serverDir, "fonts"), { recursive: true });
   } catch (error) {
     debug("nuxt", "font copy failed: %o", error);

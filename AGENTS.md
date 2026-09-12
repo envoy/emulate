@@ -4,11 +4,11 @@
 
 Use `pnpm` for all package management commands (not npm or yarn).
 
-Exception: End-user install instructions should use `npm` (e.g. `npx emulate`, `npm install emulate`) since npm is universal.
+Exception: End-user install instructions should use `npm` (e.g. `npx @envoy/emulate`, `npm install @envoy/emulate`) since npm is universal.
 
 ## CLI Invocation
 
-`emulate` is a zsh built-in command (it sets shell emulation mode). Running bare `emulate` in zsh invokes the shell built-in, not the npm binary. Always use `npx emulate` in user-facing CLI examples, docs, skills, help output, and post-command messages. The only exception is when `emulate` appears as a subprocess argument to another tool (e.g. `portless github.emulate emulate start`), where the binary is resolved by the parent process rather than the shell.
+`emulate` is a zsh built-in command (it sets shell emulation mode). Running bare `emulate` in zsh invokes the shell built-in, not the npm binary. Always use `npx @envoy/emulate` in user-facing CLI examples, docs, skills, help output, and post-command messages. The only exception is when `emulate` appears as a subprocess argument to another tool (e.g. `portless github.emulate emulate start`), where the binary is resolved by the parent process rather than the shell.
 
 ## Dependencies
 
@@ -50,18 +50,16 @@ When a change affects how humans or agents use emulate (new/changed/removed comm
 
 ## Releasing
 
-Releases are manual, single-PR affairs. The maintainer controls the changelog voice and format. All packages share a single version number (`emulate` + every `@emulators/*`).
+Releases are automated with [Release Please](https://github.com/googleapis/release-please). Write [Conventional Commits](https://www.conventionalcommits.org/) and everything else follows.
 
-To prepare a release:
+1. Merge work to `main` with a Conventional Commit subject: `feat`, `fix`, `perf`, `revert`, or `docs`. Append `!` for a breaking change.
+2. Release Please opens or updates a single release pull request. It bumps `.release-please-manifest.json`, the root version, every publishable package version, and `CHANGELOG.md`.
+3. Review and merge that pull request. Only then does Release Please create the `vX.Y.Z` tag and the GitHub release.
+4. The tag hands off to `.github/workflows/publish-packages.yml`, which checks out the tag, reinstalls, builds, tests, packs, attests, and publishes every package to GitHub Packages.
 
-1. Create a branch (e.g. `prepare-v0.5.0`)
-2. Bump the version in `packages/emulate/package.json`
-3. Run `pnpm sync-versions` to update all `@emulators/*` packages
-4. Write the changelog entry in `CHANGELOG.md`, wrapped in `<!-- release:start -->` and `<!-- release:end -->` markers
-5. Remove the `<!-- release:start -->` and `<!-- release:end -->` markers from the previous release entry (only the latest release should have markers)
-6. Open a PR and merge to `main`
+All publishable packages share one version. Release Please writes each of them from the `extra-files` list in `release-please-config.json`, so no version is ever bumped by hand. `node scripts/check-release-config.mjs` runs in CI and fails if a publishable package is missing from that list or has drifted off the shared version.
 
-CI compares the version in `packages/emulate/package.json` to what's on npm. If it differs, it builds, publishes all packages with provenance, and creates the GitHub release automatically. The release body is extracted from the content between the markers.
+Nothing reaches the public npm registry. Every published manifest sets `publishConfig.registry` to `https://npm.pkg.github.com`.
 
 <!-- opensrc:start -->
 

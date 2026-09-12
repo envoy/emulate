@@ -1,5 +1,5 @@
-import type { AppEnv, Context, RouteContext } from "@emulators/core";
-import { ApiError, parseJsonBody } from "@emulators/core";
+import type { AppEnv, Context, RouteContext } from "@envoy/emulators-core";
+import { ApiError, parseJsonBody } from "@envoy/emulators-core";
 import { getGitHubStore } from "../store.js";
 import type { GitHubStore } from "../store.js";
 import type { GitHubBranch, GitHubCommit, GitHubRef, GitHubRepo, GitHubTree, GitHubUser } from "../entities.js";

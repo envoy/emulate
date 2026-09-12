@@ -1,4 +1,4 @@
-# @emulators/google
+# @envoy/emulators-google
 
 Google OAuth 2.0, OpenID Connect, and mutable Google Workspace-style surfaces for local Gmail, Calendar, and Drive flows.
 
@@ -7,7 +7,7 @@ Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in repl
 ## Install
 
 ```bash
-npm install @emulators/google
+npm install @envoy/emulators-google
 ```
 
 ## Endpoints

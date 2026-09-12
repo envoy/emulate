@@ -1,7 +1,7 @@
 ---
 name: twilio
 description: Emulated Twilio REST APIs for local development and testing. Use when the user needs to test Twilio Messaging, Verify, Voice, phone numbers, webhooks, status callbacks, inbound SMS simulation, or Twilio SDK integrations without hitting the real Twilio service.
-allowed-tools: Bash(npx emulate:*)
+allowed-tools: Bash(npx @envoy/emulate:*)
 ---
 
 # Twilio API Emulator
@@ -33,7 +33,7 @@ Stateful Twilio REST emulation with seeded accounts, Auth Tokens, API keys, inco
 ## Start
 
 ```bash
-npx emulate --service twilio
+npx @envoy/emulate --service twilio
 ```
 
 Default URL: `http://localhost:4013` when all services are started, or `http://localhost:4000` when Twilio is the only service.

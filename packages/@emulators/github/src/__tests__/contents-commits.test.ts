@@ -1,9 +1,9 @@
 import { createHash } from "crypto";
 import { describe, it, expect, beforeEach } from "vitest";
-import { Hono } from "@emulators/core";
-import { Store } from "@emulators/core";
-import { WebhookDispatcher } from "@emulators/core";
-import { authMiddleware, createApiErrorHandler, createErrorHandler, type TokenMap } from "@emulators/core";
+import { Hono } from "@envoy/emulators-core";
+import { Store } from "@envoy/emulators-core";
+import { WebhookDispatcher } from "@envoy/emulators-core";
+import { authMiddleware, createApiErrorHandler, createErrorHandler, type TokenMap } from "@envoy/emulators-core";
 import { getGitHubStore, githubPlugin, seedFromConfig } from "../index.js";
 
 const base = "http://localhost:4000";
