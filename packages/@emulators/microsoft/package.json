@@ -39,6 +39,7 @@
     "jose": "^6"
   },
   "devDependencies": {
+    "botframework-connector": "^4.23.3",
     "tsup": "^8",
     "typescript": "^5.7",
     "vitest": "^4.1.0"

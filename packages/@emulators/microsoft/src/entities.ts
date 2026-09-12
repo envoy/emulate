@@ -22,3 +22,25 @@ export interface MicrosoftOAuthClient extends Entity {
   /** Tenant ID this app is registered in */
   tenant_id: string;
 }
+
+/** Bot Connector state. Activity payloads retain arbitrary channel/card fields. */
+export interface TeamsConversation extends Entity {
+  conversation_id: string;
+  bot_id: string;
+  tenant_id: string;
+  members: Array<{ id: string }>;
+  is_group: boolean;
+  blocked?: boolean;
+}
+export interface TeamsActivity extends Entity {
+  activity_id: string;
+  conversation_id: string;
+  payload: Record<string, unknown>;
+}
+export interface TeamsInstallation extends Entity {
+  installation_id: string;
+  user_id: string;
+  app_id: string;
+  external_id?: string;
+  conversation_id: string;
+}

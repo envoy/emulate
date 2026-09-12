@@ -39,6 +39,12 @@ Google Calendar coverage:
   Recurring writes are rejected.
   List, create, read, patch, and delete events with authenticated calendar-scoped requests.
 
+Microsoft Teams coverage:
+  Graph user and installed-app chat discovery; Bot Framework conversation and card messaging.
+  Seed microsoft.teams_conversations and microsoft.teams_installations.
+  Read messages at GET /_emulator/teams/conversations/{conversationId}/activities.
+  Configure Graph, Connector serviceUrl, and token endpoints with separate audience scopes.
+
 Webhook signatures:
   Stripe webhook secrets produce a Stripe-Signature header for raw-body verification.
 `,

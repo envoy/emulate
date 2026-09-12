@@ -2,14 +2,19 @@ import type { Hono } from "@emulators/core";
 import type { ServicePlugin, Store, WebhookDispatcher, TokenMap, AppEnv, RouteContext } from "@emulators/core";
 import { getMicrosoftStore } from "./store.js";
 import { generateOid, DEFAULT_TENANT_ID } from "./helpers.js";
+import { teamsRoutes } from "./routes/teams.js";
 import { oauthRoutes } from "./routes/oauth.js";
 
 export { getMicrosoftStore, type MicrosoftStore } from "./store.js";
 export * from "./entities.js";
 
 export interface MicrosoftSeedConfig {
+  teams_conversations?: Array<Omit<import("./entities.js").TeamsConversation, "id" | "created_at" | "updated_at">>;
+  teams_installations?: Array<Omit<import("./entities.js").TeamsInstallation, "id" | "created_at" | "updated_at">>;
+
   users?: Array<{
     email: string;
+    oid?: string;
     name?: string;
     given_name?: string;
     family_name?: string;
@@ -42,6 +47,18 @@ function seedDefaults(store: Store, _baseUrl: string): void {
 export function seedFromConfig(store: Store, _baseUrl: string, config: MicrosoftSeedConfig): void {
   const ms = getMicrosoftStore(store);
 
+  for (const conversation of config.teams_conversations ?? []) {
+    if (!ms.conversations.findOneBy("conversation_id", conversation.conversation_id))
+      ms.conversations.insert(conversation);
+  }
+  for (const installation of config.teams_installations ?? []) {
+    if (
+      !ms.installations
+        .all()
+        .some((i) => i.user_id === installation.user_id && i.installation_id === installation.installation_id)
+    )
+      ms.installations.insert(installation);
+  }
   if (config.users) {
     for (const u of config.users) {
       const existing = ms.users.findOneBy("email", u.email);
@@ -49,7 +66,7 @@ export function seedFromConfig(store: Store, _baseUrl: string, config: Microsoft
 
       const nameParts = (u.name ?? "").split(/\s+/);
       ms.users.insert({
-        oid: generateOid(),
+        oid: u.oid ?? generateOid(),
         email: u.email,
         name: u.name ?? u.email.split("@")[0],
         given_name: u.given_name ?? nameParts[0] ?? "",
@@ -80,6 +97,7 @@ export const microsoftPlugin: ServicePlugin = {
   name: "microsoft",
   register(app: Hono<AppEnv>, store: Store, webhooks: WebhookDispatcher, baseUrl: string, tokenMap?: TokenMap): void {
     const ctx: RouteContext = { app, store, webhooks, baseUrl, tokenMap };
+    teamsRoutes(ctx);
     oauthRoutes(ctx);
   },
   seed(store: Store, baseUrl: string): void {

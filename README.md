@@ -1061,9 +1061,11 @@ Sign in with Apple emulation with authorization code flow, PKCE support, RS256 I
 - `POST /auth/token` - token exchange (authorization code and refresh token grants)
 - `POST /auth/revoke` - token revocation
 
-## Microsoft Entra ID
+## Microsoft Entra ID and Teams
 
 Microsoft Entra ID (Azure AD) v2.0 OAuth 2.0 and OpenID Connect emulation with authorization code flow, PKCE, client credentials, RS256 ID tokens, and OIDC discovery.
+
+Teams messaging includes Graph user/installed-app/chat discovery and authenticated Bot Framework conversation creation, send, reply, update, and delete. Seed `teams_conversations` and `teams_installations`; inspect stored cards at `GET /_emulator/teams/conversations/{conversationId}/activities`. Configure both Graph and Connector URLs and separate Graph/Bot Framework tokens. See [Teams setup, seed configuration, routes, and limitations](packages/@emulators/microsoft/README.md#teams-messaging).
 
 - `GET /.well-known/openid-configuration` - OIDC discovery document
 - `GET /:tenant/v2.0/.well-known/openid-configuration` - tenant-scoped OIDC discovery
