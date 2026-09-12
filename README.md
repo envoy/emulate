@@ -2,6 +2,28 @@
 
 Local drop-in replacement services for CI and no-network sandboxes. Fully stateful, production-fidelity API emulation. Not mocks.
 
+## Installing
+
+These packages live in [GitHub Packages](https://docs.github.com/en/packages), not on the public npm registry. GitHub Packages authenticates every read, so each consumer, a laptop included, needs a registry entry for the `@envoy` scope before `npm install` or `npx` will resolve anything.
+
+Put this in `~/.npmrc`, or in the project `.npmrc`:
+
+```
+@envoy:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+Then export a token carrying the `read:packages` scope:
+
+```bash
+gh auth refresh -s read:packages
+export GITHUB_TOKEN="$(gh auth token)"
+```
+
+A classic personal access token with `read:packages` works just as well. Inside GitHub Actions, `secrets.GITHUB_TOKEN` is enough as long as the job requests `packages: read`.
+
+The published names are `@envoy/emulate` for the CLI and `@envoy/emulators-<service>` for each emulator, for example `@envoy/emulators-aws`.
+
 ## Quick Start
 
 ```bash

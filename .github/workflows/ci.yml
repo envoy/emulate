@@ -28,7 +28,7 @@ jobs:
 
       - run: pnpm build
 
-      - run: node scripts/sync-versions.mjs --check
+      - run: node scripts/check-release-config.mjs
 
       - run: pnpm format:check
 

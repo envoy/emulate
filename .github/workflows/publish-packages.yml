@@ -1,0 +1,144 @@
+name: Publish emulate packages
+
+on:
+  workflow_call:
+    inputs:
+      tag-name:
+        description: "Immutable vX.Y.Z tag created by Release Please"
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: publish-emulate-packages-${{ inputs.tag-name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # Release Please is the only workflow allowed to invoke this publisher.
+    if: startsWith(inputs.tag-name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: emulate-package-production
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag-name }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@a15d269cd4658e1107c09f1fabf4cbd7bd1f308a # v4.4.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: "@envoy"
+      - name: Validate the immutable release identity
+        id: release
+        env:
+          TAG: ${{ inputs.tag-name }}
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p 'require("./package.json").version')"
+          [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || {
+            echo "release version must be a stable semantic version" >&2
+            exit 2
+          }
+          test "$TAG" = "v$VERSION"
+          # fetch-depth: 0 materializes origin/main before checkout removes credentials.
+          git rev-parse --verify 'origin/main^{commit}' >/dev/null
+          SOURCE_SHA="$(git rev-parse HEAD)"
+          git merge-base --is-ancestor "$SOURCE_SHA" origin/main
+          # Proves every publishable package is known to Release Please and sits
+          # at the released version.
+          node scripts/check-release-config.mjs
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "source-sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Verify tagged source
+        run: |
+          set -euo pipefail
+          pnpm build
+          pnpm format:check
+          pnpm type-check
+          pnpm lint
+          pnpm test
+      - name: Pack every publishable package
+        id: pack
+        run: |
+          set -euo pipefail
+          OUT="$GITHUB_WORKSPACE/dist-release"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+          : > "$OUT/manifest.tsv"
+          while IFS=$'\t' read -r dir name version; do
+            # pnpm pack resolves the workspace:* protocol to the exact version.
+            TARBALL="$(cd "$dir" && pnpm pack --pack-destination "$OUT" | tail -1)"
+            test -f "$TARBALL"
+            printf '%s\t%s\n' "$name" "$TARBALL" >> "$OUT/manifest.tsv"
+            echo "packed $name@$version"
+          done < <(node scripts/release-packages.mjs --list)
+          test "$(wc -l < "$OUT/manifest.tsv")" -eq "$(node scripts/release-packages.mjs --list | wc -l)"
+      - name: Attest the packed artifacts
+        id: attest
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: dist-release/*.tgz
+      - name: Publish the attested release to GitHub Packages
+        id: publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -uo pipefail
+          REGISTRY=https://npm.pkg.github.com
+          FAILED=()
+          SKIPPED=()
+          PUBLISHED=()
+          while IFS=$'\t' read -r name tarball; do
+            if npm view "$name@$VERSION" version --registry="$REGISTRY" >/dev/null 2>&1; then
+              echo "$name@$VERSION is already published, skipping"
+              SKIPPED+=("$name")
+              continue
+            fi
+            if npm publish "$tarball" --registry="$REGISTRY" --tag latest; then
+              PUBLISHED+=("$name")
+            else
+              echo "failed to publish $name@$VERSION" >&2
+              FAILED+=("$name")
+            fi
+          done < dist-release/manifest.tsv
+          {
+            echo "published=${#PUBLISHED[@]}"
+            echo "skipped=${#SKIPPED[@]}"
+          } >> "$GITHUB_OUTPUT"
+          if [ "${#FAILED[@]}" -gt 0 ]; then
+            echo "failed to publish: ${FAILED[*]}" >&2
+            exit 1
+          fi
+      - name: Publish summary
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          SOURCE_SHA: ${{ steps.release.outputs.source-sha }}
+          TAG: ${{ inputs.tag-name }}
+          PUBLISHED: ${{ steps.publish.outputs.published }}
+          SKIPPED: ${{ steps.publish.outputs.skipped }}
+          ATTESTATION_URL: ${{ steps.attest.outputs.attestation-url }}
+        run: |
+          {
+            echo "### emulate $VERSION"
+            echo "- Tag: \`$TAG\`"
+            echo "- Source: \`$SOURCE_SHA\`"
+            echo "- Registry: https://npm.pkg.github.com"
+            echo "- Published: $PUBLISHED package(s)"
+            echo "- Already present: $SKIPPED package(s)"
+            echo "- Attestation: $ATTESTATION_URL"
+          } >> "$GITHUB_STEP_SUMMARY"
