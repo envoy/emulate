@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.12.0](https://github.com/envoy/emulate/compare/v0.11.0...v0.12.0) (2026-09-12)
+
+
+### Features
+
+* **release:** publish to GitHub Packages under the [@envoy](https://github.com/envoy) scope with Release Please ([#8](https://github.com/envoy/emulate/issues/8)) ([6fc470f](https://github.com/envoy/emulate/commit/6fc470f608b37c95ae98a31680ad2f77b336ab04))
+
+
+### Bug Fixes
+
+* **deps:** repair the lockfile two Dependabot merges left behind ([ff578a9](https://github.com/envoy/emulate/commit/ff578a9a1716c903d29ec04b25393d679e0ab904))
+* **deps:** repair the lockfile two Dependabot merges left behind ([00a57e2](https://github.com/envoy/emulate/commit/00a57e29ca410bf339263c5dc5bd853079526dff))
+
 ## 0.11.0
 
 ### New Features
