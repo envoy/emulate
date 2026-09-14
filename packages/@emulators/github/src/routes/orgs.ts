@@ -1,12 +1,5 @@
-import type { RouteContext, AuthUser } from "@envoy/emulators-core";
-import {
-  ApiError,
-  parseJsonBody,
-  parsePagination,
-  setLinkHeader,
-  unauthorized,
-  forbidden,
-} from "@envoy/emulators-core";
+import type { RouteContext, AuthUser } from "@emulators/core";
+import { ApiError, parseJsonBody, parsePagination, setLinkHeader, unauthorized, forbidden } from "@emulators/core";
 import { getGitHubStore } from "../store.js";
 import type { GitHubStore } from "../store.js";
 import type { GitHubOrg, GitHubRepo, GitHubTeam, GitHubUser } from "../entities.js";
@@ -128,7 +121,7 @@ function findTeamRepo(gh: GitHubStore, teamId: number, repoId: number) {
   return gh.teamRepos.findBy("team_id", teamId).find((r) => r.repo_id === repoId);
 }
 
-function getOrCreateMembersTeam(gh: GitHubStore, org: GitHubOrg): GitHubTeam {
+export function getOrCreateMembersTeam(gh: GitHubStore, org: GitHubOrg): GitHubTeam {
   const existing = teamsForOrg(gh, org.id).find((t) => t.slug === MEMBERS_TEAM_SLUG);
   if (existing) return existing;
   const team = gh.teams.insert({

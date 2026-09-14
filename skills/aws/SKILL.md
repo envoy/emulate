@@ -1,12 +1,12 @@
 ---
 name: aws
 description: Emulated AWS cloud services (S3, SQS, IAM, STS, KMS) for local development and testing. Use when the user needs to interact with AWS API endpoints locally, test S3 bucket and object operations, emulate SQS queues and messages, manage IAM users/roles/access keys, test STS assume role, wrap and unwrap data keys with KMS, or work without hitting real AWS APIs. Triggers include "AWS emulator", "emulate AWS", "mock S3", "local SQS", "test IAM", "emulate S3", "AWS locally", "STS assume role", "emulate KMS", "KMS encrypt", or any task requiring local AWS service emulation.
-allowed-tools: Bash(npx @envoy/emulate:*), Bash(emulate:*), Bash(curl:*)
+allowed-tools: Bash(npx @envoy/emulate:*), Bash(curl:*)
 ---
 
 # AWS Emulator
 
-S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. All state is in-memory, and the query services respond with AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does.
+S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. All state is in-memory, and the query services respond with AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does. S3 uploads and downloads preserve arbitrary binary payloads, including raw byte lengths and ETags.
 
 ## Start
 

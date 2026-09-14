@@ -1,6 +1,6 @@
 {
-  "name": "@envoy/emulators-okta",
-  "version": "0.12.0",
+  "name": "@emulators/okta",
+  "version": "0.11.2",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,14 +14,14 @@
   "homepage": "https://emulate.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/envoy/emulate.git",
+    "url": "https://github.com/vercel-labs/emulate.git",
     "directory": "packages/@emulators/okta"
   },
   "bugs": {
-    "url": "https://github.com/envoy/emulate/issues"
+    "url": "https://github.com/vercel-labs/emulate/issues"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "files": [
     "dist"
@@ -35,7 +35,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@envoy/emulators-core": "workspace:*",
+    "@emulators/core": "workspace:*",
     "jose": "^6"
   },
   "devDependencies": {

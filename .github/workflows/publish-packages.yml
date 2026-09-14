@@ -56,8 +56,7 @@ jobs:
           git rev-parse --verify 'origin/main^{commit}' >/dev/null
           SOURCE_SHA="$(git rev-parse HEAD)"
           git merge-base --is-ancestor "$SOURCE_SHA" origin/main
-          # Proves every publishable package is known to Release Please and sits
-          # at the released version.
+          # Proves the root release version and package name mapping are valid.
           node scripts/check-release-config.mjs
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "source-sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
@@ -71,22 +70,9 @@ jobs:
           pnpm type-check
           pnpm lint
           pnpm test
-      - name: Pack every publishable package
+      - name: Prepare and verify the distribution tarballs
         id: pack
-        run: |
-          set -euo pipefail
-          OUT="$GITHUB_WORKSPACE/dist-release"
-          rm -rf "$OUT"
-          mkdir -p "$OUT"
-          : > "$OUT/manifest.tsv"
-          while IFS=$'\t' read -r dir name version; do
-            # pnpm pack resolves the workspace:* protocol to the exact version.
-            TARBALL="$(cd "$dir" && pnpm pack --pack-destination "$OUT" | tail -1)"
-            test -f "$TARBALL"
-            printf '%s\t%s\n' "$name" "$TARBALL" >> "$OUT/manifest.tsv"
-            echo "packed $name@$version"
-          done < <(node scripts/release-packages.mjs --list)
-          test "$(wc -l < "$OUT/manifest.tsv")" -eq "$(node scripts/release-packages.mjs --list | wc -l)"
+        run: bash scripts/prepare-release.sh "$GITHUB_WORKSPACE/dist-release"
       - name: Attest the packed artifacts
         id: attest
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2

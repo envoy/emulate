@@ -1,5 +1,5 @@
-import { createEmulateHandler } from "@envoy/emulators-adapter-next";
-import * as resend from "@envoy/emulators-resend";
+import { createEmulateHandler } from "@emulators/adapter-next";
+import * as resend from "@emulators/resend";
 
 export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
   services: {

@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { startCommand } from "./commands/start.js";
 import { initCommand } from "./commands/init.js";
 import { listCommand } from "./commands/list.js";
+import { SERVICE_NAMES } from "./registry.js";
 
 declare const PKG_VERSION: string;
 const pkg = { version: PKG_VERSION };
@@ -18,15 +19,20 @@ program
     "after",
     `
 Framework adapters:
-  Embed emulators in app routes with @envoy/emulators-adapter-next or @envoy/emulators-adapter-nuxt.
+  Embed emulators in app routes with @emulators/adapter-next or @emulators/adapter-nuxt.
   Docs: https://emulate.dev/docs/nextjs and https://emulate.dev/docs/nuxt
 
 GitHub API coverage:
-  Includes repository contents, raw downloads, commit history, commit details, and ref comparisons.
+  Includes repository contents, raw downloads, raw media negotiation for file Contents and README responses,
+  commit history, commit details, ref comparisons, organization membership seeding with member/admin roles,
+  and Checks list-by-ref endpoints for branch and tag refs containing slashes.
   Inspect minted installation-token metadata at GET /_emulate/installation-tokens.
 
 Linear API coverage:
   Issue queries and mutations include numeric priority and derived priorityLabel fields.
+
+Distribution:
+  Install @envoy/emulate from GitHub Packages. See the README for registry setup.
 
 SendGrid email coverage:
   Twilio includes POST /v3/mail/send with Bearer authentication.
@@ -39,8 +45,43 @@ Google Calendar coverage:
   Recurring writes are rejected.
   List, create, read, patch, and delete events with authenticated calendar-scoped requests.
 
+Vercel API coverage:
+  GET /v7/deployments lists deployments by commit SHA across a team's projects, with cursor pagination.
+
+AWS API coverage:
+  S3 uploads and downloads preserve arbitrary binary payloads, including raw byte lengths and ETags.
+
+Google Calendar discovery:
+  GET /discovery/v1/apis/calendar/v3/rest returns the public discovery document for the emulated Calendar v3 surface.
+
+Google OIDC:
+  Discovery advertises RS256 ID tokens, and GET /oauth2/v3/certs returns the RSA public key used to verify them.
+
+Resend API coverage:
+  POST /emails and POST /emails/batch support 24-hour Idempotency-Key replay without duplicate emails or webhooks.
+
+Microsoft OAuth coverage:
+  Refresh tokens are bound to the issuing client and require its client_id and client_secret, or client_secret_basic.
+  Legacy refresh records without a stored client binding remain supported.
+
 Webhook signatures:
   Stripe webhook secrets produce a Stripe-Signature header for raw-body verification.
+
+Available services:
+  ${SERVICE_NAMES.join(", ")}
+  Run 'npx @envoy/emulate list' for endpoint summaries.
+
+Configuration:
+  Run 'npx @envoy/emulate init' to create a starter emulate.config.yaml, or pass --seed <file>.
+  GitHub App private keys may be omitted for createEmulator; CLI startup generates omitted keys only with
+  --generated-secrets-file <path>.
+
+Twilio API coverage:
+  Accounts, API keys, phone numbers, Messaging, Verify, Voice, Conversations, webhooks, simulators, and inspector.
+
+Slack message limits:
+  Slack text fields are limited to 40,000 Unicode characters. Longer text is truncated safely,
+  and successful Web API responses include message_truncated warning metadata.
 `,
   );
 

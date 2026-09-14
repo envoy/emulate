@@ -1,4 +1,4 @@
-import { parsePagination, setLinkHeader, type RouteContext } from "@envoy/emulators-core";
+import { parsePagination, setLinkHeader, type RouteContext } from "@emulators/core";
 import { generateOktaId, normalizeGroupType } from "../helpers.js";
 import {
   findGroupByRef,

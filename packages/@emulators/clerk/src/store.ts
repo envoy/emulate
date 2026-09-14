@@ -1,4 +1,4 @@
-import type { Collection, Store } from "@envoy/emulators-core";
+import type { Collection, Store } from "@emulators/core";
 import type {
   ClerkUser,
   ClerkEmailAddress,

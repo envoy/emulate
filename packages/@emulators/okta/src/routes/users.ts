@@ -1,4 +1,4 @@
-import { parsePagination, setLinkHeader, type RouteContext } from "@envoy/emulators-core";
+import { parsePagination, setLinkHeader, type RouteContext } from "@emulators/core";
 import { boolFromQuery, generateOktaId, nowIso, userDisplayName } from "../helpers.js";
 import { findUserByRef, oktaError, readJsonObject, requireManagementAuth, userResponse } from "../route-helpers.js";
 import { getOktaStore } from "../store.js";

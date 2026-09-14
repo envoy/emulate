@@ -1,5 +1,5 @@
 import { gunzipSync } from "node:zlib";
-import type { Context } from "@envoy/emulators-core";
+import type { Context } from "@emulators/core";
 import type { GoogleCalendarEventInput } from "./calendar-helpers.js";
 import type { GoogleDriveItemInput } from "./drive-helpers.js";
 import type { GoogleMessageInput } from "./helpers.js";

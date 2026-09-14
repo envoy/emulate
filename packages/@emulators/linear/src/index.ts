@@ -1,5 +1,5 @@
-import type { Context, Hono } from "@envoy/emulators-core";
-import type { AppEnv, RouteContext, ServicePlugin, Store, TokenMap, WebhookDispatcher } from "@envoy/emulators-core";
+import type { Context, Hono } from "@emulators/core";
+import type { AppEnv, RouteContext, ServicePlugin, Store, TokenMap, WebhookDispatcher } from "@emulators/core";
 import { getLinearStore } from "./store.js";
 import { linearId, slugify } from "./ids.js";
 import type { LinearIssuePriority, LinearTokenActorType, LinearWorkflowStateType } from "./entities.js";

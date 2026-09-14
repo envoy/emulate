@@ -1,6 +1,6 @@
-import { withEmulate } from "@envoy/emulators-adapter-nuxt";
+import { withEmulate } from "@emulators/adapter-nuxt";
 
-// `withEmulate` wraps the config so Nitro traces `@envoy/emulators-core` assets
+// `withEmulate` wraps the config so Nitro traces `@emulators/core` assets
 // (the emulator UI fonts) into production builds.
 export default defineNuxtConfig(
   withEmulate({

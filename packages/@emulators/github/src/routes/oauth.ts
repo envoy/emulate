@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
-import type { Context } from "@envoy/emulators-core";
-import type { RouteContext, Store, AuthUser, AppEnv } from "@envoy/emulators-core";
+import type { Context } from "@emulators/core";
+import type { RouteContext, Store, AuthUser, AppEnv } from "@emulators/core";
 import {
   unauthorized,
   escapeHtml,
@@ -13,7 +13,7 @@ import {
   constantTimeSecretEqual,
   parseCookies,
   debug,
-} from "@envoy/emulators-core";
+} from "@emulators/core";
 import { getGitHubStore } from "../store.js";
 import { formatUser, formatUserFull } from "../helpers.js";
 

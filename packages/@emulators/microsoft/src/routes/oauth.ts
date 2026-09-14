@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "crypto";
 import { SignJWT, exportJWK, generateKeyPair } from "jose";
-import type { RouteContext } from "@envoy/emulators-core";
+import type { RouteContext } from "@emulators/core";
 import {
   escapeHtml,
   escapeAttr,
@@ -12,11 +12,11 @@ import {
   constantTimeSecretEqual,
   bodyStr,
   debug,
-} from "@envoy/emulators-core";
+} from "@emulators/core";
 import { getMicrosoftStore } from "../store.js";
 import { DEFAULT_TENANT_ID } from "../helpers.js";
 import type { MicrosoftUser } from "../entities.js";
-import type { Store } from "@envoy/emulators-core";
+import type { Store } from "@emulators/core";
 
 // RSA key pair generated at module load for signing id_tokens
 const keyPairPromise = generateKeyPair("RS256");
@@ -35,7 +35,7 @@ type PendingCode = {
 
 type StoredRefreshToken = {
   email: string;
-  clientId: string;
+  clientId?: string;
   scope: string;
   nonce: string | null;
 };
@@ -336,17 +336,23 @@ export function oauthRoutes({ app, store, baseUrl, tokenMap }: RouteContext): vo
       }
     }
 
-    if (grant_type === "authorization_code") {
-      const clientsConfigured = ms.oauthClients.all().length > 0;
-      if (clientsConfigured) {
-        const client = ms.oauthClients.findOneBy("client_id", client_id);
-        if (!client) {
-          return c.json({ error: "invalid_client", error_description: "The client_id is incorrect." }, 401);
-        }
-        if (!constantTimeSecretEqual(client_secret, client.client_secret)) {
-          return c.json({ error: "invalid_client", error_description: "The client_secret is incorrect." }, 401);
-        }
+    const validateClientCredentials = () => {
+      if (ms.oauthClients.all().length === 0) return null;
+
+      const client = ms.oauthClients.findOneBy("client_id", client_id);
+      if (!client) {
+        return c.json({ error: "invalid_client", error_description: "The client_id is incorrect." }, 401);
       }
+      if (!constantTimeSecretEqual(client_secret, client.client_secret)) {
+        return c.json({ error: "invalid_client", error_description: "The client_secret is incorrect." }, 401);
+      }
+
+      return null;
+    };
+
+    if (grant_type === "authorization_code") {
+      const clientError = validateClientCredentials();
+      if (clientError) return clientError;
 
       const pendingMap = getPendingCodes(store);
       const pending = pendingMap.get(code);
@@ -429,9 +435,15 @@ export function oauthRoutes({ app, store, baseUrl, tokenMap }: RouteContext): vo
     }
 
     if (grant_type === "refresh_token") {
+      const clientError = validateClientCredentials();
+      if (clientError) return clientError;
+
       const refreshMap = getRefreshTokens(store);
       const stored = refreshMap.get(refresh_token);
       if (!stored) {
+        return c.json({ error: "invalid_grant", error_description: "The refresh_token is invalid." }, 400);
+      }
+      if (stored.clientId && stored.clientId !== client_id) {
         return c.json({ error: "invalid_grant", error_description: "The refresh_token is invalid." }, 400);
       }
 
@@ -472,16 +484,8 @@ export function oauthRoutes({ app, store, baseUrl, tokenMap }: RouteContext): vo
     }
 
     if (grant_type === "client_credentials") {
-      const clientsConfigured = ms.oauthClients.all().length > 0;
-      if (clientsConfigured) {
-        const client = ms.oauthClients.findOneBy("client_id", client_id);
-        if (!client) {
-          return c.json({ error: "invalid_client", error_description: "The client_id is incorrect." }, 401);
-        }
-        if (!constantTimeSecretEqual(client_secret, client.client_secret)) {
-          return c.json({ error: "invalid_client", error_description: "The client_secret is incorrect." }, 401);
-        }
-      }
+      const clientError = validateClientCredentials();
+      if (clientError) return clientError;
 
       const accessToken = "microsoft_" + randomBytes(20).toString("base64url");
       const scopes = scope ? scope.split(/\s+/).filter(Boolean) : [".default"];

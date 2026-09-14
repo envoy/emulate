@@ -1,5 +1,5 @@
 import { buildSchema, graphql } from "graphql";
-import type { Context, RouteContext, Store } from "@envoy/emulators-core";
+import type { Context, RouteContext, Store } from "@emulators/core";
 import { getLinearStore } from "../store.js";
 import { linearId } from "../ids.js";
 import { connectionFromArray, type ConnectionArgs } from "../pagination.js";

@@ -1,4 +1,4 @@
-import type { Entity } from "@envoy/emulators-core";
+import type { Entity } from "@emulators/core";
 
 export interface AppleUser extends Entity {
   uid: string;

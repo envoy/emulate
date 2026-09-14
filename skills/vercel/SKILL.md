@@ -1,7 +1,7 @@
 ---
 name: vercel
 description: Emulated Vercel REST API for local development and testing. Use when the user needs to interact with Vercel API endpoints locally, test Vercel integrations, emulate projects/deployments/domains, set up Vercel OAuth flows, manage environment variables, create API keys, configure protection bypass, emulate Vercel Blob storage, or test without hitting the real Vercel API. Triggers include "Vercel API", "emulate Vercel", "mock Vercel", "test Vercel OAuth", "Vercel integration", "Vercel Blob", "local Vercel", or any task requiring a local Vercel API.
-allowed-tools: Bash(npx @envoy/emulate:*), Bash(emulate:*), Bash(curl:*)
+allowed-tools: Bash(npx @envoy/emulate:*), Bash(curl:*)
 ---
 
 # Vercel API Emulator
@@ -257,6 +257,10 @@ curl http://localhost:4000/v13/deployments/dpl_abc123 \
 
 # List deployments (filter by projectId, app, target, state; cursor paginated)
 curl "http://localhost:4000/v6/deployments?projectId=my-app&target=production&limit=10" \
+  -H "Authorization: Bearer $TOKEN"
+
+# List deployments (filter by commit SHA)
+curl "http://localhost:4000/v7/deployments?sha=abc123" \
   -H "Authorization: Bearer $TOKEN"
 
 # Delete deployment

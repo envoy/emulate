@@ -1,6 +1,6 @@
-import { createEmulateHandler } from "@envoy/emulators-adapter-nuxt";
-import * as github from "@envoy/emulators-github";
-import * as google from "@envoy/emulators-google";
+import { createEmulateHandler } from "@emulators/adapter-nuxt";
+import * as github from "@emulators/github";
+import * as google from "@emulators/google";
 
 // Serves the embedded emulators on the same origin as the app:
 //   /emulate/github/**   -> GitHub emulator

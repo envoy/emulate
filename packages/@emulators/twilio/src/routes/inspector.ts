@@ -1,5 +1,5 @@
-import type { InspectorTab, RouteContext } from "@envoy/emulators-core";
-import { escapeHtml, renderInspectorPage } from "@envoy/emulators-core";
+import type { InspectorTab, RouteContext } from "@emulators/core";
+import { escapeHtml, renderInspectorPage } from "@emulators/core";
 import { getTwilioStore } from "../store.js";
 import { maskSecret } from "../helpers.js";
 
