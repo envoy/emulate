@@ -1,7 +1,7 @@
 ---
 name: twilio
 description: Emulated Twilio REST APIs for local development and testing. Use when the user needs to test Twilio Messaging, Verify, Voice, phone numbers, webhooks, status callbacks, inbound SMS simulation, Twilio SDK integrations, or SendGrid Mail Send without hitting real services.
-allowed-tools: Bash(npx emulate:*) Bash(curl:*)
+allowed-tools: Bash(npx emulate:*), Bash(curl:*)
 ---
 
 # Twilio API Emulator
