@@ -1,5 +1,5 @@
-import type { Context, Hono } from "@envoy/emulators-core";
-import type { ServicePlugin, Store, WebhookDispatcher, TokenMap, AppEnv, RouteContext } from "@envoy/emulators-core";
+import type { Context, Hono } from "@emulators/core";
+import type { ServicePlugin, Store, WebhookDispatcher, TokenMap, AppEnv, RouteContext } from "@emulators/core";
 import { getSlackStore } from "./store.js";
 import { generateSlackId } from "./helpers.js";
 import type { SlackOAuthApp, SlackPresence, SlackTokenType, SlackUserProfile } from "./entities.js";

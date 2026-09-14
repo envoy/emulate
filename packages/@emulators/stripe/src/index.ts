@@ -1,5 +1,5 @@
 import { createHmac } from "crypto";
-import type { Hono } from "@envoy/emulators-core";
+import type { Hono } from "@emulators/core";
 import type {
   ServicePlugin,
   Store,
@@ -8,7 +8,7 @@ import type {
   TokenMap,
   AppEnv,
   RouteContext,
-} from "@envoy/emulators-core";
+} from "@emulators/core";
 import { getStripeStore } from "./store.js";
 import { stripeId } from "./helpers.js";
 import { customerRoutes } from "./routes/customers.js";

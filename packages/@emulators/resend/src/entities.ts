@@ -1,4 +1,4 @@
-import type { Entity } from "@envoy/emulators-core";
+import type { Entity } from "@emulators/core";
 
 export interface ResendEmail extends Entity {
   uuid: string;
@@ -15,6 +15,13 @@ export interface ResendEmail extends Entity {
   status: "sent" | "delivered" | "bounced" | "canceled" | "scheduled";
   scheduled_at: string | null;
   last_event: string;
+}
+
+export interface ResendIdempotencyRecord extends Entity {
+  idempotency_key: string;
+  endpoint: "emails" | "emails/batch";
+  request_fingerprint: string;
+  response_email_ids: string[];
 }
 
 export interface ResendDomain extends Entity {

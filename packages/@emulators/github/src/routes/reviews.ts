@@ -1,6 +1,6 @@
-import type { Context } from "@envoy/emulators-core";
-import type { RouteContext, WebhookDispatcher } from "@envoy/emulators-core";
-import { ApiError, parseJsonBody, parsePagination, setLinkHeader } from "@envoy/emulators-core";
+import type { Context } from "@emulators/core";
+import type { RouteContext, WebhookDispatcher } from "@emulators/core";
+import { ApiError, parseJsonBody, parsePagination, setLinkHeader } from "@emulators/core";
 import { getGitHubStore } from "../store.js";
 import type { GitHubStore } from "../store.js";
 import type { GitHubComment, GitHubPullRequest, GitHubRepo, GitHubReview, GitHubUser } from "../entities.js";
@@ -138,7 +138,7 @@ export function reviewsRoutes({ app, store, webhooks, baseUrl }: RouteContext): 
     const repo = lookupRepo(gh, owner, repoName);
     if (!repo) throw notFoundResponse();
 
-    const actor = assertRepoWrite(gh, c.get("authUser"), repo);
+    const actor = assertRepoWrite(gh, c.get("authUser"), repo, "pull_requests");
 
     const pullNumber = parseInt(c.req.param("pull_number")!, 10);
     if (!Number.isFinite(pullNumber)) throw notFoundResponse();
@@ -244,7 +244,7 @@ export function reviewsRoutes({ app, store, webhooks, baseUrl }: RouteContext): 
     const repo = lookupRepo(gh, owner, repoName);
     if (!repo) throw notFoundResponse();
 
-    assertRepoWrite(gh, c.get("authUser"), repo);
+    assertRepoWrite(gh, c.get("authUser"), repo, "pull_requests");
 
     const pullNumber = parseInt(c.req.param("pull_number")!, 10);
     const reviewId = parseInt(c.req.param("review_id")!, 10);
@@ -276,7 +276,7 @@ export function reviewsRoutes({ app, store, webhooks, baseUrl }: RouteContext): 
     const repo = lookupRepo(gh, owner, repoName);
     if (!repo) throw notFoundResponse();
 
-    const actor = assertRepoWrite(gh, c.get("authUser"), repo);
+    const actor = assertRepoWrite(gh, c.get("authUser"), repo, "pull_requests");
 
     const pullNumber = parseInt(c.req.param("pull_number")!, 10);
     const reviewId = parseInt(c.req.param("review_id")!, 10);
@@ -320,7 +320,7 @@ export function reviewsRoutes({ app, store, webhooks, baseUrl }: RouteContext): 
     const repo = lookupRepo(gh, owner, repoName);
     if (!repo) throw notFoundResponse();
 
-    const actor = assertRepoWrite(gh, c.get("authUser"), repo);
+    const actor = assertRepoWrite(gh, c.get("authUser"), repo, "pull_requests");
 
     const pullNumber = parseInt(c.req.param("pull_number")!, 10);
     const reviewId = parseInt(c.req.param("review_id")!, 10);

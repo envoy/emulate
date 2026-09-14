@@ -1,8 +1,8 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import type { Context, ContentfulStatusCode } from "@envoy/emulators-core";
+import type { Context, ContentfulStatusCode } from "@emulators/core";
 import type { TwilioAccount } from "./entities.js";
 import type { TwilioStore } from "./store.js";
-import type { Entity } from "@envoy/emulators-core";
+import type { Entity } from "@emulators/core";
 
 export type TwilioBody = Record<string, string | string[]>;
 

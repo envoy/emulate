@@ -49,6 +49,8 @@ All services start with sensible defaults. No config file needed:
 
 Stripe webhooks configured with a secret include a `Stripe-Signature` header signed over the timestamp and raw request body.
 
+Resend `POST /emails` and `POST /emails/batch` support 24-hour `Idempotency-Key` replay, returning the original email IDs without duplicate emails or webhooks.
+
 ## CLI
 
 ```bash
@@ -255,6 +257,9 @@ github:
   orgs:
     - login: my-org
       name: My Organization
+      members:
+        - login: octocat
+          role: admin
   repos:
     - owner: octocat
       name: hello-world
@@ -428,9 +433,13 @@ linear:
     - name: Bug
       color: "#d92d20"
       team: ENG
+    - name: Feature
+      color: "#2563eb"
+      team: ENG
   issues:
     - team: ENG
       title: Fix local checkout test
+      description: Reproduce and fix the checkout failure.
       state: Todo
       assignee: dev@example.com
       labels: [Bug]
@@ -441,6 +450,7 @@ linear:
       redirect_uris:
         - http://localhost:3000/api/auth/callback/linear
       scopes: [read, write, issues:create, comments:create]
+      actor: user
   tokens:
     - token: lin_test_admin
       user: admin@example.com
@@ -486,7 +496,111 @@ aws:
     roles:
       - role_name: lambda-execution-role
         description: Role for Lambda function execution
+
+okta:
+  users:
+    - login: testuser@okta.local
+      email: testuser@okta.local
+      first_name: Test
+      last_name: User
+  groups:
+    - name: Everyone
+      description: All users
+      type: BUILT_IN
+      okta_id: 00g_everyone
+  authorization_servers:
+    - id: default
+      name: default
+      audiences: [api://default]
+  oauth_clients:
+    - client_id: okta-test-client
+      client_secret: okta-test-secret
+      name: Sample OIDC Client
+      redirect_uris:
+        - http://localhost:3000/callback
+      auth_server_id: default
+
+resend:
+  domains:
+    - name: example.com
+      region: us-east-1
+  contacts:
+    - email: test@example.com
+      first_name: Test
+      last_name: User
+
+stripe:
+  customers:
+    - email: test@example.com
+      name: Test Customer
+  products:
+    - name: Pro Plan
+      description: Monthly pro subscription
+  prices:
+    - product_name: Pro Plan
+      currency: usd
+      unit_amount: 2000
+
+mongoatlas:
+  projects:
+    - name: Project0
+  clusters:
+    - name: Cluster0
+      project: Project0
+  database_users:
+    - username: admin
+      project: Project0
+  databases:
+    - cluster: Cluster0
+      name: test
+      collections: [items]
+
+clerk:
+  users:
+    - first_name: Test
+      last_name: User
+      email_addresses: [test@example.com]
+      password: clerk_test_password
+  organizations:
+    - name: My Company
+      slug: my-company
+      members:
+        - email: test@example.com
+          role: admin
+  oauth_applications:
+    - client_id: clerk_emulate_client
+      client_secret: clerk_emulate_secret
+      name: Emulate App
+      redirect_uris:
+        - http://localhost:3000/api/auth/callback/clerk
+
+twilio:
+  account:
+    sid: AC00000000000000000000000000000000
+    auth_token: twilio_test_auth_token
+    friendly_name: Local Twilio Account
+  api_keys:
+    - sid: SK00000000000000000000000000000000
+      secret: twilio_test_api_secret
+      friendly_name: Local API Key
+  phone_numbers:
+    - phone_number: "+15551234567"
+      friendly_name: Local SMS and Voice Number
+      sms_url: http://localhost:3000/api/twilio/sms
+      voice_url: http://localhost:3000/api/twilio/voice
+  messaging_services:
+    - friendly_name: Local Messaging Service
+      phone_numbers: ["+15551234567"]
+  verify_services:
+    - friendly_name: Local Verify Service
+      code: "123456"
+      default_channel: sms
+  conversations:
+    services:
+      - friendly_name: Local Conversations
 ```
+
+GitHub organization `members` are optional. Each entry references a seeded user by `login`; `role` defaults to `member`, while `admin` creates an organization administrator. Unknown users are ignored. Seeded memberships use the synthetic `members` team and grant private organization repository access.
 
 ## OAuth & Integrations
 
@@ -528,10 +642,6 @@ github:
     - app_id: 12345
       slug: "my-github-app"
       name: "My GitHub App"
-      private_key: |
-        -----BEGIN RSA PRIVATE KEY-----
-        ...your PEM key...
-        -----END RSA PRIVATE KEY-----
       permissions:
         contents: read
         issues: write
@@ -544,7 +654,9 @@ github:
           repository_selection: all
 ```
 
-JWT authentication: sign a JWT with `{ iss: "<app_id>" }` using the app's private key (RS256). The emulator verifies the signature and resolves the app.
+JWT authentication: sign a JWT with `{ iss: "<app_id>" }` using the app's private key (RS256). The emulator verifies the signature and resolves the app. For programmatic `createEmulator` calls, omit `private_key` and read the generated RSA key from `generatedSecrets`. The CLI generates an omitted key only when `--generated-secrets-file <path>` is provided; otherwise it requires an explicit, valid private key. Do not replace the omitted field with a fake PEM placeholder.
+
+Installation access tokens act as the configured GitHub App bot for repository writes. Repository ownership, selected repository access, and requested App permissions remain enforced. Pull request merges require `contents: write` on the base repository. Pull request branch updates require `pull_requests: write` on the pull request repository and `contents: write` on the head repository.
 
 Inspect secret-free metadata for minted installation tokens at `GET /_emulate/installation-tokens`.
 
@@ -629,6 +741,7 @@ Every endpoint below is fully stateful with Vercel-style JSON responses and curs
 - `POST /v13/deployments` - create deployment (auto-transitions to READY)
 - `GET /v13/deployments/:idOrUrl` - get deployment (by ID or URL)
 - `GET /v6/deployments` - list deployments (filter by project, target, state)
+- `GET /v7/deployments` - list deployments (filter by project, target, state, commit SHA)
 - `DELETE /v13/deployments/:id` - delete deployment (cascades)
 - `PATCH /v12/deployments/:id/cancel` - cancel building deployment
 - `GET /v2/deployments/:id/aliases` - list deployment aliases
@@ -703,7 +816,8 @@ Every endpoint below is fully stateful. Creates, updates, and deletes persist in
 ### Contents & Commit History
 - `GET /repos/:owner/:repo/readme` - get the repository README
 - `GET /repos/:owner/:repo/contents/:path` - get a file or list a directory at a ref
-- `GET /:owner/:repo/raw/:ref/:path` - download file content from advertised raw URLs
+- Send `Accept: application/vnd.github.raw` or `application/vnd.github.raw+json` to file Contents and README requests to receive raw bytes; directory and submodule responses remain JSON
+- `GET /:owner/:repo/raw/:ref/:path` - download file content from advertised raw URLs; this is separate from Accept negotiation
 - `PUT/DELETE /repos/:owner/:repo/contents/:path` - create, update, or delete a file and commit the change
 - `GET /repos/:owner/:repo/commits` - list commits with ref, path, author, and date filters
 - `GET /repos/:owner/:repo/commits/:ref` - get a commit with file diffs and stats
@@ -787,8 +901,8 @@ Every endpoint below is fully stateful. Creates, updates, and deletes persist in
 - Secrets: repo + org CRUD
 
 ### Checks
-- Check runs: create, update, get, annotations, rerequest, list by ref/suite
-- Check suites: create, get, preferences, rerequest, list by ref
+- Check runs: create, update, get, annotations, rerequest, list by ref/suite. Ref based lookups accept branch and tag refs containing slashes.
+- Check suites: create, get, preferences, rerequest, list by ref. Ref based lookups accept branch and tag refs containing slashes.
 - Automatic suite status rollup from check run results
 
 ### Misc
@@ -803,11 +917,13 @@ Every endpoint below is fully stateful. Creates, updates, and deletes persist in
 
 OAuth 2.0, OpenID Connect, and mutable Google Workspace-style surfaces for local inbox, calendar, and drive flows.
 
+Google ID tokens are RS256-signed JWTs. The discovery document advertises RS256, and `/oauth2/v3/certs` returns the matching RSA public key used to verify issued tokens.
+
 - `GET /o/oauth2/v2/auth` - authorization endpoint
 - `POST /oauth2/token` - token exchange
 - `GET /oauth2/v2/userinfo` - get user info
 - `GET /.well-known/openid-configuration` - OIDC discovery document
-- `GET /oauth2/v3/certs` - JSON Web Key Set (JWKS)
+- `GET /oauth2/v3/certs` - JSON Web Key Set (JWKS) with the RSA public key for ID token verification
 - `GET /gmail/v1/users/:userId/messages` - list messages with `q`, `labelIds`, `maxResults`, and `pageToken`
 - `GET /gmail/v1/users/:userId/messages/:id` - fetch a Gmail-style message payload in `full`, `metadata`, `minimal`, or `raw` formats
 - `GET /gmail/v1/users/:userId/messages/:messageId/attachments/:id` - fetch attachment bodies
@@ -872,11 +988,14 @@ Each room resource ensures a Calendar whose ID is its `resourceEmail`, so caller
 can discover a room and then create and read its events through the Calendar API.
 
 - `GET /calendar/v3/users/:userId/calendarList`, `GET /calendar/v3/calendars/:calendarId/events`, `GET /calendar/v3/calendars/:calendarId/events/:eventId`, `POST /calendar/v3/calendars/:calendarId/events`, `PATCH /calendar/v3/calendars/:calendarId/events/:eventId`, `DELETE /calendar/v3/calendars/:calendarId/events/:eventId`, `POST /calendar/v3/freeBusy`
+- `GET /discovery/v1/apis/calendar/v3/rest` — public Calendar v3 REST discovery document
 - `GET /drive/v3/files`, `GET /drive/v3/files/:fileId`, `POST /drive/v3/files`, `PATCH /drive/v3/files/:fileId`, `PUT /drive/v3/files/:fileId`, `POST /upload/drive/v3/files`
 
 ## Slack API
 
 Fully stateful Slack Web API emulation with channels, messages, threads, reactions, user profiles, presence, modern file uploads, pins, bookmarks, views, OAuth v2, and incoming webhooks. Chat writes preserve common rich message fields such as `blocks`, `attachments`, `metadata`, formatting flags, unfurl flags, and client message ids. Conversation writes update archive state, names, topics, purposes, membership, DMs, MPIMs, and read cursors. User writes update profile fields, status, custom fields, and deterministic active or away presence. File writes support the current external upload flow with local upload URLs, file share messages, reads, lists, downloads, and deletes. Pin and bookmark writes support channel message pins and link bookmarks. View writes support App Home publishing and modal stacks. Seeded OAuth apps and OAuth installs create bot users and installation records. OAuth exchanges and explicit token seeds create scoped token records. Supported write state changes dispatch Slack `event_callback` payloads to configured webhook URLs.
+
+Slack message text is limited to 40,000 Unicode characters across chat writes, incoming webhooks, and file upload initial comments. Longer text is truncated at a Unicode code point boundary before it is stored or dispatched. Successful Web API responses include `warning: "message_truncated"` and `response_metadata` with the matching warning and explanatory message. Rich fields such as `blocks` and `attachments` are preserved unchanged.
 
 ### Auth & Chat
 - `POST /api/auth.test` - test authentication
@@ -1085,7 +1204,7 @@ Sign in with Apple emulation with authorization code flow, PKCE support, RS256 I
 
 ## Microsoft Entra ID
 
-Microsoft Entra ID (Azure AD) v2.0 OAuth 2.0 and OpenID Connect emulation with authorization code flow, PKCE, client credentials, RS256 ID tokens, and OIDC discovery.
+Microsoft Entra ID (Azure AD) v2.0 OAuth 2.0 and OpenID Connect emulation with authorization code flow, PKCE, client credentials, client-bound refresh tokens, RS256 ID tokens, and OIDC discovery.
 
 - `GET /.well-known/openid-configuration` - OIDC discovery document
 - `GET /:tenant/v2.0/.well-known/openid-configuration` - tenant-scoped OIDC discovery
@@ -1097,9 +1216,20 @@ Microsoft Entra ID (Azure AD) v2.0 OAuth 2.0 and OpenID Connect emulation with a
 - `GET /oauth2/v2.0/logout` - end session / logout
 - `POST /oauth2/v2.0/revoke` - token revocation
 
+Refresh token requests must include the `client_id` and `client_secret` of the client that received the token. Refresh tokens rotate after successful use. Legacy refresh records without a stored client binding remain supported.
+
+```bash
+curl -X POST http://localhost:4005/oauth2/v2.0/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "refresh_token=r_microsoft_...&\
+client_id=example-client-id&\
+client_secret=example-client-secret&\
+grant_type=refresh_token"
+```
+
 ## AWS
 
-S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. The query services return AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does.
+S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. The query services return AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does. S3 uploads and downloads preserve arbitrary binary payloads, including raw byte lengths and ETags.
 
 ### S3
 
@@ -1358,7 +1488,7 @@ The persistence adapter loads on cold start and saves after mutations. Generated
 ```
 packages/
   emulate/          # CLI entry point (commander)
-  @envoy/emulators-
+  @emulators/
     core/           # HTTP server, in-memory store, plugin interface, middleware
     adapter-next/   # Next.js App Router integration
     adapter-nuxt/   # Nuxt server route integration
@@ -1385,7 +1515,7 @@ Tokens are configured in the seed config and map to users. Pass them as `Authori
 
 **GitHub**: Public repo endpoints work without auth. Private repos and write operations require a valid token. Pagination uses `page`/`per_page` with `Link` headers.
 
-**Google**: Standard OAuth 2.0 authorization code flow. Configure clients in the seed config.
+**Google**: Standard OAuth 2.0 authorization code flow with RS256-signed OIDC ID tokens. The discovery document advertises RS256 and `/oauth2/v3/certs` returns the RSA public key used to verify issued tokens. Configure clients in the seed config.
 
 **Slack**: All Web API endpoints require `Authorization: Bearer <token>`. Seeded OAuth apps create local installation records, and OAuth v2 flow with user picker UI creates scoped bot tokens. Optional strict scope mode returns `missing_scope` when a token lacks a required method scope.
 
@@ -1398,3 +1528,11 @@ Tokens are configured in the seed config and map to users. Pass them as `Authori
 **Microsoft**: OIDC authorization code flow with PKCE support. Also supports client credentials grants. Microsoft Graph `/v1.0/me` available.
 
 **AWS**: Bearer tokens or IAM access key credentials. Default key pair always seeded: `AKIAIOSFODNN7EXAMPLE` / `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`.
+
+## Maintaining this distribution
+
+Source workspaces retain upstream `emulate` and `@emulators/*` identities. Release
+preparation applies the independent Envoy version and `@envoy` names in a temporary
+tree, then tests the packed artifacts. Consumer package names are unchanged.
+See [the upstream maintenance guide](docs/upstream-maintenance.md) for syncing,
+clean contribution branches, and local release verification.

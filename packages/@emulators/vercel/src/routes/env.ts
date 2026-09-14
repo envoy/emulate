@@ -1,7 +1,7 @@
-import type { Context } from "@envoy/emulators-core";
-import type { ContentfulStatusCode } from "@envoy/emulators-core";
-import type { RouteContext } from "@envoy/emulators-core";
-import { ApiError, parseJsonBody } from "@envoy/emulators-core";
+import type { Context } from "@emulators/core";
+import type { ContentfulStatusCode } from "@emulators/core";
+import type { RouteContext } from "@emulators/core";
+import { ApiError, parseJsonBody } from "@emulators/core";
 export { ApiError };
 import { getVercelStore } from "../store.js";
 import type { VercelStore } from "../store.js";

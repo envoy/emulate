@@ -12,7 +12,8 @@
     "type-check": "turbo type-check",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx}\"",
-    "check-release-config": "node scripts/check-release-config.mjs"
+    "check-release-config": "node scripts/check-release-config.mjs",
+    "test:release": "node --test scripts/__tests__/*.test.mjs"
   },
   "devDependencies": {
     "@types/node": "^22",

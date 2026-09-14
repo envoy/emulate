@@ -141,13 +141,13 @@ importers:
       '@base-ui/react':
         specifier: ^1.3.0
         version: 1.3.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@envoy/emulators-adapter-next':
+      '@emulators/adapter-next':
         specifier: workspace:*
         version: link:../../packages/@emulators/adapter-next
-      '@envoy/emulators-github':
+      '@emulators/github':
         specifier: workspace:*
         version: link:../../packages/@emulators/github
-      '@envoy/emulators-google':
+      '@emulators/google':
         specifier: workspace:*
         version: link:../../packages/@emulators/google
       class-variance-authority:
@@ -202,13 +202,13 @@ importers:
 
   examples/nuxt-embedded:
     dependencies:
-      '@envoy/emulators-adapter-nuxt':
+      '@emulators/adapter-nuxt':
         specifier: workspace:*
         version: link:../../packages/@emulators/adapter-nuxt
-      '@envoy/emulators-github':
+      '@emulators/github':
         specifier: workspace:*
         version: link:../../packages/@emulators/github
-      '@envoy/emulators-google':
+      '@emulators/google':
         specifier: workspace:*
         version: link:../../packages/@emulators/google
       nuxt:
@@ -291,10 +291,10 @@ importers:
       '@base-ui/react':
         specifier: ^1.3.0
         version: 1.3.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@envoy/emulators-adapter-next':
+      '@emulators/adapter-next':
         specifier: workspace:*
         version: link:../../packages/@emulators/adapter-next
-      '@envoy/emulators-resend':
+      '@emulators/resend':
         specifier: workspace:*
         version: link:../../packages/@emulators/resend
       class-variance-authority:
@@ -352,10 +352,10 @@ importers:
 
   examples/stripe-checkout:
     dependencies:
-      '@envoy/emulators-adapter-next':
+      '@emulators/adapter-next':
         specifier: workspace:*
         version: link:../../packages/@emulators/adapter-next
-      '@envoy/emulators-stripe':
+      '@emulators/stripe':
         specifier: workspace:*
         version: link:../../packages/@emulators/stripe
       geist:
@@ -407,10 +407,10 @@ importers:
       '@base-ui/react':
         specifier: ^1.3.0
         version: 1.3.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@envoy/emulators-adapter-next':
+      '@emulators/adapter-next':
         specifier: workspace:*
         version: link:../../packages/@emulators/adapter-next
-      '@envoy/emulators-twilio':
+      '@emulators/twilio':
         specifier: workspace:*
         version: link:../../packages/@emulators/twilio
       class-variance-authority:
@@ -471,10 +471,10 @@ importers:
       '@base-ui/react':
         specifier: ^1.3.0
         version: 1.3.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@envoy/emulators-adapter-next':
+      '@emulators/adapter-next':
         specifier: workspace:*
         version: link:../../packages/@emulators/adapter-next
-      '@envoy/emulators-vercel':
+      '@emulators/vercel':
         specifier: workspace:*
         version: link:../../packages/@emulators/vercel
       '@vercel/blob':
@@ -532,11 +532,11 @@ importers:
 
   packages/@emulators/adapter-next:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
-      '@envoy/emulators-github':
+      '@emulators/github':
         specifier: workspace:*
         version: link:../github
       tsup:
@@ -551,11 +551,11 @@ importers:
 
   packages/@emulators/adapter-nuxt:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
-      '@envoy/emulators-github':
+      '@emulators/github':
         specifier: workspace:*
         version: link:../github
       tsup:
@@ -570,7 +570,7 @@ importers:
 
   packages/@emulators/apple:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
       jose:
@@ -589,7 +589,7 @@ importers:
 
   packages/@emulators/aws:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -611,7 +611,7 @@ importers:
 
   packages/@emulators/clerk:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
       jose:
@@ -646,7 +646,7 @@ importers:
 
   packages/@emulators/github:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -662,7 +662,7 @@ importers:
 
   packages/@emulators/google:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
       jose:
@@ -681,7 +681,7 @@ importers:
 
   packages/@emulators/linear:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
       graphql:
@@ -703,7 +703,7 @@ importers:
 
   packages/@emulators/microsoft:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
       jose:
@@ -722,7 +722,7 @@ importers:
 
   packages/@emulators/mongoatlas:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -738,7 +738,7 @@ importers:
 
   packages/@emulators/okta:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
       jose:
@@ -757,7 +757,7 @@ importers:
 
   packages/@emulators/resend:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -773,7 +773,7 @@ importers:
 
   packages/@emulators/slack:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -792,7 +792,7 @@ importers:
 
   packages/@emulators/stripe:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -808,14 +808,14 @@ importers:
 
   packages/@emulators/twilio:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
       nodemailer:
         specifier: ^9.1.1
         version: 9.1.1
     devDependencies:
-      '@envoy/emulators-google':
+      '@emulators/google':
         specifier: workspace:*
         version: link:../google
       '@sendgrid/client':
@@ -842,7 +842,7 @@ importers:
 
   packages/@emulators/vercel:
     dependencies:
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -871,49 +871,49 @@ importers:
         specifier: ^2
         version: 2.8.3
     devDependencies:
-      '@envoy/emulators-apple':
+      '@emulators/apple':
         specifier: workspace:*
         version: link:../@emulators/apple
-      '@envoy/emulators-aws':
+      '@emulators/aws':
         specifier: workspace:*
         version: link:../@emulators/aws
-      '@envoy/emulators-clerk':
+      '@emulators/clerk':
         specifier: workspace:*
         version: link:../@emulators/clerk
-      '@envoy/emulators-core':
+      '@emulators/core':
         specifier: workspace:*
         version: link:../@emulators/core
-      '@envoy/emulators-github':
+      '@emulators/github':
         specifier: workspace:*
         version: link:../@emulators/github
-      '@envoy/emulators-google':
+      '@emulators/google':
         specifier: workspace:*
         version: link:../@emulators/google
-      '@envoy/emulators-linear':
+      '@emulators/linear':
         specifier: workspace:*
         version: link:../@emulators/linear
-      '@envoy/emulators-microsoft':
+      '@emulators/microsoft':
         specifier: workspace:*
         version: link:../@emulators/microsoft
-      '@envoy/emulators-mongoatlas':
+      '@emulators/mongoatlas':
         specifier: workspace:*
         version: link:../@emulators/mongoatlas
-      '@envoy/emulators-okta':
+      '@emulators/okta':
         specifier: workspace:*
         version: link:../@emulators/okta
-      '@envoy/emulators-resend':
+      '@emulators/resend':
         specifier: workspace:*
         version: link:../@emulators/resend
-      '@envoy/emulators-slack':
+      '@emulators/slack':
         specifier: workspace:*
         version: link:../@emulators/slack
-      '@envoy/emulators-stripe':
+      '@emulators/stripe':
         specifier: workspace:*
         version: link:../@emulators/stripe
-      '@envoy/emulators-twilio':
+      '@emulators/twilio':
         specifier: workspace:*
         version: link:../@emulators/twilio
-      '@envoy/emulators-vercel':
+      '@emulators/vercel':
         specifier: workspace:*
         version: link:../@emulators/vercel
       tsup:

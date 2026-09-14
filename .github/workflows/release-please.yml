@@ -21,7 +21,7 @@ jobs:
       tag-name: ${{ steps.release.outputs.tag_name }}
     steps:
       # v5.0.0. Release Please opens one reviewable release PR, updates the
-      # manifest, the root version, every package version and the CHANGELOG,
+      # manifest, the root version and the CHANGELOG,
       # then creates the vX.Y.Z tag and GitHub release only after that PR is
       # merged.
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7

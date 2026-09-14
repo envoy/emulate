@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { serve } from "@envoy/emulators-core";
+import { serve } from "@emulators/core";
 import type { AddressInfo } from "node:net";
 import {
   S3Client,
@@ -42,11 +42,7 @@ async function startEmulator(): Promise<EmulatorHandle> {
 }
 
 async function streamToString(stream: unknown): Promise<string> {
-  const chunks: Buffer[] = [];
-  for await (const chunk of stream as AsyncIterable<Uint8Array>) {
-    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-  }
-  return Buffer.concat(chunks).toString();
+  return (await streamToBuffer(stream)).toString();
 }
 
 async function streamToBuffer(stream: unknown): Promise<Buffer> {
@@ -115,19 +111,20 @@ describe("AWS plugin - real @aws-sdk/client-s3 E2E", () => {
     expect(head.LastModified).toBeInstanceOf(Date);
   });
 
-  it("PutObject / GetObject roundtrips binary content byte-for-byte", async () => {
-    const body = Buffer.from([0x00, 0xff, 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  it("PutObject / GetObject preserves arbitrary binary bytes", async () => {
+    const body = Buffer.from([0x00, 0x01, 0x02, 0x7f, 0x80, 0xfe, 0xff]);
     await s3.send(
       new PutObjectCommand({
         Bucket: "emulate-default",
-        Key: "e2e/binary.png",
+        Key: "e2e/binary.bin",
         Body: body,
-        ContentType: "image/png",
+        ContentType: "application/octet-stream",
         ServerSideEncryption: "AES256",
       }),
     );
 
-    const get = await s3.send(new GetObjectCommand({ Bucket: "emulate-default", Key: "e2e/binary.png" }));
+    const get = await s3.send(new GetObjectCommand({ Bucket: "emulate-default", Key: "e2e/binary.bin" }));
+    expect(get.ContentLength).toBe(body.byteLength);
     expect(await streamToBuffer(get.Body)).toEqual(body);
   });
 

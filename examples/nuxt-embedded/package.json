@@ -11,9 +11,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@envoy/emulators-adapter-nuxt": "workspace:*",
-    "@envoy/emulators-github": "workspace:*",
-    "@envoy/emulators-google": "workspace:*",
+    "@emulators/adapter-nuxt": "workspace:*",
+    "@emulators/github": "workspace:*",
+    "@emulators/google": "workspace:*",
     "nuxt": "^4.4.8",
     "vue": "^3.5.0",
     "vue-router": "^4.5.0"

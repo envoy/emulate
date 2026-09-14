@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { SignJWT, exportJWK, generateKeyPair } from "jose";
-import type { Context } from "@envoy/emulators-core";
-import type { AppEnv, RouteContext, Store } from "@envoy/emulators-core";
+import type { Context } from "@emulators/core";
+import type { AppEnv, RouteContext, Store } from "@emulators/core";
 import {
   bodyStr,
   constantTimeSecretEqual,
@@ -13,7 +13,7 @@ import {
   renderErrorPage,
   renderFormPostPage,
   renderUserButton,
-} from "@envoy/emulators-core";
+} from "@emulators/core";
 import type { OktaOAuthClient, OktaUser } from "../entities.js";
 import {
   DEFAULT_AUDIENCE,

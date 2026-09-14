@@ -1,4 +1,4 @@
-import type { RouteContext } from "@envoy/emulators-core";
+import type { RouteContext } from "@emulators/core";
 import { getMongoAtlasStore } from "../store.js";
 import { generateClusterId, generateGroupId, generateUserId, mongoOk, mongoError } from "../helpers.js";
 

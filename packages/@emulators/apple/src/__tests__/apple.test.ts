@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { Hono } from "@envoy/emulators-core";
-import { Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@envoy/emulators-core";
+import { Hono } from "@emulators/core";
+import { Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@emulators/core";
 import { applePlugin, seedFromConfig } from "../index.js";
 import { decodeJwt } from "jose";
 

@@ -53,13 +53,24 @@ When a change affects how humans or agents use emulate (new/changed/removed comm
 Releases are automated with [Release Please](https://github.com/googleapis/release-please). Write [Conventional Commits](https://www.conventionalcommits.org/) and everything else follows.
 
 1. Merge work to `main` with a Conventional Commit subject: `feat`, `fix`, `perf`, `revert`, or `docs`. Append `!` for a breaking change.
-2. Release Please opens or updates a single release pull request. It bumps `.release-please-manifest.json`, the root version, every publishable package version, and `CHANGELOG.md`.
+2. Release Please opens or updates a single release pull request. It bumps `.release-please-manifest.json`, the root version, and `CHANGELOG.md`.
 3. Review and merge that pull request. Only then does Release Please create the `vX.Y.Z` tag and the GitHub release.
 4. The tag hands off to `.github/workflows/publish-packages.yml`, which checks out the tag, reinstalls, builds, tests, packs, attests, and publishes every package to GitHub Packages.
 
-All publishable packages share one version. Release Please writes each of them from the `extra-files` list in `release-please-config.json`, so no version is ever bumped by hand. `node scripts/check-release-config.mjs` runs in CI and fails if a publishable package is missing from that list or has drifted off the shared version.
+Source package names, imports, and package versions follow upstream. Keep `emulate`
+and `@emulators/*` in maintained code and workspace manifests. Human-facing
+installation examples continue to use `npx @envoy/emulate` and `@envoy/emulators-*`.
 
-Nothing reaches the public npm registry. Every published manifest sets `publishConfig.registry` to `https://npm.pkg.github.com`.
+`bash scripts/prepare-release.sh <empty-artifact-directory>` copies tracked source
+into a temporary tree, applies the Envoy names and root release version, builds,
+tests, packs, and verifies all packages from an isolated consumer. Every published
+manifest targets `https://npm.pkg.github.com`. Only the release workflow publishes;
+never publish directly from the source workspaces.
+
+For upstream updates, merge `upstream/main` on an integration branch and land the
+PR with a merge commit. Do not squash or rebase upstream-sync PRs. Start contribution
+branches from `upstream/main`; do not include distribution or release changes.
+See [the maintenance guide](docs/upstream-maintenance.md).
 
 <!-- opensrc:start -->
 

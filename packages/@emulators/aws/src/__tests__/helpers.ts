@@ -1,4 +1,4 @@
-import { Hono } from "@envoy/emulators-core";
+import { Hono } from "@emulators/core";
 import {
   Store,
   WebhookDispatcher,
@@ -7,7 +7,7 @@ import {
   createErrorHandler,
   type AppEnv,
   type TokenMap,
-} from "@envoy/emulators-core";
+} from "@emulators/core";
 import { awsPlugin } from "../index.js";
 
 export const testBaseUrl = "http://localhost:4000";

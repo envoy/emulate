@@ -1,5 +1,5 @@
-import type { RouteContext } from "@envoy/emulators-core";
-import { ApiError, forbidden, parseJsonBody, parsePagination, setLinkHeader } from "@envoy/emulators-core";
+import type { RouteContext } from "@emulators/core";
+import { ApiError, forbidden, parseJsonBody, parsePagination, setLinkHeader } from "@emulators/core";
 import { getGitHubStore } from "../store.js";
 import {
   assertAuthenticatedUser,
@@ -11,7 +11,7 @@ import {
 } from "../route-helpers.js";
 import type { GitHubStore } from "../store.js";
 import type { GitHubBranch, GitHubCollaborator, GitHubRef, GitHubRepo, GitHubTag, GitHubUser } from "../entities.js";
-import type { Collection, Entity } from "@envoy/emulators-core";
+import type { Collection, Entity } from "@emulators/core";
 import { formatRepo, formatUser, generateNodeId, lookupOwner, lookupRepo, timestamp } from "../helpers.js";
 import { findOrCreateBlob, findOrCreateCommit, findOrCreateTree } from "../git-helpers.js";
 

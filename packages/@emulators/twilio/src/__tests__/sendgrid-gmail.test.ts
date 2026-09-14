@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Hono, Store, WebhookDispatcher, authMiddleware, type AppEnv, type TokenMap } from "@envoy/emulators-core";
-import { googlePlugin, seedFromConfig } from "@envoy/emulators-google";
+import { Hono, Store, WebhookDispatcher, authMiddleware, type AppEnv, type TokenMap } from "@emulators/core";
+import { googlePlugin, seedFromConfig } from "@emulators/google";
 import { createTwilioPlugin, seedFromConfig as seedTwilio } from "../index.js";
 
 describe("SendGrid delivery to Gmail", () => {

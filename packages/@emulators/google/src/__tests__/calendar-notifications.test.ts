@@ -1,7 +1,7 @@
 import { gzipSync } from "node:zlib";
 import { createServer, type IncomingHttpHeaders } from "node:http";
 import { describe, expect, it } from "vitest";
-import { Hono, Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@envoy/emulators-core";
+import { Hono, Store, WebhookDispatcher, authMiddleware, type TokenMap } from "@emulators/core";
 import { getGoogleStore, googlePlugin, seedFromConfig } from "../index.js";
 
 describe("Calendar notifications", () => {

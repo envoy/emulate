@@ -1,4 +1,5 @@
-import type { RouteContext } from "@envoy/emulators-core";
+import type { RouteContext } from "@emulators/core";
+import { buildCalendarDiscoveryDocument } from "../calendar-discovery.js";
 import {
   buildFreeBusyResponse,
   createCalendarEventRecord,
@@ -22,7 +23,7 @@ import {
 } from "../route-helpers.js";
 import { getGoogleStore } from "../store.js";
 
-export function calendarRoutes({ app, store }: RouteContext): void {
+export function calendarRoutes({ app, store, baseUrl }: RouteContext): void {
   const gs = getGoogleStore(store);
   // Google's Java NetHttpTransport tunnels PATCH through POST.
   app.post("/calendar/v3/calendars/:calendarId/events/:eventId", async (c) => {
@@ -32,6 +33,10 @@ export function calendarRoutes({ app, store }: RouteContext): void {
     const headers = new Headers(c.req.raw.headers);
     headers.delete("X-HTTP-Method-Override");
     return app.fetch(new Request(c.req.raw, { method: "PATCH", headers }));
+  });
+
+  app.get("/discovery/v1/apis/calendar/v3/rest", (c) => {
+    return c.json(buildCalendarDiscoveryDocument(baseUrl));
   });
 
   app.get("/calendar/v3/users/:userId/calendarList", (c) => {

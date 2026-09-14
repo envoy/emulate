@@ -1,4 +1,4 @@
-import { type Store, type Collection } from "@envoy/emulators-core";
+import { type Store, type Collection } from "@emulators/core";
 import type {
   MongoAtlasCluster,
   MongoAtlasDatabase,

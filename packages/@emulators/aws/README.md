@@ -1,6 +1,6 @@
 # @envoy/emulators-aws
 
-S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. The query services return AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does.
+S3, SQS, IAM, STS, and KMS emulation with AWS SDK-compatible S3 paths and query-style SQS/IAM/STS endpoints. The query services return AWS-compatible XML. KMS uses the AWS JSON 1.1 protocol, as the real service does. S3 uploads and downloads preserve arbitrary binary payloads, including raw byte lengths and ETags.
 
 Part of [emulate](https://github.com/vercel-labs/emulate) — local drop-in replacement services for CI and no-network sandboxes.
 

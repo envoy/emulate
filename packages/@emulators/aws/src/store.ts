@@ -1,4 +1,4 @@
-import { Store, type Collection } from "@envoy/emulators-core";
+import { Store, type Collection } from "@emulators/core";
 import type { S3Bucket, S3Object, SqsQueue, SqsMessage, IamUser, IamRole } from "./entities.js";
 
 export interface AwsStore {

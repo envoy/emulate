@@ -30,6 +30,8 @@ jobs:
 
       - run: node scripts/check-release-config.mjs
 
+      - run: node --test scripts/__tests__/*.test.mjs
+
       - run: pnpm format:check
 
       - run: pnpm type-check
@@ -37,3 +39,6 @@ jobs:
       - run: pnpm lint
 
       - run: pnpm test
+
+      - name: Verify GitHub Packages artifacts
+        run: bash scripts/prepare-release.sh "$RUNNER_TEMP/emulate-artifacts"

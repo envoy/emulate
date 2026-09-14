@@ -1,4 +1,4 @@
-import type { RouteContext } from "@envoy/emulators-core";
+import type { RouteContext } from "@emulators/core";
 import { getTwilioStore } from "../store.js";
 import { formatAccount } from "../formatters.js";
 import {

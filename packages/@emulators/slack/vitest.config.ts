@@ -7,7 +7,7 @@ const root = fileURLToPath(new URL("../../..", import.meta.url));
 export default defineConfig({
   resolve: {
     alias: {
-      "@envoy/emulators-core": resolve(root, "packages/@emulators/core/src/index.ts"),
+      "@emulators/core": resolve(root, "packages/@emulators/core/src/index.ts"),
     },
   },
   test: {

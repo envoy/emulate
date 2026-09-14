@@ -5,5 +5,5 @@ export default defineConfig({
   format: ["esm"],
   dts: true,
   sourcemap: true,
-  external: ["@envoy/emulators-core"],
+  external: ["@emulators/core"],
 });

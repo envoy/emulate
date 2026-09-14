@@ -1,6 +1,6 @@
-import { createEmulateHandler } from "@envoy/emulators-adapter-next";
-import * as github from "@envoy/emulators-github";
-import * as google from "@envoy/emulators-google";
+import { createEmulateHandler } from "@emulators/adapter-next";
+import * as github from "@emulators/github";
+import * as google from "@emulators/google";
 
 export const { GET, POST, PUT, PATCH, DELETE } = createEmulateHandler({
   services: {
