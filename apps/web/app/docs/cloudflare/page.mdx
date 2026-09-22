@@ -1,0 +1,29 @@
+# Cloudflare Turnstile
+
+The Cloudflare emulator covers explicit Turnstile rendering and server-side Siteverify for development and integration tests.
+
+```sh
+npx @envoy/emulate init --service cloudflare
+npx @envoy/emulate start --service cloudflare --seed emulate.config.yaml
+```
+
+```yaml
+cloudflare:
+  sites:
+    - sitekey: site-test
+      secret: secret-test
+      hostnames: [localhost, app.example.com]
+```
+
+Load the emulator's `/turnstile/v0/api.js?render=explicit` URL instead of the Cloudflare script in your test environment. Call `turnstile.render(element, { sitekey: 'site-test', callback: token => {} })`. The widget automatically completes its simulated challenge and returns a server-issued token. The script supports `ready`, `render`, `getResponse`, `isExpired`, `reset`, and `remove`, plus success, error, and expiry callbacks and the hidden response field. Keep the real Cloudflare script and endpoint in production.
+
+Send the token from your backend to the emulator's `POST /turnstile/v0/siteverify` with `secret` and `response`, encoded as JSON or form data. Successful responses include `success`, `challenge_ts`, `hostname`, `action`, and `cdata`. Tokens are tied to the seeded site, expire after five minutes, and can be verified once. Invalid credentials, missing tokens, unknown tokens, expired tokens, and replayed tokens fail verification.
+
+| Operation | Boundary | State and result | Coverage |
+| --- | --- | --- | --- |
+| Render widget | `GET /turnstile/v0/api.js`, `/turnstile/v0/widget` | Browser callback and hidden response field | Script/widget routes, browser smoke |
+| Issue test token | `POST /turnstile/v0/issue` | Seeded site and allowed hostname; unique token | Positive and unknown site/hostname tests |
+| Verify token | `POST /turnstile/v0/siteverify` | Correct secret, unexpired and unused token | Form and JSON, credential, expiry and replay tests |
+| Reset or restore | Core Store API | Sites and token consumption share normal snapshot/reset state | Snapshot and reset tests |
+
+The `issue` and `widget` routes are emulator conveniences, not Cloudflare public APIs. Hostname checks use the declared parent origin; this is a test double, not a security or bot-detection service. Real challenges, implicit rendering, `execute`, retry/idempotency-key semantics, Cloudflare account administration, and Enterprise metadata are not implemented. Optional `remoteip` is accepted without geolocation or risk evaluation. Core persistence adapters can persist the shared Store; the provider creates no database.

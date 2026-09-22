@@ -50,6 +50,8 @@ All services start with sensible defaults. No config file needed:
 
 Chargebee supports Product Catalog 1 plans, customers, trial subscriptions, and payment sources. Stripe temporary-token exchange requires both plugins to share a Core Store; see [Chargebee integration](apps/web/app/docs/chargebee/page.mdx).
 
+Cloudflare supports the explicit Turnstile browser widget and Siteverify with single-use, five-minute tokens. Seed site keys, secrets, and allowed hostnames; see [Cloudflare integration](apps/web/app/docs/cloudflare/page.mdx).
+
 Stripe supports test card entry at `/stripe.js` and single-use `/v1/tokens`. Embedded consumers can exchange tokens through `consumeCardToken` using the same Core Store; see [Stripe integration](apps/web/app/docs/stripe/page.mdx).
 
 Stripe webhooks configured with a secret include a `Stripe-Signature` header signed over the timestamp and raw request body.

@@ -18,6 +18,7 @@ export const PAGE_TITLES: Record<string, string> = {
   resend: "Resend",
   stripe: "Stripe",
   chargebee: "Chargebee",
+  cloudflare: "Cloudflare",
   authentication: "Authentication",
   architecture: "Architecture",
 };

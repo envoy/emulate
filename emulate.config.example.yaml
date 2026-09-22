@@ -389,3 +389,9 @@ chargebee:
       period_unit: month
       trial_period: 14
       trial_period_unit: day
+
+cloudflare:
+  sites:
+    - sitekey: site-test
+      secret: secret-test
+      hostnames: [localhost]
