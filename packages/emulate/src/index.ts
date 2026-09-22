@@ -64,6 +64,10 @@ Microsoft OAuth coverage:
   Refresh tokens are bound to the issuing client and require its client_id and client_secret, or client_secret_basic.
   Legacy refresh records without a stored client binding remain supported.
 
+Chargebee API coverage:
+  Chargebee supports Product Catalog 1 plans, customers, trials, and payment sources under /api/v2.
+  Stripe temporary-token exchange requires both plugins to share a Core Store.
+
 Stripe card entry:
   Stripe serves /stripe.js and /v1/tokens for test card entry. Embedded consumers can use
   consumeCardToken with the same Core Store; independent CLI services do not share token state.
