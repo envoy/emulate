@@ -74,6 +74,7 @@
     "@emulators/twilio": "workspace:*",
     "tsup": "^8",
     "typescript": "^5.7",
-    "@emulators/chargebee": "workspace:*"
+    "@emulators/chargebee": "workspace:*",
+    "@emulators/cloudflare": "workspace:*"
   }
 }

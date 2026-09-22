@@ -41,6 +41,7 @@ const SERVICE_NAME_LIST = [
   "linear",
   "twilio",
   "chargebee",
+  "cloudflare",
 ] as const;
 export type ServiceName = (typeof SERVICE_NAME_LIST)[number];
 export const SERVICE_NAMES: readonly ServiceName[] = SERVICE_NAME_LIST;
@@ -451,6 +452,19 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
       },
     },
   },
+  cloudflare: {
+    label: "Cloudflare Turnstile emulator",
+    endpoints: "explicit browser widget, token issuance, Siteverify",
+    async load() {
+      const mod = await import("@emulators/cloudflare");
+      return { plugin: mod.cloudflarePlugin, seedFromConfig: mod.seedFromConfig };
+    },
+    defaultFallback() {
+      return { login: "tester", id: 1, scopes: [] };
+    },
+    initConfig: { cloudflare: { sites: [{ sitekey: "site-test", secret: "secret-test", hostnames: ["localhost"] }] } },
+  },
+
   chargebee: {
     label: "Chargebee Product Catalog 1 emulator",
     endpoints: "plans, customers, trial subscriptions, cancellation, payment sources and roles",

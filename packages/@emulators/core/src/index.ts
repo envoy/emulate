@@ -67,6 +67,7 @@ export {
   escapeHtml,
   escapeAttr,
   renderCardPage,
+  renderWidgetPage,
   renderErrorPage,
   renderSettingsPage,
   renderInspectorPage,

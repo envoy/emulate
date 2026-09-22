@@ -68,6 +68,10 @@ Chargebee API coverage:
   Chargebee supports Product Catalog 1 plans, customers, trials, and payment sources under /api/v2.
   Stripe temporary-token exchange requires both plugins to share a Core Store.
 
+Cloudflare Turnstile:
+  Load /turnstile/v0/api.js?render=explicit and POST tokens to /turnstile/v0/siteverify.
+  Seed cloudflare.sites with sitekey, secret, and hostnames. Tokens expire after five minutes and verify once.
+
 Stripe card entry:
   Stripe serves /stripe.js and /v1/tokens for test card entry. Embedded consumers can use
   consumeCardToken with the same Core Store; independent CLI services do not share token state.

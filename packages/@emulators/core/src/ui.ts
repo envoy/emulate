@@ -21,6 +21,9 @@ body{
   background:#000;color:#33ff00;min-height:100vh;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
 }
+.widget{min-height:0;padding:8px 12px;font-size:12px;}
+.widget-title{font-weight:600;font-family:Geist Pixel,monospace;}
+.widget .powered-by{position:static;padding:0;margin-top:4px;font-size:10px;}
 .emu-bar{
   border-bottom:1px solid #0a3300;padding:10px 20px;
   display:flex;align-items:center;gap:10px;font-size:.8125rem;color:#1a8c00;
@@ -303,6 +306,16 @@ function head(title: string): string {
 <title>${escapeHtml(title)} | emulate</title>
 <style>${CSS}</style>
 </head>`;
+}
+
+/** Compact shared layout for provider widgets embedded in an application's form. */
+export function renderWidgetPage(title: string, body: string): string {
+  return `${head(title)}
+<body class="widget">
+<div class="widget-title">${escapeHtml(title)} Emulator</div>
+${body}
+${POWERED_BY}
+</body></html>`;
 }
 
 export function renderCardPage(title: string, subtitle: string, body: string, service?: string): string {
