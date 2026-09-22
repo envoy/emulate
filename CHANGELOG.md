@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1](https://github.com/envoy/emulate/compare/v0.13.0...v0.13.1) (2026-09-22)
+
+
+### Bug Fixes
+
+* **chargebee:** support subscription plan filters ([#16](https://github.com/envoy/emulate/issues/16)) ([350592b](https://github.com/envoy/emulate/commit/350592b8dbc41d4868b0d7259029609560acd369))
+
 ## [0.13.0](https://github.com/envoy/emulate/compare/v0.12.0...v0.13.0) (2026-09-22)
 
 
