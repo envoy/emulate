@@ -66,6 +66,7 @@ Microsoft OAuth coverage:
 
 Chargebee API coverage:
   Chargebee supports Product Catalog 1 plans, customers, trials, and payment sources under /api/v2.
+  Subscription lists support plan_id[is] and plan_id[in], combined with customer and status filters.
   Stripe temporary-token exchange requires both plugins to share a Core Store.
 
 Cloudflare Turnstile:
