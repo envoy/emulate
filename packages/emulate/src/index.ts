@@ -64,6 +64,10 @@ Microsoft OAuth coverage:
   Refresh tokens are bound to the issuing client and require its client_id and client_secret, or client_secret_basic.
   Legacy refresh records without a stored client binding remain supported.
 
+Stripe card entry:
+  Stripe serves /stripe.js and /v1/tokens for test card entry. Embedded consumers can use
+  consumeCardToken with the same Core Store; independent CLI services do not share token state.
+
 Webhook signatures:
   Stripe webhook secrets produce a Stripe-Signature header for raw-body verification.
 

@@ -47,6 +47,8 @@ All services start with sensible defaults. No config file needed:
 - **Linear** on `http://localhost:4012`
 - **Twilio** on `http://localhost:4013`
 
+Stripe supports test card entry at `/stripe.js` and single-use `/v1/tokens`. Embedded consumers can exchange tokens through `consumeCardToken` using the same Core Store; see [Stripe integration](apps/web/app/docs/stripe/page.mdx).
+
 Stripe webhooks configured with a secret include a `Stripe-Signature` header signed over the timestamp and raw request body.
 
 Resend `POST /emails` and `POST /emails/batch` support 24-hour `Idempotency-Key` replay, returning the original email IDs without duplicate emails or webhooks.
