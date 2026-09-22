@@ -46,6 +46,9 @@ All services start with sensible defaults. No config file needed:
 - **Clerk** on `http://localhost:4011`
 - **Linear** on `http://localhost:4012`
 - **Twilio** on `http://localhost:4013`
+- **Chargebee** on `http://localhost:4014`
+
+Chargebee supports Product Catalog 1 plans, customers, trial subscriptions, and payment sources. Stripe adds test card entry at `/stripe.js` and single-use `/v1/tokens`. Cross-provider token exchange requires both plugins to share a Core Store; see [Chargebee integration](apps/web/app/docs/chargebee/page.mdx).
 
 Stripe webhooks configured with a secret include a `Stripe-Signature` header signed over the timestamp and raw request body.
 

@@ -11,6 +11,9 @@ import type {
 } from "@emulators/core";
 import { getStripeStore } from "./store.js";
 import { stripeId } from "./helpers.js";
+import { tokenRoutes } from "./routes/tokens.js";
+import { elementsRoutes } from "./routes/elements.js";
+export { consumeCardToken, cardTokens, type TestCard } from "./routes/tokens.js";
 import { customerRoutes } from "./routes/customers.js";
 import { paymentIntentRoutes } from "./routes/payment-intents.js";
 import { paymentMethodRoutes } from "./routes/payment-methods.js";
@@ -144,6 +147,8 @@ export const stripePlugin: ServicePlugin = {
     webhooks.setHeaderFactory(stripeWebhookHeaders);
 
     const ctx: RouteContext = { app, store, webhooks, baseUrl, tokenMap };
+    tokenRoutes(ctx);
+    elementsRoutes(ctx);
     customerRoutes(ctx);
     paymentMethodRoutes(ctx);
     paymentIntentRoutes(ctx);

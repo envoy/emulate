@@ -384,3 +384,8 @@ const pi = await stripe.paymentIntents.create({
 const confirmed = await stripe.paymentIntents.confirm(pi.id)
 console.log(confirmed.status) // 'succeeded'
 ```
+
+
+## Test card entry and tokens
+
+Serve `/stripe.js` from the emulator for the Elements card and `createToken` subset. Configure a `pk_test_` key and use `4242424242424242` with a future expiry and three-digit CVC. Tokenization uses `POST /v1/tokens`; authenticated secret keys can retrieve tokens with `GET /v1/tokens/:id`. Card numbers and CVC are not stored. For Chargebee temporary-token exchange, register both plugins against the same Core Store; independent CLI services do not share token state.
