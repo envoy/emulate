@@ -93,6 +93,14 @@ async function body(c: Context): Promise<Record<string, unknown>> {
 function selected(data: Record<string, unknown>, fields: string[]) {
   return Object.fromEntries(Object.entries(data).filter(([key]) => fields.includes(key) || /^cf_\w+$/.test(key)));
 }
+const customerDefaults = {
+  auto_collection: "on",
+  promotional_credits: 0,
+  excess_payments: 0,
+  refundable_credits: 0,
+  unbilled_charges: 0,
+  net_term_days: 0,
+};
 const customerFields = [
   "company",
   "first_name",
@@ -188,7 +196,7 @@ export function seedFromConfig(store: Store, _baseUrl: string, config: Chargebee
   }
   for (const customer of config.customers ?? []) {
     if (!validId(customer.id)) throw new Error("Customer id is required");
-    const data = { auto_collection: "on", ...selected(customer, customerFields) };
+    const data = { ...customerDefaults, ...selected(customer, customerFields) };
     const existing = db.customers.findOneBy("resource_id", customer.id);
     if (existing) update(db.customers, existing, data);
     else insert(db.customers, "customer", data, customer.id);
@@ -235,7 +243,7 @@ function register(app: Hono<AppEnv>, store: Store, _webhooks: unknown, _baseUrl:
       if (collection.findOneBy("resource_id", id)) return error(c, 400, "duplicate_entry", "ID already exists", "id");
       let data;
       try {
-        data = key === "plan" ? planData(input) : { auto_collection: "on", ...selected(input, customerFields) };
+        data = key === "plan" ? planData(input) : { ...customerDefaults, ...selected(input, customerFields) };
       } catch (e) {
         return error(c, 400, "param_wrong_value", (e as Error).message);
       }

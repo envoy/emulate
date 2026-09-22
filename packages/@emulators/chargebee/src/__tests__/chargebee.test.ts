@@ -55,6 +55,10 @@ describe("Chargebee Product Catalog 1", () => {
   it("authenticates Basic API keys and rejects unknown credentials", async () => {
     const { request, app } = setup();
     expect((await request("plans")).status).toBe(200);
+    const created = await (await request("customers", { id: "credit-balance" })).json();
+    expect(
+      created.customer.promotional_credits + created.customer.excess_payments + created.customer.refundable_credits,
+    ).toBe(0);
     const denied = await request("plans", undefined, "wrong");
     expect(denied.status).toBe(401);
     expect(await denied.json()).toMatchObject({ api_error_code: "api_authentication_failed", http_status_code: 401 });
