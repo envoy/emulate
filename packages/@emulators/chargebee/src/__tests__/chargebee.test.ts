@@ -102,6 +102,50 @@ describe("Chargebee Product Catalog 1", () => {
       meta_data: { region: "west" },
     });
   });
+  it("filters subscriptions by plan together with customer and status before pagination", async () => {
+    const { request } = setup();
+    await request("plans", { id: "basic-monthly", name: "Basic" });
+    await request("customers", { id: "customer-a" });
+    await request("customers", { id: "customer-b" });
+    for (const [id, customer, plan, trial] of [
+      ["pro-a-1", "customer-a", "pro-monthly", "0"],
+      ["basic-a", "customer-a", "basic-monthly", "0"],
+      ["pro-b", "customer-b", "pro-monthly", "0"],
+      ["pro-a-trial", "customer-a", "pro-monthly", "4102444800"],
+      ["pro-a-2", "customer-a", "pro-monthly", "0"],
+    ]) {
+      expect(
+        (await request(`customers/${customer}/subscriptions`, { id, plan_id: plan, trial_end: trial })).status,
+      ).toBe(200);
+    }
+    const query = new URLSearchParams({
+      "customer_id[is]": "customer-a",
+      "plan_id[is]": "pro-monthly",
+      "status[in]": '["active","non_renewing"]',
+      limit: "1",
+    });
+    const firstResponse = await request(`subscriptions?${query}`);
+    expect(firstResponse.status).toBe(200);
+    const first = await firstResponse.json();
+    expect(first.list.map((row: any) => row.subscription.id)).toEqual(["pro-a-1"]);
+    query.set("offset", first.next_offset);
+    const second = await (await request(`subscriptions?${query}`)).json();
+    expect(second.list.map((row: any) => row.subscription.id)).toEqual(["pro-a-2"]);
+    expect(second.next_offset).toBeUndefined();
+
+    query.delete("offset");
+    query.set("limit", "100");
+    query.delete("plan_id[is]");
+    query.set("plan_id[in]", '["pro-monthly","basic-monthly"]');
+    const multiple = await (await request(`subscriptions?${query}`)).json();
+    expect(multiple.list.map((row: any) => row.subscription.id)).toEqual(["pro-a-1", "basic-a", "pro-a-2"]);
+    query.set("plan_id[in]", '["missing"]');
+    expect((await (await request(`subscriptions?${query}`)).json()).list).toEqual([]);
+    query.set("plan_id[in]", "[123]");
+    expect((await request(`subscriptions?${query}`)).status).toBe(400);
+    expect((await request("customers?plan_id[is]=pro-monthly")).status).toBe(400);
+    expect((await request("subscriptions?unknown[is]=value")).status).toBe(400);
+  });
   it("requires real related records and valid quantities", async () => {
     const { request } = setup();
     expect((await request("customers/missing/subscriptions", { plan_id: "pro-monthly" })).status).toBe(404);

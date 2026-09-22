@@ -159,8 +159,9 @@ function list(c: Context, collection: Collection<ChargebeeObject>, key: string) 
   let rows = collection.all();
   for (const [field, value] of new URL(c.req.url).searchParams) {
     if (["limit", "offset"].includes(field)) continue;
-    const match = /^(id|customer_id|status|company)\[(is|in)\]$/.exec(field);
-    if (!match) return error(c, 400, "param_wrong_value", "Unsupported list filter", field);
+    const match = /^(id|customer_id|status|company|plan_id)\[(is|in)\]$/.exec(field);
+    if (!match || (match[1] === "plan_id" && key !== "subscription"))
+      return error(c, 400, "param_wrong_value", "Unsupported list filter", field);
     let values = [value];
     if (match[2] === "in") {
       try {

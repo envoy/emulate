@@ -7,6 +7,8 @@ npx emulate init --service chargebee
 npx emulate start --service chargebee --seed emulate.config.yaml
 ```
 
+Subscription lists support `plan_id[is]` and `plan_id[in]` alongside customer and status filters. Filters combine before pagination; `in` accepts a JSON array of strings.
+
 The API prefix is `/api/v2`. Point your SDK's API origin at the emulator. Seed `chargebee.plans` with `id`, `name`, `price` in cents, `period`, `period_unit`, `trial_period`, and `trial_period_unit`. Custom `cf_*` fields and `meta_data` are preserved.
 
 ```yaml
