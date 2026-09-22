@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.13.0](https://github.com/envoy/emulate/compare/v0.12.0...v0.13.0) (2026-09-22)
+
+
+### Features
+
+* **chargebee:** emulate trials and saved payment sources ([#13](https://github.com/envoy/emulate/issues/13)) ([ffb4832](https://github.com/envoy/emulate/commit/ffb48321f8bab5e445882d3bd78678b58fe9de69))
+* **cloudflare:** emulate Turnstile widget and token verification ([#15](https://github.com/envoy/emulate/issues/15)) ([5ce69f5](https://github.com/envoy/emulate/commit/5ce69f520e6f1fd130dcffdb8b143dd7708a78b1))
+* **github:** support raw media negotiation for Contents and README ([#237](https://github.com/envoy/emulate/issues/237)) ([67d5d29](https://github.com/envoy/emulate/commit/67d5d2965f3c084df7b83c69fbf7fdca28e5d562))
+* **google:** add Calendar v3 discovery endpoint ([#238](https://github.com/envoy/emulate/issues/238)) ([a0401aa](https://github.com/envoy/emulate/commit/a0401aa5ac7ef2530cc9e93b675ccc365b81025c))
+* **resend:** support Idempotency-Key for email sends ([#239](https://github.com/envoy/emulate/issues/239)) ([f360ec7](https://github.com/envoy/emulate/commit/f360ec712b4d4f4febbb2a31050f8758b8c71008))
+* **slack:** enforce 40,000-character message limit ([#244](https://github.com/envoy/emulate/issues/244)) ([01df562](https://github.com/envoy/emulate/commit/01df562070275107bcc7e69da7ce5afd91f66e30))
+* **stripe:** emulate Elements card entry and single-use tokens ([#14](https://github.com/envoy/emulate/issues/14)) ([89bc99a](https://github.com/envoy/emulate/commit/89bc99a97e120b6bc3f46d03062cff6de2094223))
+
+
+### Bug Fixes
+
+* **aws:** preserve binary data in S3 objects ([#245](https://github.com/envoy/emulate/issues/245)) ([4924f9f](https://github.com/envoy/emulate/commit/4924f9f63b594694cc30a91514d44eca438e711f))
+* **github:** authorize organization installation writes as App bots ([#242](https://github.com/envoy/emulate/issues/242)) ([fc14214](https://github.com/envoy/emulate/commit/fc14214eba678fd576cb0dee0646313efb847487))
+* **github:** support slash-containing refs in Checks list endpoints ([#246](https://github.com/envoy/emulate/issues/246)) ([be9794f](https://github.com/envoy/emulate/commit/be9794f8e92e13d6d9b051623148dec761620381))
+* **google:** support RS256 OIDC tokens and JWKS ([#247](https://github.com/envoy/emulate/issues/247)) ([35ddfa8](https://github.com/envoy/emulate/commit/35ddfa8224560e100d3f00846dfee4e1cefec816))
+* **microsoft:** bind refresh tokens to OAuth clients ([#243](https://github.com/envoy/emulate/issues/243)) ([9672fe4](https://github.com/envoy/emulate/commit/9672fe46fcd105c19c765f6025ec99584b2bebce))
+* **release:** sync upstream and preserve Envoy package distribution ([dc05edd](https://github.com/envoy/emulate/commit/dc05edd6a09f514cb3069f0440158ed4cc1b3b0f))
+* **release:** sync upstream and preserve Envoy package distribution ([330bf3f](https://github.com/envoy/emulate/commit/330bf3f25bf7a87b4f872a087feb53e58b2a4fe2))
+
+
+### Documentation
+
+* align configuration examples with supported services ([#248](https://github.com/envoy/emulate/issues/248)) ([3d2a716](https://github.com/envoy/emulate/commit/3d2a7164b8868603294c4ef1843c624007203eb1))
+
 ## [0.12.0](https://github.com/envoy/emulate/compare/v0.11.0...v0.12.0) (2026-09-12)
 
 
