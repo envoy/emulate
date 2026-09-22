@@ -40,6 +40,7 @@ const SERVICE_NAME_LIST = [
   "clerk",
   "linear",
   "twilio",
+  "chargebee",
 ] as const;
 export type ServiceName = (typeof SERVICE_NAME_LIST)[number];
 export const SERVICE_NAMES: readonly ServiceName[] = SERVICE_NAME_LIST;
@@ -449,6 +450,18 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
         prices: [{ product_name: "Pro Plan", currency: "usd", unit_amount: 2000 }],
       },
     },
+  },
+  chargebee: {
+    label: "Chargebee Product Catalog 1 emulator",
+    endpoints: "plans, customers, trial subscriptions, cancellation, payment sources and roles",
+    async load() {
+      const mod = await import("@emulators/chargebee");
+      return { plugin: mod.chargebeePlugin, seedFromConfig: mod.seedFromConfig };
+    },
+    defaultFallback() {
+      return { login: "test-account", id: 1, scopes: [] };
+    },
+    initConfig: { chargebee: { plans: [{ id: "pro-monthly", name: "Pro", price: 2000, trial_period: 14 }] } },
   },
   mongoatlas: {
     label: "MongoDB Atlas service emulator",

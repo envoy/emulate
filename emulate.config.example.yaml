@@ -379,3 +379,13 @@ twilio:
   conversations:
     services:
       - friendly_name: Local Conversations
+
+chargebee:
+  plans:
+    - id: pro-monthly
+      name: Pro
+      price: 2000
+      period: 1
+      period_unit: month
+      trial_period: 14
+      trial_period_unit: day
