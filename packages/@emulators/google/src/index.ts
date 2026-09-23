@@ -23,8 +23,10 @@ import { oauthRoutes } from "./routes/oauth.js";
 import { settingsRoutes } from "./routes/settings.js";
 import { threadRoutes } from "./routes/threads.js";
 import { getGoogleStore } from "./store.js";
+import { placesRoutes, seedPlaces, type GooglePlaceSeed } from "./places.js";
 
 export { getGoogleStore, type GoogleStore } from "./store.js";
+export { getPlaces, type GooglePlace, type GooglePlaceSeed } from "./places.js";
 export * from "./entities.js";
 
 export interface GoogleSeedUser {
@@ -117,6 +119,7 @@ export interface GoogleSeedDriveItem {
 
 export interface GoogleSeedConfig {
   port?: number;
+  places?: GooglePlaceSeed[];
   users?: GoogleSeedUser[];
   oauth_clients?: Array<{
     client_id: string;
@@ -302,6 +305,7 @@ function resolveHd(user: GoogleSeedUser): string | null {
 
 export function seedFromConfig(store: Store, _baseUrl: string, config: GoogleSeedConfig): void {
   const gs = getGoogleStore(store);
+  if (config.places) seedPlaces(store, config.places);
 
   if (config.users) {
     for (const user of config.users) {
@@ -541,6 +545,7 @@ export const googlePlugin: ServicePlugin = {
     threadRoutes(ctx);
     labelRoutes(ctx);
     settingsRoutes(ctx);
+    placesRoutes(app, store);
   },
   seed(store: Store, baseUrl: string): void {
     seedDefaults(store, baseUrl);
