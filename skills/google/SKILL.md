@@ -1,12 +1,14 @@
 ---
 name: google
-description: Emulated Google OAuth 2.0, OpenID Connect, Gmail, Calendar, and Drive for local development and testing. Use when the user needs to test Google sign-in locally, emulate OIDC discovery, handle Google token exchange, configure Google OAuth clients, work with Gmail messages/drafts/threads/labels, manage Calendar events, upload or list Drive files, or work with Google userinfo without hitting real Google APIs. Triggers include "Google OAuth", "emulate Google", "mock Google login", "test Google sign-in", "OIDC emulator", "Google OIDC", "Gmail API", "Google Calendar", "Google Drive", "local Google auth", or any task requiring a local Google API.
+description: Emulated Google OAuth 2.0, OpenID Connect, Gmail, Calendar, Drive, and Places for local development and testing. Use for Google sign-in, OIDC discovery, Gmail messages, Calendar events, Drive files, Places autocomplete, geocoding, or Time Zone API calls without real Google APIs.
 allowed-tools: Bash(npx @envoy/emulate:*), Bash(curl:*)
 ---
 
-# Google OAuth 2.0 / OIDC + Gmail, Calendar & Drive Emulator
+# Google OAuth 2.0 / OIDC + Gmail, Calendar, Drive & Places Emulator
 
 OAuth 2.0 and OpenID Connect emulation with authorization code flow, PKCE support, ID tokens, OIDC discovery, refresh tokens, plus Gmail, Google Calendar, and Google Drive REST API surfaces.
+
+For address forms, seed `google.places` with `place_id`, `formatted_address`, optional `aliases`, `latitude`, `longitude`, `time_zone_id`, `raw_offset`, `dst_offset`, and `address_components`. Load `$GOOGLE_EMULATOR_URL/maps/api/js?libraries=places` in the browser. The shim supports `google.maps.places.Autocomplete`, `google.maps.Geocoder`, and the matching Places and Time Zone HTTP endpoints. Unknown addresses return `ZERO_RESULTS`.
 
 ## Start
 

@@ -2,6 +2,18 @@
 
 OAuth 2.0, OpenID Connect, and mutable Google Workspace-style surfaces for local inbox, calendar, and drive flows.
 
+## Places and Time Zone
+
+Seed `google.places` with a place ID, formatted address, optional aliases, latitude, longitude, time zone ID, raw and daylight offsets, and address components. The focused Maps JavaScript shim supports `google.maps.places.Autocomplete` and `google.maps.Geocoder`; it does not implement the full Maps SDK.
+
+- `GET /maps/api/js?libraries=places` - browser shim
+- `GET /maps/api/place/autocomplete/json?input=...` - matching places
+- `GET /maps/api/place/details/json?place_id=...` - place details
+- `GET /maps/api/geocode/json?address=...` - geocoding
+- `GET /maps/api/timezone/json?location=lat,lng` - time zone
+
+Unknown addresses return `ZERO_RESULTS`; an unknown place ID returns `NOT_FOUND`.
+
 ## OAuth & OpenID Connect
 
 - `GET /o/oauth2/v2/auth` - authorization endpoint

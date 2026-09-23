@@ -45,6 +45,9 @@ Google Calendar coverage:
   Recurring writes are rejected.
   List, create, read, patch, and delete events with authenticated calendar-scoped requests.
 
+Google Places coverage:
+  Seed google.places for the browser Autocomplete and Geocoder shim, place details, and Time Zone API.
+
 Vercel API coverage:
   GET /v7/deployments lists deployments by commit SHA across a team's projects, with cursor pagination.
 

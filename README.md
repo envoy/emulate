@@ -920,9 +920,17 @@ Every endpoint below is fully stateful. Creates, updates, and deletes persist in
 - `GET /zen` - random zen phrase
 - `GET /versions` - API versions
 
-## Google OAuth + Gmail, Calendar, and Drive APIs
+## Google OAuth + Gmail, Calendar, Drive, and Places APIs
 
 OAuth 2.0, OpenID Connect, and mutable Google Workspace-style surfaces for local inbox, calendar, and drive flows.
+
+Places support serves a small browser JavaScript API with `google.maps.places.Autocomplete` and `google.maps.Geocoder`, plus autocomplete, place details, geocode, and time zone endpoints. Seed `google.places` with `place_id`, `formatted_address`, optional `aliases`, coordinates, `time_zone_id`, `raw_offset`, `dst_offset`, and Google-style `address_components`. Unknown places return `ZERO_RESULTS` or `NOT_FOUND`. This is a focused browser and HTTP surface, not the full Maps JavaScript SDK.
+
+- `GET /maps/api/js?libraries=places` - browser autocomplete and geocoder shim
+- `GET /maps/api/place/autocomplete/json?input=...` - matching seeded addresses
+- `GET /maps/api/place/details/json?place_id=...` - formatted address, components, and geometry
+- `GET /maps/api/geocode/json?address=...` - seeded geocoding
+- `GET /maps/api/timezone/json?location=lat,lng` - seeded time zone
 
 Google ID tokens are RS256-signed JWTs. The discovery document advertises RS256, and `/oauth2/v3/certs` returns the matching RSA public key used to verify issued tokens.
 
