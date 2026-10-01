@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@emulators/core": "workspace:*",
-    "nodemailer": "^9.1.1"
+    "nodemailer": "^10.0.9"
   },
   "devDependencies": {
     "@emulators/google": "workspace:*",
