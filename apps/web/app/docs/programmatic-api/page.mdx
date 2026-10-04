@@ -86,7 +86,7 @@ afterAll(() => Promise.all([github.close(), vercel.close()]))
     <tr>
       <td><code>service</code></td>
       <td><em>(required)</em></td>
-      <td>Service name: <code>'vercel'</code>, <code>'github'</code>, <code>'google'</code>, <code>'slack'</code>, <code>'apple'</code>, <code>'microsoft'</code>, <code>'okta'</code>, <code>'aws'</code>, <code>'resend'</code>, <code>'stripe'</code>, <code>'mongoatlas'</code>, <code>'clerk'</code>, <code>'linear'</code>, or <code>'twilio'</code></td>
+      <td>Service name: <code>'vercel'</code>, <code>'github'</code>, <code>'google'</code>, <code>'slack'</code>, <code>'apple'</code>, <code>'microsoft'</code>, <code>'okta'</code>, <code>'aws'</code>, <code>'resend'</code>, <code>'stripe'</code>, <code>'mongoatlas'</code>, <code>'clerk'</code>, <code>'linear'</code>, <code>'twilio'</code>, or <code>'stream'</code></td>
     </tr>
     <tr>
       <td><code>port</code></td>
@@ -159,6 +159,7 @@ npm install @envoy/emulators-github @envoy/emulators-google @envoy/emulators-lin
     <tr><td><code>@envoy/emulators-slack</code></td><td>Slack Web API, OAuth v2, webhooks</td></tr>
     <tr><td><code>@envoy/emulators-linear</code></td><td>Linear GraphQL API, OAuth, webhooks</td></tr>
     <tr><td><code>@envoy/emulators-twilio</code></td><td>Twilio Messaging, Verify, Voice, webhooks</td></tr>
+    <tr><td><code>@envoy/emulators-stream</code></td><td>Stream Chat REST, WebSocket, webhooks</td></tr>
     <tr><td><code>@envoy/emulators-apple</code></td><td>Apple Sign In / OIDC</td></tr>
     <tr><td><code>@envoy/emulators-microsoft</code></td><td>Microsoft Entra ID, Graph API</td></tr>
     <tr><td><code>@envoy/emulators-aws</code></td><td>AWS S3, SQS, IAM, STS</td></tr>

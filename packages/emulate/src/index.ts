@@ -100,6 +100,12 @@ Configuration:
 Twilio API coverage:
   Accounts, API keys, phone numbers, Messaging, Verify, Voice, Conversations, webhooks, simulators, and inspector.
 
+Stream Chat coverage:
+  Server and client REST (users, channels, members, messages, read, typing) and the WebSocket at /connect.
+  Every request needs api_key plus an HS256 JWT signed with stream.api_secret (at least 32 bytes).
+  Point stream-chat at it with baseURL; stream-chat-java with STREAM_CHAT_URL.
+  Inspect state at / and GET /_emulate/stream/channels; mint user tokens at POST /_emulate/stream/tokens.
+
 Slack message limits:
   Slack text fields are limited to 40,000 Unicode characters. Longer text is truncated safely,
   and successful Web API responses include message_truncated warning metadata.

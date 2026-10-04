@@ -1,6 +1,6 @@
 ---
 name: emulate
-description: Local drop-in API emulator for Vercel, GitHub, Google, Slack, Apple, Microsoft, AWS, Clerk, Linear, Twilio, and other developer APIs. Use when the user needs to start emulated services, configure seed data, write tests against local APIs, set up CI without network access, or work with the emulate CLI or programmatic API. Triggers include "start the emulator", "emulate services", "mock API locally", "create emulator config", "test against local API", "npx @envoy/emulate", or any task requiring local service emulation.
+description: Local drop-in API emulator for Vercel, GitHub, Google, Slack, Apple, Microsoft, AWS, Clerk, Linear, Twilio, Stream Chat, and other developer APIs. Use when the user needs to start emulated services, configure seed data, write tests against local APIs, set up CI without network access, or work with the emulate CLI or programmatic API. Triggers include "start the emulator", "emulate services", "mock API locally", "create emulator config", "test against local API", "npx @envoy/emulate", or any task requiring local service emulation.
 allowed-tools: Bash(npx @envoy/emulate:*)
 ---
 
@@ -54,6 +54,7 @@ All services start with sensible defaults:
 | Clerk     | 4011        |
 | Linear    | 4012        |
 | Twilio    | 4013        |
+| Stream    | 4016        |
 
 ## CLI
 
@@ -127,7 +128,7 @@ For GitHub App tests, inspect secret-free minted installation-token metadata at 
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `service` | *(required)* | `'vercel'`, `'github'`, `'google'`, `'slack'`, `'apple'`, `'microsoft'`, `'okta'`, `'aws'`, `'resend'`, `'stripe'`, `'mongoatlas'`, `'clerk'`, `'linear'`, or `'twilio'` |
+| `service` | *(required)* | `'vercel'`, `'github'`, `'google'`, `'slack'`, `'apple'`, `'microsoft'`, `'okta'`, `'aws'`, `'resend'`, `'stripe'`, `'mongoatlas'`, `'clerk'`, `'linear'`, `'twilio'`, or `'stream'` |
 | `port` | `4000` | Port for the HTTP server |
 | `seed` | none | Inline seed data (same shape as YAML config) |
 | `baseUrl` | none | Override advertised base URL. Per-service `baseUrl` in seed config takes highest priority, then this option, then `EMULATE_BASE_URL` env var (supports `{service}`), then `PORTLESS_URL` (supports `{service}`, automatically set by the `portless` CLI wrapper), then `http://localhost:<port>`. |
@@ -441,6 +442,21 @@ twilio:
   conversations:
     services:
       - friendly_name: Local Conversations
+stream:
+  api_key: emulate_stream_key
+  api_secret: emulate_stream_secret_0123456789abcdefghijklmnop
+  users:
+    - id: admin
+      name: Admin
+      teams: [team-1]
+  channels:
+    - type: messaging
+      id: general
+      team: team-1
+      created_by_id: admin
+      members: [admin]
+      data:
+        name: General
 ```
 
 GitHub App `private_key` values are intentionally omitted from starter configuration. Programmatic `createEmulator` calls generate an RSA key and expose it through `generatedSecrets`. CLI startup generates omitted keys only when `--generated-secrets-file <path>` is provided; otherwise the seed must contain an explicit, valid private key. Never use a placeholder PEM value.
@@ -506,6 +522,7 @@ APPLE_EMULATOR_URL=http://localhost:4004
 MICROSOFT_EMULATOR_URL=http://localhost:4005
 AWS_EMULATOR_URL=http://localhost:4007
 LINEAR_EMULATOR_URL=http://localhost:4012
+STREAM_CHAT_URL=http://localhost:4016
 ```
 
 Then use these in your app to construct API and OAuth URLs. See each service's skill for SDK-specific override instructions.
@@ -557,6 +574,7 @@ packages/
     slack/           # Slack Web API, OAuth, incoming webhooks plugin
     linear/          # Linear GraphQL API, OAuth, webhooks plugin
     twilio/          # Twilio Messaging, Verify, Voice, webhooks plugin
+    stream/          # Stream Chat REST, WebSocket, webhooks plugin
     apple/           # Sign in with Apple / OIDC plugin
     microsoft/       # Microsoft Entra ID OAuth 2.0 / OIDC plugin
     aws/             # AWS S3, SQS, IAM, STS plugin

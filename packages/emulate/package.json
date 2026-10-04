@@ -54,6 +54,7 @@
   "dependencies": {
     "commander": "^14",
     "picocolors": "^1.1.1",
+    "ws": "^8.22.0",
     "yaml": "^2"
   },
   "devDependencies": {
@@ -72,6 +73,7 @@
     "@emulators/clerk": "workspace:*",
     "@emulators/linear": "workspace:*",
     "@emulators/twilio": "workspace:*",
+    "@emulators/stream": "workspace:*",
     "tsup": "^8",
     "typescript": "^5.7",
     "@emulators/chargebee": "workspace:*",
