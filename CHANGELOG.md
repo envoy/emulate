@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/envoy/emulate/compare/v0.15.0...v0.16.0) (2026-10-04)
+
+
+### Features
+
+* **stream:** emulate Stream Chat REST, WebSocket, and webhooks ([#22](https://github.com/envoy/emulate/issues/22)) ([96591e4](https://github.com/envoy/emulate/commit/96591e43ee5aabcd32eba6fa906576c203f28f7a))
+
 ## [0.15.0](https://github.com/envoy/emulate/compare/v0.14.0...v0.15.0) (2026-10-03)
 
 
