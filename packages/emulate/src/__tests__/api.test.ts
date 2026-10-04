@@ -19,7 +19,10 @@ async function createInstallationToken(url: string, appId: string, installationI
   });
 }
 
-describe("createEmulator", () => {
+// Each case starts a real server, and the first pays for importing the service. CI runs every
+// package's tests at once (the Stream package's WebSocket SDK suite among them), and that cold
+// start has taken 5.6 s there against 0.2 s alone, past Vitest's 5 s default.
+describe("createEmulator", { timeout: 30_000 }, () => {
   it("starts github and returns a url", async () => {
     const github = await createEmulator({ service: "github", port: 14000 });
 
