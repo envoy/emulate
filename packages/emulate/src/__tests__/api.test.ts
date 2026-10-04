@@ -1,4 +1,4 @@
-import { generateKeyPairSync, sign } from "crypto";
+import { createHmac, generateKeyPairSync, sign } from "crypto";
 import { describe, it, expect } from "vitest";
 import { createEmulator } from "../api.js";
 
@@ -293,6 +293,33 @@ describe("createEmulator", () => {
     });
 
     await slack.close();
+  });
+
+  it("serves the Stream WebSocket handshake on the same port as its REST API", async () => {
+    const stream = await createEmulator({ service: "stream", port: 14060 });
+    try {
+      const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
+      const payload = Buffer.from(JSON.stringify({ user_id: "admin" })).toString("base64url");
+      const signature = createHmac("sha256", "emulate_stream_secret_0123456789abcdefghijklmnop")
+        .update(`${header}.${payload}`)
+        .digest("base64url");
+      const query = new URLSearchParams({
+        api_key: "emulate_stream_key",
+        authorization: `${header}.${payload}.${signature}`,
+        "stream-auth-type": "jwt",
+        json: JSON.stringify({ user_id: "admin" }),
+      });
+      const socket = new WebSocket(`${stream.url.replace("http", "ws")}/connect?${query}`);
+      const first = await new Promise<{ type: string; me?: { id: string } }>((resolve, reject) => {
+        socket.onmessage = (event) => resolve(JSON.parse(String(event.data)));
+        socket.onerror = () => reject(new Error("WebSocket failed"));
+      });
+      expect(first.type).toBe("health.check");
+      expect(first.me?.id).toBe("admin");
+      socket.close();
+    } finally {
+      await stream.close();
+    }
   });
 
   it("throws on unknown service", async () => {

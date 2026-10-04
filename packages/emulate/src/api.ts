@@ -88,6 +88,7 @@ export async function createEmulator(options: EmulatorOptions): Promise<Emulator
   seed();
 
   const httpServer = serve({ fetch: app.fetch, port });
+  const detach = loaded.attachServer?.(httpServer, store);
 
   return {
     url: baseUrl,
@@ -100,6 +101,7 @@ export async function createEmulator(options: EmulatorOptions): Promise<Emulator
       seed();
     },
     close(): Promise<void> {
+      detach?.();
       return new Promise((resolve, reject) => {
         httpServer.close((err) => {
           if (err) reject(err);

@@ -497,3 +497,28 @@ twilio:
     services:
       - friendly_name: Local Conversations
 ```
+
+## Stream Seed Config
+
+```yaml
+stream:
+  api_key: emulate_stream_key
+  # At least 32 bytes: stream-chat-java refuses a shorter HS256 key.
+  api_secret: emulate_stream_secret_0123456789abcdefghijklmnop
+  webhook_url: http://localhost:3000/api/stream/webhook
+  users:
+    - id: admin
+      name: Admin
+      teams: [team-1]
+  channels:
+    - type: messaging
+      id: general
+      team: team-1
+      created_by_id: admin
+      members: [admin]
+      data:
+        name: General
+      messages:
+        - user_id: admin
+          text: Hello from the Stream emulator
+```

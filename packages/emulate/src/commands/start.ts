@@ -338,6 +338,7 @@ export async function startCommand(options: StartOptions): Promise<void> {
       stores.push(store);
       seedPreparedService(preparedService, store, webhooks);
       const httpServer = serve({ fetch: app.fetch, port });
+      preparedService.loadedSvc.attachServer?.(httpServer, store);
       httpServers.push(httpServer);
     }
 
@@ -368,6 +369,7 @@ export async function startCommand(options: StartOptions): Promise<void> {
       stores.push(store);
       seedPreparedService(preparedService, store, webhooks);
       const httpServer = serve({ fetch: app.fetch, port });
+      preparedService.loadedSvc.attachServer?.(httpServer, store);
       httpServers.push(httpServer);
       await waitForServerListening(httpServer);
     }

@@ -1,3 +1,4 @@
+import type { Server as HttpServer } from "node:http";
 import type { ServicePlugin, Store, AppKeyResolver, AuthFallback, WebhookDispatcher } from "@emulators/core";
 
 export interface PreparedServiceSeed {
@@ -15,6 +16,11 @@ export interface LoadedService {
   seedFromConfig?(store: Store, baseUrl: string, config: unknown, webhooks?: WebhookDispatcher): void;
   createAppKeyResolver?(store: Store): AppKeyResolver;
   prepareSeed?(config: Record<string, unknown>): Promise<PreparedServiceSeed>;
+  /**
+   * Attach handlers that need the raw HTTP server rather than the fetch handler, such as
+   * a WebSocket upgrade. Returns a function that detaches them and closes their sockets.
+   */
+  attachServer?(server: HttpServer, store: Store): () => void;
 }
 
 export interface ServiceEntry {
@@ -42,6 +48,7 @@ const SERVICE_NAME_LIST = [
   "twilio",
   "chargebee",
   "cloudflare",
+  "stream",
 ] as const;
 export type ServiceName = (typeof SERVICE_NAME_LIST)[number];
 export const SERVICE_NAMES: readonly ServiceName[] = SERVICE_NAME_LIST;
@@ -660,6 +667,44 @@ export const SERVICE_REGISTRY: Record<ServiceName, ServiceEntry> = {
         conversations: {
           services: [{ friendly_name: "Local Conversations" }],
         },
+      },
+    },
+  },
+
+  stream: {
+    label: "Stream Chat API emulator",
+    endpoints:
+      "users, channels, members, messages, read state, typing events, queryChannels filters, WebSocket connect and events, message.new webhooks, inspector",
+    async load() {
+      const mod = await import("@emulators/stream");
+      return {
+        plugin: mod.streamPlugin,
+        seedFromConfig: mod.seedFromConfig,
+        attachServer: mod.attachStreamWebSocket,
+      };
+    },
+    defaultFallback() {
+      return { login: "stream", id: 1, scopes: [] };
+    },
+    initConfig: {
+      stream: {
+        api_key: "emulate_stream_key",
+        api_secret: "emulate_stream_secret_0123456789abcdefghijklmnop",
+        users: [
+          { id: "admin", name: "Admin", teams: ["team-1"] },
+          { id: "member", name: "Member", teams: ["team-1"] },
+        ],
+        channels: [
+          {
+            type: "messaging",
+            id: "general",
+            team: "team-1",
+            created_by_id: "admin",
+            members: ["admin", "member"],
+            data: { name: "General" },
+            messages: [{ user_id: "member", text: "Hello from the Stream emulator" }],
+          },
+        ],
       },
     },
   },
